@@ -1,0 +1,45 @@
+{% extends 'dashboard/pagina-inicial.html'%}
+
+{% block titulo %}
+Produtos
+{% endblock titulo %}
+
+{% block conteudo %}
+<div>
+    <a
+            href=""
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#staticBackdrop"
+            hx-get="{% url 'criar-produtos' %}"
+            hx-target="#adicionar-conteudo"
+            hx-swap="innerHTML"> Cadastrar produto</a>
+</div>
+<div style="padding-top:18px">
+    <table id="tabela-produto" class="table">
+        <thead>
+        <tr>
+            <th>Produto</th>
+            <th>preco</th>
+            <th>Qtd.Estoque</th>
+        </tr>
+        </thead>
+        <tbody id="produto-Tbody">
+            {% include "produto/tabela-produto.html" %}
+        </tbody>
+    </table>
+</div>
+{% include 'produto/base-modais/modal-recebe-conteudo.html' %}
+
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+          $(document).ready(function () {
+            $('#tabela-produto').DataTable();
+          });
+
+</script>
+{% endblock scripts %}
+
+

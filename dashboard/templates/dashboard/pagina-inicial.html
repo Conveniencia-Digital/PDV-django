@@ -38,6 +38,14 @@
     
     <!-- Custom styles for this template -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+    <!-- CDN Data table -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css"/>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+    <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
   </head>
   <body>
     
@@ -60,7 +68,7 @@
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link active" href="{% url 'inicio' %}">
               <span data-feather="home"></span>
               Painel de Controle <span class="sr-only">(current)</span>
             </a>
@@ -84,7 +92,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'produtos' %}">
               <span data-feather="shopping-cart"></span>
               Produtos
             </a>
@@ -169,7 +177,7 @@
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Painel de controle</h1>
+        <h1 class="h2">{% block titulo %}Painel de controle{% endblock titulo %}</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -181,6 +189,9 @@
           </button>
         </div>
       </div>
+      {% block conteudo %}
+
+      {% endblock conteudo %}
     </main>
   </div>
 </div>
@@ -191,8 +202,15 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
       
-        <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-        <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+
+    <!-- CDN Data table -->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.js"></script>
+
+
+    {% block scripts %}{% endblock scripts %}
+
   </body>
 </html>
