@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'venda',
     'dashboard',
 
+    'widget_tweaks'
+
 ]
 
 MIDDLEWARE = [

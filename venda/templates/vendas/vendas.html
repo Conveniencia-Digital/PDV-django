@@ -1,0 +1,13 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% block conteudo %}
+    <a
+       type="button"
+       class="btn btn-primary"
+       data-toggle="modal"
+       data-target="#staticBackdrop"
+       hx-get="{% url 'vendas' %}"
+       hx-target="#addConteudo"
+       hx-swap="innerHTML">Vender
+    </a>
+    {% include 'vendas/modal-venda.html' %}
+{% endblock conteudo %}
