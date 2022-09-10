@@ -19,7 +19,7 @@
                     {% render_field itemsvendaform.vendas data-field='vendas' %}
                     {% render_field itemsvendaform.id data-field='id' %}
                     <div class="col-md-6 mb-3">
-                        {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+                        {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
                     </div>
                     <div class="col-md-3 mb-3">
                         {% render_field itemsvendaform.preco data-field='preco' %}

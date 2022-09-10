@@ -28,8 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,13 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # my apps
+    'dashboard',
     'produto',
     'venda',
-    'dashboard',
+    'servico',
+    'peca',
+    'cliente',
+    'colaborador',
 
-    'widget_tweaks'
+    'widget_tweaks',
 
 ]
+# Application definition
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

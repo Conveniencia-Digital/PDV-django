@@ -1,0 +1,37 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+
+{% block titulo %}Serviços{% endblock titulo %}
+
+{% block conteudo %}
+
+<a href=""
+   class="btn btn-primary"
+   data-toggle="modal"
+   data-target="#staticBackdrop"
+   hx-get="{% url 'cadastrar-servico' %}"
+   hx-target="#adicionar-conteudo"
+   hx-swap="innerHTML">
+    Cadastrar Serviços</a>
+
+
+<div style="padding-top:18px">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Serviço</th>
+            <th>Preço</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody id="servico-Tbody">
+            {% include 'servico/tabela/tabela-servico.html' %}
+        </tbody>
+    </table>
+</div>
+
+
+{% include 'servico/modais-vazios/modal-cadastrar-servico.html' %}
+{% endblock conteudo %}
+
+
+

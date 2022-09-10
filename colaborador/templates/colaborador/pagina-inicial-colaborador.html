@@ -1,0 +1,35 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+
+{% block titulo %}
+Colaboradores
+{% endblock titulo%}
+
+
+{% block conteudo %}
+<a
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#staticBackdrop"
+        hx-get="{% url 'cadastrar-colaborador' %}"
+        hx-target="#adicionar-conteudo"
+        hx-swap="innerHTML"
+
+>Cadastrar colaborador</a>
+
+<div style="padding-top:18px">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Colaborador</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody id="colaborador-Tbody">
+            {% include 'colaborador/tabela/tabela-colaborador.html' %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'colaborador/modal/modal-colaborador.html' %}
+
+{% endblock conteudo %}

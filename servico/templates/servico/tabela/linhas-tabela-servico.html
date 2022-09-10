@@ -1,0 +1,23 @@
+<tr id="trServico{{ object.pk }}">
+    <td>{{ object.nome_servico }}</td>
+    <td>{{ object.preco_servico }}</td>
+    <td><span
+            data-toggle="modal"
+            data-target="#staticBackdrop"
+            hx-get="{% url 'editar-servico' object.pk %}"
+            hx-target="#adicionar-conteudo"
+            hx-indicator=".htmx-indicator"
+            hx-swap="innerHTML">
+            <i class="fa-regular fa-pen-to-square"></i>
+        </span>
+        <span
+            hx-get="{% url 'apagar-servico' object.pk %}"
+            hx-confirm="Deseja mesmo apagar {{ object.nome_servico }}"
+            hx-target="closest tr"
+            hx-swap="outerHTML swap:300ms"
+        >
+                <i class="fa-regular fa-trash-can" style="padding-left:10px;"></i>
+        </span>
+
+    </td>
+</tr>

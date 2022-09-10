@@ -1,0 +1,21 @@
+<tr id="trCliente{{ object.pk }}">
+    <td> {{ object.nome_cliente }} </td>
+    <td><span
+            data-toggle="modal"
+            data-target="#staticBackdrop"
+            hx-get="{% url 'editar-cliente' object.pk %}"
+            hx-target="#adicionar-conteudo">
+
+
+        <i class="fa-regular fa-pen-to-square"></i>
+    </span>
+        <span
+            hx-get="{% url 'apagar-cliente' object.pk %}"
+            hx-confirm="Deseja mesmo Apagar {{ object.nome_cliente }} ?"
+            hx-target="closest tr"
+            hx-swap="outerHTML swap:300ms">
+
+                <i class="fa-regular fa-trash-can"></i>
+        </span>
+    </td>
+</tr>
