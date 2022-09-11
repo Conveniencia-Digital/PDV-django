@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'peca',
     'cliente',
     'colaborador',
-
+    'despesa',
     'widget_tweaks',
 
 ]

@@ -1,0 +1,30 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% block titulo %}
+    Despesas
+{% endblock titulo %}
+
+{% block conteudo %}
+<a
+        data-toggle="modal"
+        data-target="#staticBackdrop"
+        class="btn btn-primary"
+        hx-get="{% url 'cadastrar-despesa' %}"
+        hx-target="#adicionar-conteudo">Cadastrar despesa</a>
+
+<div style="padding-top: 18px">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Despesa</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="despesa-Tbody">
+            {% include 'despesa/tabela/tabela-despesa.html' %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'despesa/modal/modal-despesa.html' %}
+{% endblock conteudo %}
