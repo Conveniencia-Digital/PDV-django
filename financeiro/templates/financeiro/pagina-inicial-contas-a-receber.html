@@ -1,0 +1,29 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% block titulo %}
+Financeiro
+{% endblock titulo %}
+{% block conteudo %}
+<a
+        data-toggle="modal"
+        data-target="#staticBackdrop"
+        class="btn btn-primary"
+        hx-get="{% url 'cadastrar-contas-a-receber' %}"
+        hx-target="#adicionar-conteudo">Cadastrar contas a receber</a>
+
+<div style="padding-top: 18px">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Conta a receber</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="financeiro-Tbody">
+            {% include 'financeiro/tabela/tabela-contas-a-receber.html' %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'financeiro/modal/modal-contas-a-receber.html' %}
+{% endblock conteudo %}

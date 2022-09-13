@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     'cliente',
     'colaborador',
     'despesa',
+    'financeiro',
+    'configuracao',
+    'relatorio',
+    'orcamento',
     'widget_tweaks',
 
 ]

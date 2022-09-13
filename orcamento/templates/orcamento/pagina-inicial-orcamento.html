@@ -1,0 +1,27 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% block titulo%}
+    Orçamentos
+{% endblock titulo%}
+
+{% block conteudo%}
+<a class="btn btn-primary"
+   data-toggle="modal"
+   data-target="#staticBackdrop"
+   hx-get="{% url 'cadastrar-orcamento' %}"
+   hx-target="#adicionar-conteudo"
+>Novo orçamento</a>
+<div style="padding-top:18px">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Orçamento</th>
+                <th>Preço orçamento</th>
+            </tr>
+        </thead>
+        <tbody id="orcamento-Tbody">
+            {% include 'orcamento/tabela/tabela-orcamento.html' %}
+        </tbody>
+    </table>
+</div>
+{% include 'orcamento/modal/modal-orcamento.html' %}
+{% endblock conteudo%}

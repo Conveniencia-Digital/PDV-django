@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_contas_a_receber}}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form
+        hx-post="{% url 'editar-contas-a-receber' object.pk %}"
+        hx-target="#financeiroTr{{ object.pk }}"
+        hx-indicator=".htmx-indicator"
+        hx-swap="outerHTML">
+
+    <div class="modal-body">
+        {% csrf_token %}
+        {{ form }}
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Finalizar</button>
+    </div>
+</form>
+    <script>
+      $('form').on('submit', function() {
+        $('#staticBackdrop').modal('toggle')
+      });
+    </script>

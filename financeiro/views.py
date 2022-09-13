@@ -1,3 +1,50 @@
 from django.shortcuts import render
+from django.views.generic import ListView
 
-# Create your views here.
+from financeiro.models import ContasAReceber
+from financeiro.forms import ContasAReceberForms
+
+
+class ListaContasAReceber(ListView):
+    model = ContasAReceber
+    template_name = 'financeiro/pagina-inicial-contas-a-receber.html'
+
+
+def cadastrarcontas_a_receber(request):
+    template_name = 'financeiro/formularios/formulario-cadastrar-contas-a-receber.html'
+    form = ContasAReceberForms(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contas_a_receber = form.save()
+            template_name = 'financeiro/tabela/linhas-tabela-contas-a-receber.html'
+
+            context = {'object': contas_a_receber}
+            return render(request, template_name, context)
+
+    context = {'form': form}
+    return render(request, template_name, context)
+
+
+def editarcontas_a_receber(request, pk):
+    template_name = 'financeiro/formularios/formulario-editar-contas-a-receber.html'
+    instance = ContasAReceber.objects.get(pk=pk)
+    form = ContasAReceberForms(request.POST or None, instance=instance)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contas_a_receber = form.save()
+            template_name = 'financeiro/tabela/linhas-tabela-contas-a-receber.html'
+            context = {'object': contas_a_receber}
+
+            return render(request, template_name, context)
+
+    context = {'form': form, 'object': instance}
+    return render(request, template_name, context)
+
+
+def apagarcontas_a_receber(request, pk):
+    template_name = 'financeiro/tabela/tabela-contas-a-receber.html'
+    obj = ContasAReceber.objects.get(pk=pk)
+    obj.delete()
+    return render(request, template_name)
