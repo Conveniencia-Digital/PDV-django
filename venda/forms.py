@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import inlineformset_factory, ChoiceField, TextInput
+from django.forms import inlineformset_factory, TextInput
 
 from venda.models import Vendas, ItemsVenda
 
