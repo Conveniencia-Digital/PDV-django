@@ -9,10 +9,29 @@
         hx-target="#orcamento-Tbody"
         hx-indicator=".htmx-indicator"
         hx-swap="afterbegin">
+    {% csrf_token %}
 
     <div class="modal-body">
-        {% csrf_token %}
-        {{ form }}
+        <div id="orcamento">
+        <div class="form-row">
+
+            <div class="col-md-6 mb-3">
+                {{ form.nome_orcamento }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.preco_orcamento }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.quantidade }}
+            </div>
+        </div>
+             </div>
+        <button
+                class="btn btn-primary btn-sm"
+                hx-get="{% url 'adicionar-linhas' %}"
+                hx-target="#orcamento"
+                hx-swap="beforeend"
+        >Add peca</button>
     </div>
 
     <div class="modal-footer">
@@ -20,8 +39,9 @@
         <button type="submit" class="btn btn-primary">Finalizar</button>
     </div>
 </form>
-    <script>
+<script>
       $('form').on('submit', function() {
         $('#staticBackdrop').modal('toggle')
       });
-    </script>
+
+</script>
