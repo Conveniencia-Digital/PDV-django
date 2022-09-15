@@ -11,9 +11,11 @@ class OrcamentoForms(forms.ModelForm):
 
 
 class OrcamentoItemsForms(forms.ModelForm):
+    required_css_class = 'required'
+
     class Meta:
-        model = Orcamento
-        fields = '__all__'
+        model = ItemsOrcamento
+        fields = ('nome_orcamento', 'preco_orcamento', 'quantidade')
 
     def __init__(self, *args, **kwargs):
         super(OrcamentoItemsForms, self).__init__(*args, **kwargs)
@@ -21,10 +23,10 @@ class OrcamentoItemsForms(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
 
-orcamentoformset = inlineformset_factory(Orcamento,
-                                         ItemsOrcamento,
-                                         form=OrcamentoItemsForms,
-                                         extra=0,
-                                         can_delete=False,
-                                         min_num=1,
-                                         validate_min=True)
+ItemsOrcamentoFormset = inlineformset_factory(Orcamento,
+                                              ItemsOrcamento,
+                                              form=OrcamentoItemsForms,
+                                              extra=0,
+                                              can_delete=False,
+                                              min_num=1,
+                                              validate_min=True)

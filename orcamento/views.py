@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from orcamento.models import Orcamento
-from orcamento.forms import OrcamentoForms, OrcamentoItemsForms
+from orcamento.forms import OrcamentoForms, OrcamentoItemsForms, ItemsOrcamentoFormset
 
 
 class ListaOrcamento(ListView):
@@ -12,8 +12,9 @@ class ListaOrcamento(ListView):
 def cadastrarorcamento(request):
     template_name = 'orcamento/formularios/formulario-cadastrar-orcamento.html'
     orcamento_instance = Orcamento()
-    form = OrcamentoForms(request.POST or None, instance=orcamento_instance)
-    formset = OrcamentoItemsForms(request.POST or None, instance=orcamento_instance)
+
+    form = OrcamentoItemsForms(request.POST or None, instance=orcamento_instance)
+    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance)
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -30,6 +31,6 @@ def cadastrarorcamento(request):
 
 def adicionarlinhas(request):
     template_name = 'orcamento/formularios/linhas-formulario-orcamento.html'
-    form = OrcamentoForms()
-    context = {'itemsorcamento': form}
+    form = OrcamentoItemsForms()
+    context = {'orcamentoitemsform': form}
     return render(request, template_name, context)

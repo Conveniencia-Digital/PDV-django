@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 <div class="modal-header">
     <h5 class="modal-title" id="staticBackdropLabel"> Novo orcamento </h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -13,25 +14,28 @@
 
     <div class="modal-body">
         <div id="orcamento">
-        <div class="form-row">
+            {% for orcamentoitemsform in formset %}
+            <div class="form-row">
 
-            <div class="col-md-6 mb-3">
-                {{ form.nome_orcamento }}
+                <div class="col-md-6 mb-3">
+                    {{ orcamentoitemsform.nome_orcamento }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ orcamentoitemsform.preco_orcamento }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ orcamentoitemsform.quantidade }}
+                </div>
             </div>
-            <div class="col-md-3 mb-3">
-                {{ form.preco_orcamento }}
-            </div>
-            <div class="col-md-3 mb-3">
-                {{ form.quantidade }}
-            </div>
+            {% endfor %}
         </div>
-             </div>
         <button
                 class="btn btn-primary btn-sm"
                 hx-get="{% url 'adicionar-linhas' %}"
                 hx-target="#orcamento"
                 hx-swap="beforeend"
-        >Add peca</button>
+        >Add peca
+        </button>
     </div>
 
     <div class="modal-footer">
@@ -43,5 +47,6 @@
       $('form').on('submit', function() {
         $('#staticBackdrop').modal('toggle')
       });
+
 
 </script>
