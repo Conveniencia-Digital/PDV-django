@@ -8,7 +8,7 @@
     </button>
 </div>
 <div class="modal-body">
-    <form hx-post="{% url 'vendas' %}">
+    <form method="POST">
         {% csrf_token %}
         {{ formset.management_form }}
         <hr>
@@ -44,7 +44,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-    <button type="button" class="btn btn-primary">Salvar</button>
+    <button type="submit" class="btn btn-primary">Salvar</button>
 </div>
 
 <script>

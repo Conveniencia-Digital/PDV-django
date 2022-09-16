@@ -5,33 +5,32 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form
-        hx-post="{% url 'cadastrar-orcamento' %}"
-        hx-target="#orcamento-Tbody"
-        hx-indicator=".htmx-indicator"
-        hx-swap="afterbegin">
+<form hx-post="{% url 'orcamento:cadastrar-orcamento' %}">
     {% csrf_token %}
+    {{ formset.management_form }}
 
     <div class="modal-body">
         <div id="orcamento">
-            {% for orcamentoitemsform in formset %}
-            <div class="form-row">
-
+            {% for orcamento_items_form in formset %}
+            <div id="item-{{ forloop.counter0 }}" class="form-row">
+                    {{ orcamento_items_form.orcamento }}
+                    {{ orcamento_items_form.id }}
                 <div class="col-md-6 mb-3">
-                    {{ orcamentoitemsform.nome_orcamento }}
+                    {{ orcamento_items_form.nome_orcamento }}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {{ orcamentoitemsform.preco_orcamento }}
+                    {{ orcamento_items_form.preco_orcamento }}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {{ orcamentoitemsform.quantidade }}
+                    {{ orcamento_items_form.quantidade }}
                 </div>
             </div>
             {% endfor %}
         </div>
         <button
+                id="addItem"
                 class="btn btn-primary btn-sm"
-                hx-get="{% url 'adicionar-linhas' %}"
+                hx-get="{% url 'orcamento:adicionar-linhas' %}"
                 hx-target="#orcamento"
                 hx-swap="beforeend"
         >Add peca
