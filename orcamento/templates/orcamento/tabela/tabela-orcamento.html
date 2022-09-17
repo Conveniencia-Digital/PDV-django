@@ -1,3 +1,8 @@
 {% for object in object_list %}
     {% include 'orcamento/tabela/linhas-tabela-orcamento.html' %}
+     {% for items in object.orcamento_items.all %}
+        {{ items.nome_orcamento }}
+        {{ items.preco_orcamento }}
+        {{ items.quantidade }}
+     {% endfor %}
 {% endfor %}

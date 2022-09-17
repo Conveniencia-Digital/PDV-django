@@ -5,27 +5,28 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form hx-post="{% url 'orcamento:cadastrar-orcamento' %}">
+<form hx-post="{% url 'orcamento:cadastrar-orcamento' %}"
+
+      hx-indicator=".htmx-indicator"
+      hx-swap="afterbegin">
     {% csrf_token %}
-    {{ formset.management_form }}
+
 
     <div class="modal-body">
         <div id="orcamento">
-            {% for orcamento_items_form in formset %}
+
             <div id="item-{{ forloop.counter0 }}" class="form-row">
-                    {{ orcamento_items_form.orcamento }}
-                    {{ orcamento_items_form.id }}
                 <div class="col-md-6 mb-3">
-                    {{ orcamento_items_form.nome_orcamento }}
+                    {{ form.nome_orcamento }}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {{ orcamento_items_form.preco_orcamento }}
+                    {{ form.preco_orcamento }}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {{ orcamento_items_form.quantidade }}
+                    {{ form.quantidade }}
                 </div>
             </div>
-            {% endfor %}
+
         </div>
         <button
                 id="addItem"
@@ -46,6 +47,4 @@
       $('form').on('submit', function() {
         $('#staticBackdrop').modal('toggle')
       });
-
-
 </script>
