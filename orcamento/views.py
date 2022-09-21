@@ -1,26 +1,26 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
-from orcamento.models import ItemsOrcamento
-from orcamento.forms import ItemsOrcamentoForms, ItemsOrcamentoFormset
+from orcamento.models import Orcamento
+from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
 
 
 class ListaOrcamento(ListView):
     template_name = 'orcamento/pagina-inicial-orcamento.html'
-    model = ItemsOrcamento
+    model = Orcamento
 
 
 def cadastrarorcamento(request):
     template_name = 'orcamento/formularios/formulario-cadastrar-orcamento.html'
-    #orcamento_instance = Orcamento()
+    orcamento_instance = Orcamento()
 
-    form = ItemsOrcamentoForms(request.POST or None)
-    formset = ItemsOrcamentoFormset(request.POST or None)
+    form = OrcamentoForms(request.POST or None, instance=orcamento_instance, prefix='main')
+    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance, prefix='items')
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
+            #template_name = 'orcamento/tabela/linhas-tabela-orcamento.html'
             form.save()
             formset.save()
-
             return redirect('orcamento:orcamento')
 
     context = {'form': form, 'formset': formset}

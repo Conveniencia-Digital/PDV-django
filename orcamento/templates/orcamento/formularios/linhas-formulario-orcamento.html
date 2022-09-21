@@ -1,6 +1,9 @@
+
 <div id="item-{{ forloop.counter0 }}" class="form-row">
+    {{ items_orcamento_form.orcamento }}
+    {{ items_orcamento_form.id }}
     <div class="col-md-6 mb-3">
-        {{ items_orcamento_form.nome_orcamento }}
+        {{ items_orcamento_form.peca }}
     </div>
     <div class="col-md-3 mb-3">
         {{ items_orcamento_form.preco_orcamento }}
@@ -9,33 +12,4 @@
         {{ items_orcamento_form.quantidade }}
     </div>
 </div>
-<script>
 
-
-(function() {
-  reorderItems()
-})();
-
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
-    reorderItems()
-  }, 500)
-})
-
-function reorderItems() {
-  Array.from(document.querySelectorAll("[id^='item-']"))
-    .forEach((item, i) => {
-      item.setAttribute('id', 'item-' + i)
-
-
-    item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
-    item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'items-' + i + '-preco_orcamento')
-
-  })
-  Array.from(document.querySelectorAll("#id_id"))
-    .forEach((item, i) => item.setAttribute('id', 'items-' + (i + 1) + '-id'))
-
-
-
-}
-</script>
