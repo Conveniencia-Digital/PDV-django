@@ -1,15 +1,16 @@
 from django.db import models
 from peca.models import Pecas
+from cliente.models import Cliente
 
 
 class Orcamento(models.Model):
-    nf = models.CharField(max_length=20)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.nf
+        return self.cliente
 
 
 class ItemsOrcamento(models.Model):

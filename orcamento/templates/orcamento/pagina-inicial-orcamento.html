@@ -1,6 +1,6 @@
 {% extends 'dashboard/pagina-inicial.html' %}
 {% block titulo%}
-    Orçamentos
+Orçamentos
 {% endblock titulo%}
 
 {% block conteudo%}
@@ -11,17 +11,10 @@
    hx-target="#adicionar-conteudo"
 >Novo orçamento</a>
 <div style="padding-top:18px">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Orçamento</th>
-                <th></th>
-                <th></th>
-
-            </tr>
-        </thead>
+    <table class="table table-hover">
+        <thead></thead>
         <tbody id="orcamento-Tbody">
-            {% include 'orcamento/tabela/tabela-orcamento.html' %}
+        {% include 'orcamento/tabela/tabela-orcamento.html' %}
         </tbody>
     </table>
 </div>

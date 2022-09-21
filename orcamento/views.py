@@ -18,10 +18,11 @@ def cadastrarorcamento(request):
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
-            #template_name = 'orcamento/tabela/linhas-tabela-orcamento.html'
-            form.save()
-            formset.save()
-            return redirect('orcamento:orcamento')
+            template_name = 'orcamento/tabela/linhas-tabela-orcamento.html'
+            orcamento = form.save()
+            items_orcamento = formset.save()
+            context = {'object': orcamento, 'items': items_orcamento}
+            return render(request, template_name, context)
 
     context = {'form': form, 'formset': formset}
     return render(request, template_name, context)

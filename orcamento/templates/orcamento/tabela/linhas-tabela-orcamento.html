@@ -1,18 +1,26 @@
+<tr><th class="table-light"></th></tr>
 <tr class="bg-light">
-    <td>{{ object }}</td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <th>Pecas</th>
-    <th>Quantidade</th>
-    <th>Preço</th>
-</tr>
+        <th>Cliente</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>{{object.cliente.nome_cliente}}</td>
+        <td></td>
+        <td></td>
+    </tr>
 
-{% for items in object.orcamento_items.all %}
-<tr>
-    <td>{{ items.peca }}</td>
-    <td>{{ items.quantidade }}</td>
-    <td>{{ items.preco_orcamento }}</td>
-</tr>
-{% endfor %}
+    <tr class="bg-light">
+        <th>Pecas</th>
+        <th>Quantidade</th>
+        <th>Preço</th>
+    </tr>
+
+    {% for items in object.orcamento_items.all %}
+    <tr>
+        <td>{{ items.peca }}</td>
+        <td>{{ items.quantidade }}</td>
+        <td>{{ items.preco_orcamento }}</td>
+    </tr>
+    {% endfor %}
+

@@ -6,11 +6,10 @@ from orcamento.models import ItemsOrcamento, Orcamento
 
 class OrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
-    nf = forms.IntegerField()
 
     class Meta:
         model = Orcamento
-        fields = ('nf',)
+        fields = ('cliente',)
 
 
 class ItemsOrcamentoForms(forms.ModelForm):
