@@ -1,6 +1,7 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
-from orcamento.models import Orcamento
+from orcamento.models import Orcamento, ItemsOrcamento
 from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
 
 
@@ -33,3 +34,9 @@ def adicionarlinhas(request):
     form = ItemsOrcamentoForms()
     context = {'items_orcamento_form': form}
     return render(request, template_name, context)
+
+
+def apagarlinhas(request, pk):
+    items_orcamento = ItemsOrcamento.objects.get(pk=pk)
+    items_orcamento.delete()
+    return HttpResponse('')
