@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from orcamento.models import Orcamento, ItemsOrcamento
 from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
+from peca.models import Pecas
 
 
 class ListaOrcamento(ListView):
@@ -37,6 +38,22 @@ def adicionarlinhas(request):
 
 
 def apagarlinhas(request, pk):
+    template_name = 'orcamento/formularios/linhas-formulario-orcamento.html'
     items_orcamento = ItemsOrcamento.objects.get(pk=pk)
     items_orcamento.delete()
-    return HttpResponse('')
+    return render(request, template_name)
+
+
+def precopeca(request):
+    template_name = 'orcamento/formularios/preco-peca.html'
+    url = request.get_full_path()
+    print('url', url)
+    print(url.split('-'))
+    print('list', list(request.GET.values()))
+    lista = list(request.GET.values())
+    peca_pk = 0
+    for i in lista:
+        produto_pk = i
+    peca = Pecas.objects.get(pk=peca_pk)
+    context = {'peca': peca}
+    return render(request, template_name, context)

@@ -3,7 +3,7 @@
     {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
     {{ items_orcamento_form.id }}
     <div class="col-md-6 mb-3">
-        {% render_field items_orcamento_form.peca class='form-control' data-field='peca' %}
+        {% render_field items_orcamento_form.peca class='form-control' hx-get="/orcamento/preco/peca/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field='peca' %}
     </div>
     <div class="col-md-3 mb-3">
         {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
@@ -12,10 +12,7 @@
         {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' %}
     </div>
     <div class="col-md-1 mb-1">
-
-        <span hx-get="{% url 'orcamento:apagar-linhas' items_orcamento_form.id %}"
-              hx-target="#item-{{ forloop.counter0 }}"
-              hx-swap="outerHTML">
+        <span>
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                  class="bi bi-dash-circle" viewBox="0 0 16 16"
                  style="color:blue; padding-top:12px">
@@ -23,6 +20,5 @@
               <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
             </svg>
         </span>
-
     </div>
 </div>

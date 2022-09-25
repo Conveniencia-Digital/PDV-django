@@ -21,7 +21,7 @@
                 {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
                 {{ items_orcamento_form.id }}
                 <div class="col-md-6 mb-3">
-                    {% render_field items_orcamento_form.peca class='form-control' data-field="peca" %}
+                    {% render_field items_orcamento_form.peca class='form-control' hx-get="/orcamento/preco/peca/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field="peca" %}
                 </div>
                 <div class="col-md-3 mb-3">
                     {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
