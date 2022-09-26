@@ -5,7 +5,7 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form hx-post="{% url 'orcamento:cadastrar-orcamento' %}"
+<form hx-post="{% url 'cadastrar-orcamento' %}"
       hx-target="#orcamento-Tbody"
       hx-indicator=".htmx-indicator"
       hx-swap="afterbegin">
@@ -21,7 +21,7 @@
                 {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
                 {{ items_orcamento_form.id }}
                 <div class="col-md-6 mb-3">
-                    {% render_field items_orcamento_form.peca class='form-control' hx-get="/orcamento/preco/peca/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field="peca" %}
+                    {% render_field items_orcamento_form.peca class='form-control' hx-get='/peca/preco/' data-field='peca' %}
                 </div>
                 <div class="col-md-3 mb-3">
                     {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
@@ -35,7 +35,7 @@
         <button
                 id="addItem"
                 class="btn btn-primary btn-sm"
-                hx-get="{% url 'orcamento:adicionar-linhas' %}"
+                hx-get="{% url 'adicionar-linhas' %}"
                 hx-target="#orcamento"
                 hx-swap="beforeend"
         >Add peca
@@ -48,9 +48,6 @@
     </div>
 </form>
 <script>
-document.body.addEventListener('htmx:configRequest', (event) => {
-      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-    });
 
 (function() {
   reorderItems()
@@ -90,22 +87,9 @@ function reorderItems() {
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
 }
-function removeRow() {
-  const span = event.target.parentNode
-  const div = span.parentNode
-  div.parentNode.removeChild(div)
 
-  reorderItems()
-}
-
-Array.from(document.querySelectorAll('.remove-row'))
-  .forEach((item, i) => {
-    item.addEventListener('click', function() {
-      document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block'
-    })
-  })
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
   });
+
 </script>

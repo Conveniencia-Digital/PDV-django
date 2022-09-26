@@ -23,9 +23,8 @@ class ItemsOrcamento(models.Model):
     )
     peca = models.ForeignKey(
         Pecas,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE,
+
     )
     quantidade = models.IntegerField()
     preco_orcamento = models.DecimalField(max_digits=9, decimal_places=2)
