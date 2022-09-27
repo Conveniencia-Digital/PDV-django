@@ -32,6 +32,8 @@
         }
       }
 
+
+
     </style>
 
 
@@ -51,7 +53,7 @@
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
     {% block style %}{% endblock style %}
 </head>
@@ -174,7 +176,12 @@
 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link"
+                           data-toggle="modal"
+                           data-target="#staticBackdrop"
+                           hx-get="{% url 'cadastrar-orcamento' %}"
+                           hx-target="#addConteudo"
+                           hx-swap="innerHTML">
                             <span data-feather="file-text"></span>
                             Novo orçamento
                         </a>
@@ -206,7 +213,8 @@
             {% block conteudo %}
 
             {% endblock conteudo %}
-          {% include 'vendas/modal-venda.html' %}
+            {% include 'vendas/modal-venda.html' %}
+            {% include 'orcamento/modal/modal-orcamento.html' %}
         </main>
     </div>
 </div>
@@ -225,7 +233,7 @@
 
 <!-- CDN Data table -->
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 {% block scripts %}{% endblock scripts %}
 

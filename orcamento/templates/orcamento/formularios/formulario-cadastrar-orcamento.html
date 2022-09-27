@@ -21,7 +21,7 @@
                 {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
                 {{ items_orcamento_form.id }}
                 <div class="col-md-6 mb-3">
-                    {% render_field items_orcamento_form.peca class='form-control' hx-get='/peca/preco/' data-field='peca' %}
+                    {% render_field items_orcamento_form.peca class='form-control' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
                 </div>
                 <div class="col-md-3 mb-3">
                     {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
@@ -48,7 +48,6 @@
     </div>
 </form>
 <script>
-
 (function() {
   reorderItems()
 })();
@@ -64,12 +63,15 @@ function reorderItems() {
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
 
+      if (!item.querySelector('[data-field="orcamento"]')) {
+        return
+      }
 
       item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
       item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
 
       item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
+      item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
 
 
       item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-from orcamento.models import Orcamento
+from orcamento.models import Orcamento, ItemsOrcamento
 from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
 from peca.models import Pecas
 
@@ -49,3 +49,9 @@ def preco_peca(request):
     peca = Pecas.objects.get(pk=peca_pk)
     context = {'peca': peca}
     return render(request, template_name, context)
+
+
+def apagaritemorcamento(pk):
+    item_orcamento = ItemsOrcamento.objects.get(pk=pk)
+    item_orcamento.delete()
+    return None

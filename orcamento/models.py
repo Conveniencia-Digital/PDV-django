@@ -12,6 +12,11 @@ class Orcamento(models.Model):
     def __str__(self):
         return self.cliente
 
+    def total(self):
+        qs = self.orcamento_items.filter(orcamento=self.pk).values_list('preco_orcamento', 'quantidade') or 0
+        t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
+        return t
+
 
 class ItemsOrcamento(models.Model):
     orcamento = models.ForeignKey(
@@ -32,5 +37,9 @@ class ItemsOrcamento(models.Model):
     class Meta:
         ordering = ('pk',)
 
+    @property
     def __str__(self):
         return f'{self.pk} - {self.orcamento.pk} - {self.peca}'
+
+    def subtotal(self):
+        return self.preco_orcamento * (self.quantidade or 0)

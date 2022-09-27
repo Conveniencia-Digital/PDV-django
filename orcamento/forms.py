@@ -2,6 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 
 from orcamento.models import ItemsOrcamento, Orcamento
+from peca.models import Pecas
 
 
 class OrcamentoForms(forms.ModelForm):
@@ -16,6 +17,7 @@ class ItemsOrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
 
     id = forms.IntegerField()
+    peca = forms.ModelChoiceField(queryset=Pecas.objects.all(), empty_label='Selecione a peca')
 
     class Meta:
         model = ItemsOrcamento
