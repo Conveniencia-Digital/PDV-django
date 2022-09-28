@@ -27,7 +27,7 @@
                     {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' %}
+                    {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' onfocus='calcular()' %}
                 </div>
                 {% endfor %}
             </div>
@@ -38,10 +38,14 @@
                 hx-get="{% url 'adicionar-linhas' %}"
                 hx-target="#orcamento"
                 hx-swap="beforeend"
-        >Add peca
+                >Add peca
         </button>
     </div>
-
+    <div class="form-row">
+        <div class="col-md-6 mb-3"></div>
+        <div class="col-md-3 mb-3">Total</div>
+        <div id="resultado" class="col-md-3 mb-3">0.00</div>
+    </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
         <button type="submit" class="btn btn-primary">Finalizar</button>
@@ -88,10 +92,20 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
+
 }
 
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
   });
+
+
+function calcular() {
+  var n1 = document.getElementById('id_items-0-preco_orcamento');
+  var n2 = document.getElementById('id_items-1-preco_orcamento');
+  var s1 = parseFloat(n1.value)
+  var s2 = parseFloat(n2.value)
+  document.getElementById('resultado').innerHTML = s1 + s2;
+}
 
 </script>
