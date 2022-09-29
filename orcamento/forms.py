@@ -1,12 +1,14 @@
 from django import forms
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, NumberInput
 
 from orcamento.models import ItemsOrcamento, Orcamento
 from peca.models import Pecas
+from cliente.models import Cliente
 
 
 class OrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
 
     class Meta:
         model = Orcamento
@@ -22,6 +24,10 @@ class ItemsOrcamentoForms(forms.ModelForm):
     class Meta:
         model = ItemsOrcamento
         fields = ('orcamento', 'id', 'peca', 'quantidade', 'preco_orcamento')
+
+        widgets = {
+            'preco_orcamento': NumberInput(attrs={'placeholder': '0,00'})
+        }
 
     def __init__(self, *args, **kwargs):
         super(ItemsOrcamentoForms, self).__init__(*args, **kwargs)

@@ -1,15 +1,25 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-{% block titulo%}
-Orçamentos
-{% endblock titulo%}
+{% load orcamento_extra %}
+
+{% block titulo %} Orçamentos {% endblock titulo %}
 
 {% block conteudo%}
+
+<div class="card border-secondary mb-3" style="max-width: 18rem;">
+    <div class="card-header">Faturamento Assistencia tecnica</div>
+    <div class="card-body text-secondary">
+        <h5 class="card-title">Faturamento este mês</h5>
+        <h1 class="card-text">{% faturamento %}</h1>
+    </div>
+</div>
+
+<hr>
 <a class="btn btn-primary"
    data-toggle="modal"
    data-target="#staticBackdrop"
    hx-get="{% url 'cadastrar-orcamento' %}"
-   hx-target="#adicionar-conteudo"
->Novo orçamento</a>
+   hx-target="#adicionar-conteudo">Novo orçamento</a>
+
 <div style="padding-top:18px">
     <table class="table">
         <thead></thead>
@@ -18,5 +28,6 @@ Orçamentos
         </tbody>
     </table>
 </div>
+
 {% include 'orcamento/modal/modal-orcamento.html' %}
 {% endblock conteudo%}

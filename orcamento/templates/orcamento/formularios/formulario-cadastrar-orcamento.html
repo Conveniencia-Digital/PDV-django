@@ -11,9 +11,25 @@
       hx-swap="afterbegin">
     {% csrf_token %}
     <div class="modal-body">
+        <div class="form-row">
+            <div class="col-md-6 mb-1">
+                <label class="font-weight-lighter" style="font-size:1.2em">Cliente </label>
+            </div>
+        </div>
         {% render_field form.cliente class='form-control'%}
         <hr>
-        <label class="font-weight-lighter" style="font-size:1.2em">Selecionar Pecas</label>
+        <div class="form-row">
+            <div class="col-md-6 mb-1">
+                <label class="font-weight-lighter" style="font-size:1.2em">Peça </label>
+            </div>
+            <div class="col-md-3 mb-1">
+                <label class="font-weight-lighter" style="font-size:1.2em">Preço Unitario </label>
+            </div>
+            <div class="col-md-3 mb-1">
+                <label class="font-weight-lighter" style="font-size:1.2em">Quantidade</label>
+            </div>
+        </div>
+
         {{ formset.management_form }}
         <div id="orcamento">
             {% for items_orcamento_form in formset %}
@@ -24,10 +40,10 @@
                     {% render_field items_orcamento_form.peca class='form-control' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' %}
+                    {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento'  %}
                 </div>
                 <div class="col-md-3 mb-3">
-                    {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' onfocus='calcular()' %}
+                    {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' %}
                 </div>
                 {% endfor %}
             </div>
@@ -37,10 +53,13 @@
                 class="btn btn-primary btn-sm"
                 hx-get="{% url 'adicionar-linhas' %}"
                 hx-target="#orcamento"
-                hx-swap="beforeend"
-                >Add peca
+                hx-swap="beforeend settle:1s"
+        >Add peca
         </button>
+          <hr>
+        <label class="font-weight-lighter" style="font-size:1.2em">Serviço</label>
     </div>
+
     <div class="form-row">
         <div class="col-md-6 mb-3"></div>
         <div class="col-md-3 mb-3">Total</div>
@@ -99,13 +118,5 @@ function reorderItems() {
     $('#staticBackdrop').modal('toggle')
   });
 
-
-function calcular() {
-  var n1 = document.getElementById('id_items-0-preco_orcamento');
-  var n2 = document.getElementById('id_items-1-preco_orcamento');
-  var s1 = parseFloat(n1.value)
-  var s2 = parseFloat(n2.value)
-  document.getElementById('resultado').innerHTML = s1 + s2;
-}
 
 </script>

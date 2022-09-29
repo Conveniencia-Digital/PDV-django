@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.aggregates import Count
 from peca.models import Pecas
 from cliente.models import Cliente
 
@@ -29,7 +30,6 @@ class ItemsOrcamento(models.Model):
     peca = models.ForeignKey(
         Pecas,
         on_delete=models.CASCADE,
-
     )
     quantidade = models.IntegerField()
     preco_orcamento = models.DecimalField(max_digits=9, decimal_places=2)
