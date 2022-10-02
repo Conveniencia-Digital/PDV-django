@@ -1,17 +1,27 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-
 {% block style %}
 <style>
     tr.htmx-swapping td {
         opacity: 0;
         transition: opacity 300ms ease-out;
+
 </style>
 {% endblock style %}
 
 {% block titulo %} Peças {% endblock titulo %}
 
 {% block conteudo %}
+<div id="relatorio-peca" hx-get="{% url 'relatorio-peca' %}" hx-target="#relatorio-peca" hx-swap="outerHTML">
+    <div class="card border-secondary mb-3" style="max-width: 18rem;" >
+        <div class="card-header">Peças Cadastradas</div>
+        <div class="card-body text-secondary">
+            <h5 class="card-title">Total em estoque </h5>
+            <h1 class="card-text">{{ obj_peca }}</h1>
+        </div>
+    </div>
 
+</div>
+<hr>
 <div>
     <a href=""
        class="btn btn-primary"
@@ -31,11 +41,10 @@
         </tr>
         </thead>
         <tbody id="peca-Tbody">
-            {% include 'peca/tabela/tabela-peca.html' %}
+        {% include 'peca/tabela/tabela-peca.html' %}
         </tbody>
     </table>
 </div>
 
 {% include 'peca/modais-vazios/modal-recebe-conteudo-add-peca.html' %}
-
 {% endblock conteudo%}

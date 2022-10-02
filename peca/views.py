@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-
+from django.db.models.aggregates import Sum
 from peca.models import Pecas
 from peca.forms import PecasForms
 
@@ -18,8 +18,8 @@ def cadastrarpeca(request):
         if form.is_valid():
             peca = form.save()
             template_name = 'peca/tabela/linhas-tabela-peca.html'
-
             context = {'object': peca}
+
             return render(request, template_name, context)
 
     context = {'form': form}
@@ -48,3 +48,14 @@ def apagarpeca(request, pk):
     objeto = Pecas.objects.get(pk=pk)
     objeto.delete()
     return render(request, template_name)
+
+
+def relatoriopeca(request):
+    template_name = 'peca/informacao-peca.html'
+    obj_peca = Pecas.objects.all().aggregate(preco_pecas=Sum('preco_peca'))
+
+    for i in obj_peca.values():
+        obj_peca = i
+
+    context = {'obj_peca': obj_peca}
+    return render(request, template_name, context)
