@@ -53,6 +53,6 @@ Array.from(document.querySelectorAll('.remove-row'))
   .forEach((item, i) => {
     item.addEventListener('click', function() {
       document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block'
+      document.querySelector('#btn-close').style.display = 'block' // seleciona o id #btn close e adiciona css
     })
   })

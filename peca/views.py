@@ -19,7 +19,6 @@ def cadastrarpeca(request):
             peca = form.save()
             template_name = 'peca/tabela/linhas-tabela-peca.html'
             context = {'object': peca}
-
             return render(request, template_name, context)
 
     context = {'form': form}

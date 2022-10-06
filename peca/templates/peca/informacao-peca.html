@@ -1,7 +1,23 @@
   <div class="card border-secondary mb-3" style="max-width: 18rem;">
         <div class="card-header">Peças Cadastradas</div>
         <div class="card-body text-secondary">
-            <h5 class="card-title">Faturamento este mês</h5>
-            <h1 class="card-text">{{ obj_peca }}</h1>
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de custo</h5>
+            <h1 class="card-text"> R$ {{ obj_peca }}</h1>
+        </div>
+    </div>
+
+  <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
+        <div class="card-header">Peças Cadastradas</div>
+        <div class="card-body text-secondary">
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de venda</h5>
+            <h1 class="card-text">R$ {{ obj_peca }}</h1>
+        </div>
+    </div>
+
+     <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
+        <div class="card-header">Peças Cadastradas</div>
+        <div class="card-body text-secondary">
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i>Lucro</h5>
+            <h1 class="card-text">R$ {{ obj_peca }}</h1>
         </div>
     </div>

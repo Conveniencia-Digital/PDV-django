@@ -19,9 +19,15 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
         <button type="submit" class="btn btn-primary">Finalizar</button>
     </div>
+
 </form>
+
     <script>
-      $('form').on('submit', function(alert()) {
+      $('form').on('submit', function() {
         $('#staticBackdrop').modal('toggle')
+            setTimeout(() => {
+            $('#success_tic').modal('toggle')
+            }, "100");
       });
+
     </script>

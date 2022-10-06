@@ -1,22 +1,38 @@
 {% extends 'dashboard/pagina-inicial.html' %}
+{% load relatorio_pecas %}
 {% block style %}
 <style>
     tr.htmx-swapping td {
         opacity: 0;
         transition: opacity 300ms ease-out;
-
 </style>
 {% endblock style %}
 
 {% block titulo %} Peças {% endblock titulo %}
 
 {% block conteudo %}
-<div id="relatorio-peca" hx-get="{% url 'relatorio-peca' %}" hx-target="#relatorio-peca" hx-swap="outerHTML">
+<div class="row" id="relatorio-peca">
     <div class="card border-secondary mb-3" style="max-width: 18rem;" >
         <div class="card-header">Peças Cadastradas</div>
         <div class="card-body text-secondary">
-            <h5 class="card-title">Total em estoque </h5>
-            <h1 class="card-text">{{ obj_peca }}</h1>
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de custo</h5>
+            <h1 class="card-text">R$ {% total_peca %}</h1>
+        </div>
+    </div>
+
+    <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
+        <div class="card-header">Peças Cadastradas</div>
+        <div class="card-body text-secondary">
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de venda</h5>
+            <h1 class="card-text">R$ {% total_peca %}</h1>
+        </div>
+    </div>
+
+     <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
+        <div class="card-header">Peças Cadastradas</div>
+        <div class="card-body text-secondary">
+            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i>Lucro</h5>
+            <h1 class="card-text">R$ {% total_peca %}</h1>
         </div>
     </div>
 
@@ -32,7 +48,7 @@
        hx-swap="innerHTML">Cadastrar Peças</a>
 </div>
 <div style="padding-top:18px">
-    <table class="table">
+    <table class="table" id="myTable">
         <thead>
         <tr>
             <th>Peça</th>
@@ -47,4 +63,13 @@
 </div>
 
 {% include 'peca/modais-vazios/modal-recebe-conteudo-add-peca.html' %}
+{% include 'peca/modais-vazios/modal-alerta.html' %}
 {% endblock conteudo%}
+{% block scripts %}
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
+</script>
+{% endblock scripts %}
