@@ -71,6 +71,8 @@
     </div>
 </form>
 <script>
+
+
 (function() {
   reorderItems()
 })();
@@ -82,6 +84,7 @@ document.querySelector('#addItem').addEventListener('click', function() {
 })
 
 function reorderItems() {
+
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
@@ -101,6 +104,7 @@ function reorderItems() {
 
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+
   })
 
   Array.from(document.querySelectorAll("#id_id"))
@@ -111,7 +115,8 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
-
+  
+  
 }
 
   $('form').on('submit', function() {
