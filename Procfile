@@ -1,0 +1,1 @@
+web: gunicorn sistema-cell.wsgi --log-file -
