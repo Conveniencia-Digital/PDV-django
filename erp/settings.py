@@ -26,9 +26,14 @@ SECRET_KEY = 'django-insecure-w&2gd=a5#a+y_myd7vx)1ym82jc5s_6)33orr(!d*o__ra(a1u
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '*',
     '0.0.0.0',
+    'http://sistema-cell.herokuapp.com/',
     'https://sistema-cell.herokuapp.com/',
+    'sistema-cell.herokuapp.com',
+    'sistema-cell.herokuapp.com/',
     '127.0.0.1'
+    
 ]
 
 
