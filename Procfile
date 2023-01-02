@@ -1,1 +1,1 @@
-web: gunicorn sistema-cell.wsgi --log-file -
+web: gunicorn erp.wsgi --log-file -
