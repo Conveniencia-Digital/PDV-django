@@ -31,5 +31,6 @@ urlpatterns = [
     path('', include('relatorio.urls')),
     path('', include('configuracao.urls')),
     path('', include('orcamento.urls')),
+    path('', include('usuarios.urls')),
 
 ]
