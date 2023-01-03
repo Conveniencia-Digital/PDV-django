@@ -1,0 +1,61 @@
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap'); 
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    div {
+        display: grid;
+        grid-template-areas: 
+        "logo form"
+        ;
+        grid-template-columns: 1fr 1fr;
+        background: rgba(58,169,255,255);
+
+    }
+
+    h1 {
+        font-family: 'Roboto', sans-serif;
+        text-align: center;
+        color: black;
+        font-size: 3em;
+    }
+
+    form {     
+        padding: 150px 150px;
+        background: #2a4c9c;
+        border-radius: 10px;
+        width: 300px;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, .1);
+    }
+
+    .logo {
+        width: 600px;
+        
+        
+    }
+    input {
+        width: 400px;
+        height: 40px;
+        margin: 20px;
+        border-radius: 10px;
+        font-size: 20px;
+        padding: 10px;
+        text-align: center;
+        
+    }
+</style>
+
+
+<div>
+    <div><img class="logo" src="{% static 'img/logo-astronaute.jpg' %}" alt=""></div>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" id=""><br>
+        <input type="password" name="password" id=""><br>
+    <input type="submit" value="Entrar">
+    </form>
+
+</div>
+<h1>Beneficios de usar sistema cell</h1>
