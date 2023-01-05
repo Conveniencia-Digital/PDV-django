@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
+from despesa.forms import DespesaForms, CategoriaDespesaForms
 from despesa.models import Despesa
-from despesa.forms import DespesaForms
 
 
 class ListaDespesa(ListView):
@@ -23,6 +23,12 @@ def cadastrardespesa(request):
 
     context = {'form': form}
     return render(request, template_name, context)
+
+
+class CategoriaDespesa(CreateView):
+    form_class = CategoriaDespesaForms
+    template_name = 'despesa/formularios/formulario-categoria-despesa.html'
+
 
 
 def editardespesa(request, pk):
