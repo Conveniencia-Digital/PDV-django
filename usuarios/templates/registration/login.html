@@ -17,7 +17,7 @@
         <div class="signin-signup">
           <form class="sign-in-form" method="post">
             {% csrf_token %}
-            <h2 class="title">Sign in</h2>
+            <h2 class="title">Entrar no sistema</h2>
             <div class="input-field">
               <i class="fas fa-user"></i>
               <input type="text" name="username" id="username" placeholder="Username" />
@@ -27,7 +27,7 @@
               <input type="password" name="password" id="password" placeholder="Password" />
             </div>
             <input type="submit" value="Login" class="btn solid" />
-            <p class="social-text">Or Sign in with social platforms</p>
+            <p class="social-text">Ou entre com suas redes sociais</p>
             <div class="social-media">
               <a href="#" class="social-icon">
                 <i class="fab fa-facebook-f"></i>
@@ -44,7 +44,7 @@
             </div>
           </form>
           <form action="#" class="sign-up-form">
-            <h2 class="title">Sign up</h2>
+            <h2 class="title">Cadastrar-se</h2>
             <div class="input-field">
               <i class="fas fa-user"></i>
               <input type="text" placeholder="Username" />
@@ -58,7 +58,7 @@
               <input type="password" placeholder="Password" />
             </div>
             <input type="submit" class="btn" value="Sign up" />
-            <p class="social-text">Or Sign up with social platforms</p>
+            <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
             <div class="social-media">
               <a href="#" class="social-icon">
                 <i class="fab fa-facebook-f"></i>
@@ -80,26 +80,25 @@
       <div class="panels-container">
         <div class="panel left-panel">
           <div class="content">
-            <h3>New here ?</h3>
+            <h3>Novo aqui ?</h3>
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-              ex ratione. Aliquid!
+              Tenha controle da sua loja, para nao perder dinheiro e lucrar muito mais. Com 
+              Sistema Cell!
             </p>
             <button class="btn transparent" id="sign-up-btn">
-              Sign up
+              Cadastrar-se
             </button>
           </div>
           <img src="{% static 'img/log.svg' %}" class="image" alt="" />
         </div>
         <div class="panel right-panel">
           <div class="content">
-            <h3>One of us ?</h3>
+            <h3>Ja e nosso cliente ?</h3>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-              laboriosam ad deleniti.
+              Poderoso, rapido, e facil de usar.<br> Sistema Cell
             </p>
             <button class="btn transparent" id="sign-in-btn">
-              Sign in
+              Entrar
             </button>
           </div>
           <img src="{% static 'img/register.svg' %}" class="image" alt="" />
