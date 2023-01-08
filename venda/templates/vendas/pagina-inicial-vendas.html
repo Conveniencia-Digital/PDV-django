@@ -1,0 +1,25 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+
+{% block titulo %}
+Vendas
+{% endblock titulo %}
+{% block conteudo %}
+    <a
+
+       class="btn btn-primary"
+       data-toggle="modal"
+       data-target="#staticBackdrop"
+       hx-get="{% url 'cadastrar-vendas' %}"
+       hx-target="#addConteudo"
+       hx-swap="innerHTML">Vender
+    </a>
+    <div style="padding-top: 18px;">
+        <table class="table">
+            <thead></thead>
+            <tbody id="vendas-Tbody">
+                {% include 'vendas/tabela/tabela-venda.html' %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'vendas/modal/modal-venda.html' %}
+{% endblock conteudo %}

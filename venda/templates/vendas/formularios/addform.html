@@ -9,9 +9,30 @@
     <div class="col-md-3 mb-3">
         {% render_field itemsvendaform.preco data-field='preco' %}
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-md-2 mb-2">
         {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' %}
     </div>
+    {% if items_venda_form.id.value %}
+        <div class="col-md-1 mb-1">
+             <span
+                class="span-is-link no ml-2 remove-row"
+                hx-delete="{% url 'apagar-item-venda' items_venda_form.id.value %}"
+                hx-confirm="Deseja mesmo deletar o item {{items_venda_form.id.value}}?"
+                hx-target="#item-{{ forloop.counter0 }}"
+                hx-swap="outerHTML">
+                 <i class="fa fa-times fa-lg"></i>
+             </span>
+            {% else %}
+            <span onclick="removeRow()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                     class="bi bi-dash-circle" viewBox="0 0 16 16"
+                     style="color:blue; padding-top:12px">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                </svg>
+            </span>
+        </div>
+    {% endif %}
 </div>
 <script>
     (function() {

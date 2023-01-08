@@ -1,0 +1,38 @@
+<tr class="bg-light">
+    <th>Cliente</th>
+    <th><a
+        class="btn btn-link"
+        hx-get="{% url 'detalhe-vendas' object.pk %}"
+        data-toggle="modal"
+        data-target="#staticBackdrop"
+        hx-target="#addConteudo">Detalhe</a></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <td>{{object.cliente.nome_cliente}}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+
+<tr class="bg-light">
+    <th>Produtos</th>
+    <th>Quantidade</th>
+    <th>Preço</th>
+    <th>Sub Total</th>
+</tr>
+{% for items in object.vendas_items.all %}
+<tr>
+    <td>{{ items.produto }}</td>
+    <td>{{ items.quantidade }}</td>
+    <td>{{ items.preco }}</td>
+    <td>{{ items.subtotal }}</td>
+</tr>
+{% endfor %}
+<tr class="bg-default table-borderless">
+    <td></td>
+    <td></td>
+    <th>Total</th>
+    <th>{{ object.total }}</th>
+</tr>

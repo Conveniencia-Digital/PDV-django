@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from orcamento.models import Orcamento, ItemsOrcamento
 from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
 from peca.models import Pecas
@@ -56,3 +56,9 @@ def apagaritemorcamento(pk):
     item_orcamento = ItemsOrcamento.objects.get(pk=pk)
     item_orcamento.delete()
     return None
+
+
+class DetalheOrcamento(DetailView):
+    model = Orcamento
+    template_name= 'orcamento/detalhe-orcamento.html'
+    

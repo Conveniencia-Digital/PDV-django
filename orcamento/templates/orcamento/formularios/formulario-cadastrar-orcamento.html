@@ -70,6 +70,7 @@
         <button type="submit" class="btn btn-primary">Finalizar</button>
     </div>
 </form>
+{% block scripts %}
 <script>
 
 
@@ -81,6 +82,7 @@ document.querySelector('#addItem').addEventListener('click', function() {
   setTimeout(() => {
     reorderItems()
   }, 500)
+  
 })
 
 function reorderItems() {
@@ -115,11 +117,15 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
-  
-  
+ 
 }
 
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
   });
+
+  
+  
 </script>
+
+{% endblock scripts %}

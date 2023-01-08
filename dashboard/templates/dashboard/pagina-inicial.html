@@ -110,7 +110,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sale'  %}">
+                        <a class="nav-link" href="{% url 'vendas'  %}">
                             <span data-feather="shopping-bag"></span>
                             Vendas
                         </a>
@@ -214,7 +214,7 @@
             {% block conteudo %}
 
             {% endblock conteudo %}
-            {% include 'vendas/modal-venda.html' %}
+            {% include 'vendas/modal/modal-venda.html' %}
             {% include 'orcamento/modal/modal-orcamento.html' %}
         </main>
     </div>
@@ -237,7 +237,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-{% block scripts %}{% endblock scripts %}
+{% block scripts %}
+
+{% endblock scripts %}
 
 </body>
 </html>

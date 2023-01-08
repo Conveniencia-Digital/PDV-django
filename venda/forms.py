@@ -1,28 +1,31 @@
 from django import forms
-from django.forms import inlineformset_factory, TextInput
+from django.forms import inlineformset_factory, NumberInput
 
 from venda.models import Vendas, ItemsVenda
-
+from produto.models import Produto
+from cliente.models import Cliente
 
 class VendasForm(forms.ModelForm):
-    nf = forms.IntegerField()
+    required_css_class = 'required'
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
 
     class Meta:
         model = Vendas
-        fields = ('nf', )
+        fields = ('cliente',)
 
 
 class ItemsVendaForm(forms.ModelForm):
     required_css_class = 'required'
     id = forms.IntegerField()
+    produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
 
     class Meta:
         model = ItemsVenda
         fields = ('vendas', 'id', 'produto', 'quantidade', 'preco')
 
         widgets = {
-            'quantidade': TextInput(attrs={'placeholder': 'Quantidade'}),
-            'preco': TextInput(attrs={'placeholder': 'Preco do produto'})
+            'quantidade': NumberInput(attrs={'placeholder': 'Quantidade'}),
+            'preco': NumberInput(attrs={'placeholder': 'Preco do produto'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -40,10 +43,15 @@ class ItemsVendaForm(forms.ModelForm):
         self.fields['preco'].widget.attrs['step'] = 0.01
 
 
-VendasItemsFormset = inlineformset_factory(Vendas,
-                                           ItemsVenda,
-                                           form=ItemsVendaForm,
-                                           extra=0,
-                                           can_delete=False,
-                                           min_num=1,
-                                           validate_min=True)
+VendasItemsFormset = inlineformset_factory(
+    Vendas,
+    ItemsVenda,
+    form=ItemsVendaForm,
+    extra=0,
+    can_delete=False,
+    min_num=1,
+    validate_min=True
+)
+                                           
+                                           
+                                           

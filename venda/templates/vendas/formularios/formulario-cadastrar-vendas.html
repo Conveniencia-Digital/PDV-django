@@ -1,0 +1,125 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+  <h5 class="modal-title" id="staticBackdropLabel">Nova venda</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form hx-post="{% url 'cadastrar-vendas' %}" 
+      hx-target="#vendas-Tbody" 
+      hx-indicator=".htmx-indicator" 
+      hx-swap="afterbegin">
+  {% csrf_token %}
+  <div class="modal-body">
+    <div class="form-row">
+      <div class="col-md-6 mb-1">
+        <label class="font-weight-lighter" style="font-size:1.2em">Cliente </label>
+      </div>
+    </div>
+    {% render_field form.cliente class='form-control'%}
+    <hr>
+    <div class="form-row">
+      <div class="col-md-6 mb-1">
+        <label class="font-weight-lighter" style="font-size:1.2em">Peça </label>
+      </div>
+      <div class="col-md-3 mb-1">
+        <label class="font-weight-lighter" style="font-size:1.2em">Preço Unitario </label>
+      </div>
+      <div class="col-md-3 mb-1">
+        <label class="font-weight-lighter" style="font-size:1.2em">Quantidade</label>
+      </div>
+    </div>
+    
+    {{ formset.management_form }}
+    <div id="venda">
+      {% for itemsvendaform in formset %}
+      <div id="item-{{ forloop.counter0 }}" class="form-row">
+        {% render_field itemsvendaform.vendas data-field='vendas' %}
+        {% render_field itemsvendaform.id data-field='id' %}
+        <div class="col-md-6 mb-3">
+          {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+        </div>
+        <div class="col-md-3 mb-3">
+          {% render_field itemsvendaform.preco data-field='preco' %}
+        </div>
+        <div class="col-md-3 mb-3">
+          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" id="addItem" class="btn btn-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
+      hx-swap="beforeend">Add produto
+    </button>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+
+  </div>
+</form>
+<script>
+  (function () {
+    reorderItems()
+  })();
+
+  document.querySelector('#addItem').addEventListener('click', function () {
+    setTimeout(() => {
+      reorderItems()
+    }, 500)
+  })
+
+  function reorderItems() {
+    Array.from(document.querySelectorAll("[id^='item-']"))
+      .forEach((item, i) => {
+        item.setAttribute('id', 'item-' + i)
+
+        if (!item.querySelector('[data-field="vendas"]')) {
+          return
+        }
+
+        item.querySelector('[data-field="vendas"]').setAttribute('name', 'items-' + i + '-vendas')
+        item.querySelector('[data-field="vendas"]').setAttribute('id', 'id_items-' + i + '-vendas')
+
+        item.querySelector('[data-field="produto"]').setAttribute('name', 'items-' + i + '-produto')
+        item.querySelector('[data-field="produto"]').setAttribute('hx-target', '#id_items-' + i + '-preco')
+
+
+        item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
+
+        item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
+        item.querySelector('[data-field="preco"]').setAttribute('id', 'id_items-' + i + '-preco')
+      })
+
+    Array.from(document.querySelectorAll("#id_id"))
+      .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+
+    let totalItems = $('#venda').children().length
+    document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+
+    // htmx.org/api/#process
+    htmx.process(document.querySelector("#venda"))
+  }
+
+  function removeRow() {
+    const span = event.target.parentNode
+    const div = span.parentNode
+    div.parentNode.removeChild(div)
+
+    reorderItems()
+  }
+
+  Array.from(document.querySelectorAll('.remove-row'))
+    .forEach((item, i) => {
+      item.addEventListener('click', function () {
+        document.querySelector('button[type="submit"]').style.display = 'none'
+        document.querySelector('#btn-close').style.display = 'block'
+      })
+    })
+    $('form').on('submit', function() {
+    $('#staticBackdrop').modal('toggle')
+  });
+
+</script>

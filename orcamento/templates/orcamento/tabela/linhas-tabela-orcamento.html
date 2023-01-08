@@ -1,33 +1,56 @@
-<tr class="bg-light">
-        <th>Cliente</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <td>{{object.cliente.nome_cliente}}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: solid black;
+    }
 
-    <tr class="bg-light">
-        <th>Pecas</th>
-        <th>Quantidade</th>
-        <th>Preço</th>
-        <th>Sub Total</th>
-    </tr>
-    {% for items in object.orcamento_items.all %}
-    <tr>
-        <td>{{ items.peca }}</td>
-        <td>{{ items.quantidade }}</td>
-        <td>{{ items.preco_orcamento }}</td>
-        <td>{{ items.subtotal }}</td>
-    </tr>
-    {% endfor %}
-    <tr class="bg-default table-borderless">
-        <td></td>
-        <td></td>
-        <th>Total</th>
-        <th>{{ object.total }}</th>
-    </tr>
+    .logo {
+        font-size: 1.75em;
+        align-self: center;
+    }
+
+    .content {
+        margin-top: 30px;
+    }
+
+    .description {
+        font-size: 0.75em;
+    }
+</style>
+
+
+<tr class="bg-light">
+    <th>Cliente</th>
+    <th><a class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"
+            hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">Detalhe</a></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <td>{{object.cliente.nome_cliente}}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+
+<tr class="bg-light">
+    <th>Pecas</th>
+    <th>Quantidade</th>
+    <th>Preço</th>
+    <th>Sub Total</th>
+</tr>
+{% for items in object.orcamento_items.all %}
+<tr>
+    <td>{{ items.peca }}</td>
+    <td>{{ items.quantidade }}</td>
+    <td>{{ items.preco_orcamento }}</td>
+    <td>{{ items.subtotal }}</td>
+</tr>
+{% endfor %}
+<tr class="bg-default table-borderless">
+    <td></td>
+    <td></td>
+    <th>Total</th>
+    <th>{{ object.total }}</th>
+</tr>

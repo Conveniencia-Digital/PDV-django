@@ -14,7 +14,8 @@ class Orcamento(models.Model):
         return self.cliente
 
     def total(self):
-        qs = self.orcamento_items.filter(orcamento=self.pk).values_list('preco_orcamento', 'quantidade') or 0
+        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
+            'preco_orcamento', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         return t
 
