@@ -26,7 +26,7 @@
         <div class="header">
             <div class="logo">Conveniência Digital</div>
             <div class="information">
-                <p class="description">Centro de reparo <br>
+                <p class="description">Centro de vendas <br>
                     CNPJ: 29.216.862/0001-38 <br>
                     Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
                     Telefone: 67 9 9664 -9605
@@ -35,13 +35,33 @@
         </div>
         <div class="content">
             <p>Prezado(a), {{ object.cliente }}</p>
-            <p>Conforme solicitado segue orçamento disponibilizado pela area tecnica.</p>
-            <p>Ordem de servico: {{ object.id }} <br>
-                Modelo do Aparelho:
-            </p>
-            <p>Descricao do serviço: Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p>Valor do orçamento: R$ {{ object.total }}</p>
-            <p>Obs.lLorem, ipsum dolor sit amet consectetur adipisicing elit</p>
+            <p>Conforme solicitado segue cupom fiscal disponibilizado pela area de vendas.</p>
+            <p>Ordem de servico: {{ object.id }} <br></p>
+            <table class="table">
+                <tbody>
+                    <tr class="bg-light">
+                        <th>Produtos</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                        <th>Sub Total</th>
+                    </tr>
+                    {% for items in object.vendas_items.all %}
+                    <tr>
+                        <td>{{ items.produto }}</td>
+                        <td>{{ items.quantidade }}</td>
+                        <td>{{ items.preco }}</td>
+                        <td>{{ items.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="bg-default table-borderless">
+                        <td></td>
+                        <td></td>
+                        <th>Total</th>
+                        <th>{{ object.total }}</th>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Obs.</p>
         </div>
     </div>
 </div>

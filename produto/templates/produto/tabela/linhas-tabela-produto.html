@@ -1,7 +1,7 @@
 <tr id="trProduto{{ object.pk }}">
-    <td>{{ object.nome }}</td>
-    <td>{{ object.preco|default:'---' }}</td>
     <td>{{ object.quantidade }}</td>
+    <td>{{ object.nome_produto }}</td>
+    <td>{{ object.preco|default:'---' }}</td>
     <td>
         <span data-feather="edit"
               style="color: blue;"

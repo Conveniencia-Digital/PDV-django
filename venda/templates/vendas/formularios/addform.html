@@ -1,16 +1,43 @@
 {% load widget_tweaks %}
 
 <div id="item-{{ forloop.counter0 }}" class="form-row">
+  <style> 
+  
+
+    @media (max-width:760px) {
+    #remove {
+      width: 80vw;
+      height: 35px; 
+      font-size:15px;
+      margin-bottom: 30px;
+      
+    }
+
+  }
+  @media (min-width: 900px){
+    #remove {
+      width: 60px; 
+      height: 40px; 
+      font-size: 10px; 
+      margin-top: 12px;
+    }
+    
+  }
+  </style>
     {% render_field itemsvendaform.vendas data-field='vendas' %}
     {% render_field itemsvendaform.id data-field='id' %}
-    <div id="mouse" class="col-md-6 mb-3">
+   
+    <div id="mouse" class="col-md-6 mb-3 form-floating">
         {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+        <label class="font-weight-lighter">Informe o produto </label>    
+      </div>
+    <div class="col-md-3 mb-3 form-floating">
+        {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
+        <label class="font-weight-lighter">Preço Unitario </label>
     </div>
-    <div class="col-md-3 mb-3">
-        {% render_field itemsvendaform.preco data-field='preco' %}
-    </div>
-    <div class="col-md-2 mb-2">
-        {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' %}
+    <div class="col-md-2 mb-2 form-floating">
+        {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
+        <label class="font-weight-lighter">Quantidade</label>
     </div>
     {% if items_venda_form.id.value %}
         <div class="col-md-1 mb-1">
@@ -24,12 +51,7 @@
              </span>
             {% else %}
             <span onclick="removeRow()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                     class="bi bi-dash-circle" viewBox="0 0 16 16"
-                     style="color:blue; padding-top:12px">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                  <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
-                </svg>
+                <button type="submit" class="btn btn-danger btn-sm" id="remove">Remover</button>
             </span>
         </div>
     {% endif %}

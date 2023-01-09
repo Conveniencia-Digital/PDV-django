@@ -1,16 +1,18 @@
 from django import forms
-from django.forms import TextInput
+from django.forms import TextInput, NumberInput
 from produto.models import Produto
 
 
 class ProdutoForms(forms.ModelForm):
+    
     class Meta:
         model = Produto
         fields = '__all__'
 
         widgets = {
-            'nome': TextInput(attrs={'placeholder': 'produto'})
-
+            'nome_produto': TextInput(attrs={'placeholder': 'Digite o nome do produto'}),
+            'quantidade': NumberInput(attrs={'placeholder': 'Quantidade'})
+            
         }
 
     def __init__(self, *args, **kwargs):

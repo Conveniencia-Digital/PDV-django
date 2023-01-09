@@ -13,20 +13,14 @@
   <div class="modal-body">
     <div class="form-row">
       <div class="col-md-6 mb-1">
-        <label class="font-weight-lighter" style="font-size:1.2em">Cliente </label>
+        <label class="font-weight-lighter" style="font-size:1.5em">Cliente </label>
       </div>
     </div>
     {% render_field form.cliente class='form-control'%}
     <hr>
     <div class="form-row">
-      <div class="col-md-6 mb-1">
-        <label class="font-weight-lighter" style="font-size:1.2em">Peça </label>
-      </div>
-      <div class="col-md-3 mb-1">
-        <label class="font-weight-lighter" style="font-size:1.2em">Preço Unitario </label>
-      </div>
-      <div class="col-md-3 mb-1">
-        <label class="font-weight-lighter" style="font-size:1.2em">Quantidade</label>
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Produtos</h2>
       </div>
     </div>
     
@@ -36,21 +30,24 @@
       <div id="item-{{ forloop.counter0 }}" class="form-row">
         {% render_field itemsvendaform.vendas data-field='vendas' %}
         {% render_field itemsvendaform.id data-field='id' %}
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3 form-floating">
           {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+          <label class="font-weight-lighter">Informe o produto </label>
         </div>
-        <div class="col-md-3 mb-3">
-          {% render_field itemsvendaform.preco data-field='preco' %}
+        <div class="col-md-3 mb-3 form-floating">
+          {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
+          <label class="font-weight-lighter">Preço Unitario </label>
         </div>
-        <div class="col-md-3 mb-3">
-          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' %}
+        <div class="col-md-3 mb-3 form-floating">
+          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
+          <label class="font-weight-lighter">Quantidade</label>
         </div>
       </div>
       {% endfor %}
     </div>
 
     <button type="submit" id="addItem" class="btn btn-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
-      hx-swap="beforeend">Add produto
+      hx-swap="beforeend" style="margin-bottom: 30px; margin-top: 30px;">Add produto
     </button>
 
     <div class="modal-footer">

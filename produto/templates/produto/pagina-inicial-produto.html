@@ -5,16 +5,17 @@
     tr.htmx-swapping td {
         opacity: 0;
         transition: opacity 300ms ease-out;
+    }
 </style>
 {% endblock style %}
 {% block titulo %}
-Produtos
+  Produtos
 {% endblock titulo %}
 
 {% block conteudo %}
 <div>
     <a
-            href=""
+           
             class="btn btn-primary"
             data-toggle="modal"
             data-target="#staticBackdrop"
@@ -26,9 +27,9 @@ Produtos
     <table id="tabela-produto" class="table">
         <thead>
         <tr>
+            <th>Qtd em estoque</th>
             <th>Produto</th>
-            <th>Preco</th>
-            <th>Qtd.Estoque</th>
+            <th>Preço de venda</th>
             <th>Ações</th>
         </tr>
         </thead>
@@ -36,6 +37,7 @@ Produtos
             {% include "produto/tabela/tabela-produto.html" %}
         </tbody>
     </table>
+
 </div>
 
 {% include "produto/modais-vazios/modal-cadastrar-produto.html" %}
