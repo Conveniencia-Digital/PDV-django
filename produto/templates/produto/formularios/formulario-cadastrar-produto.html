@@ -52,13 +52,13 @@
             <div class="row g-2">
               <div class="col-md">
                   <div class="form-floating">
-                    {% render_field form.preco_de_custo %}
+                    {% render_field form.preco_de_custo value="0.00" %}
                     <label for="floatingSelectGrid">Preço de custo</label>    
                   </div>
               </div>
               <div class="col-md">
                   <div class="form-floating">
-                    {% render_field form.preco %}
+                    {% render_field form.preco value="0.00" %}
                     <label for="floatingSelectGrid">Preço de venda</label>
                   </div>
               </div>

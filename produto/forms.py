@@ -9,12 +9,6 @@ class ProdutoForms(forms.ModelForm):
         model = Produto
         fields = '__all__'
 
-        widgets = {
-            'nome_produto': TextInput(attrs={'placeholder': 'Digite o nome do produto'}),
-            'quantidade': NumberInput(attrs={'placeholder': 'Quantidade'})
-            
-        }
-
     def __init__(self, *args, **kwargs):
         super(ProdutoForms, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

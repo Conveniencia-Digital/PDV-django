@@ -6,6 +6,7 @@ from cliente.models import Cliente
 
 class Orcamento(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    celular = models.CharField(max_length=90)
 
     class Meta:
         ordering = ('-pk',)

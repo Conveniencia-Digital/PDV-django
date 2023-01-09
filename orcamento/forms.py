@@ -12,7 +12,7 @@ class OrcamentoForms(forms.ModelForm):
 
     class Meta:
         model = Orcamento
-        fields = ('cliente',)
+        fields = ('cliente', 'celular')
 
 
 class ItemsOrcamentoForms(forms.ModelForm):
