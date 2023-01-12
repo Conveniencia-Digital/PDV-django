@@ -7,6 +7,8 @@ class ClienteForm(forms.ModelForm):
         model = Cliente
         fields = '__all__'
 
+       
+
     def __init__(self, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

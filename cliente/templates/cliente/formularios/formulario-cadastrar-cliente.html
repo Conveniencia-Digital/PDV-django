@@ -1,27 +1,67 @@
+{% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel"> Novo cliente </h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel"> Novo cliente </h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
-<form
-        hx-post="{% url 'cadastrar-cliente' %}"
-        hx-target="#cliente-Tbody"
-        hx-indicator=".htmx-indicator"
-        hx-swap="afterbegin">
+<form hx-post="{% url 'cadastrar-cliente' %}" hx-target="#cliente-Tbody" hx-indicator=".htmx-indicator"
+  hx-swap="afterbegin">
 
-    <div class="modal-body">
-        {% csrf_token %}
-        {{ form }}
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.nome_cliente class="form-control" %}
+        <label for="">Escreva o nome do cliente</label>
+      </div>
     </div>
+    <!---->
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.cpf class="form-control" %}
+        <label for="">Informe o CPF (opcional)</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.data_nascimento class="form-control" %}
+        <label for="">Data de nascimento (opcional)</label>
+      </div>
+    </div>
+    <!---->
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.telefone_contato class="form-control" %}
+        <label for="">Telefone para contato</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.telefone_contato_2 class="form-control" %}
+        <label for="">Outro telefone de contato (opcional)</label>
+      </div>
+    </div>
+    <!---->
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.rua class="form-control" %}
+        <label for="">Endereço (opcional)</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.bairro class="form-control" %}
+        <label for="">Bairro (opcional</label>
+      </div>
+    </div>
+  </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Finalizar</button>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-primary">Finalizar</button>
+  </div>
 </form>
-    <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-      });
-    </script>
+<script>
+
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, "500");
+  });
+</script>

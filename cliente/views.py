@@ -48,3 +48,12 @@ def apagarcliente(request, pk):
     obj = Cliente.objects.get(pk=pk)
     obj.delete()
     return render(request, template_name)
+
+
+
+def total_clientes(request):
+    template_name = 'cliente/informacao-cliente.html'
+    total_cliente =  Cliente.objects.count()
+    context = {'total_cliente': total_cliente}
+    return render(request, template_name, context)
+    

@@ -1,12 +1,17 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-
+{% load totalclientes %}
 {% block titulo %}Clientes{% endblock %}
 {% block conteudo %}
 
-
+<div class="card border border-info mb-3">
+    <div class="card-body text-center" id="total-cliente">
+           <h6>Total de clientes cadastrados {% total_clientes %}</h6>
+     </div>
+  </div>
 <a
         href=""
         class="btn btn-primary"
+        style="background-color: #0099DD;"
         data-toggle="modal"
         data-target="#staticBackdrop"
         hx-get="{% url 'cadastrar-cliente' %}"
@@ -14,12 +19,15 @@
 
 
 >Cadastrar cliente</a>
-<div style="padding-top:18px">
-    <table class="table">
-        <thead>
-        <tr>
+
+<div class="table-responsive" style="padding-top:18px">
+    <table class="table" style="border: #026E81">
+        <thead style="background-color: #FF9933">
+        <tr  style="border: #0099DD">
             <th>Cliente</th>
+            <th>Contato</th>
             <th>Ações</th>
+            <th>Ultima modifição</th>
         </tr>
         </thead>
 
@@ -30,4 +38,6 @@
 
 </div>
 {% include 'cliente/modal-vazio/modal-cadastrar-cliente.html' %}
+{% include 'cliente/modal-vazio/modal-alerta.html' %}
+{% include 'cliente/modal-vazio/modal-alerta-apagar.html' %}
 {% endblock conteudo %}

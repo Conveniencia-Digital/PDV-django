@@ -9,6 +9,9 @@ register = template.Library()
 def total_peca():
     i = 0
     total = Pecas.objects.all().aggregate(total=Sum('preco_peca'))
+    print(total)
     for i in total.values():
+        if i == None:
+            return('Nenhuma peça cadastrada no sistema')
         print(i)
     return i

@@ -1,5 +1,6 @@
 <tr id="trCliente{{ object.pk }}">
     <td> {{ object.nome_cliente }} </td>
+    <td> {{ object.telefone_contato }}</td>
     <td><span
             data-toggle="modal"
             data-target="#staticBackdrop"
@@ -10,6 +11,8 @@
         <i class="fa-regular fa-pen-to-square"></i>
     </span>
         <span
+            data-toggle="modal"
+            data-target="#success_tic_delete"
             hx-get="{% url 'apagar-cliente' object.pk %}"
             hx-confirm="Deseja mesmo Apagar {{ object.nome_cliente }} ?"
             hx-target="closest tr"
@@ -18,4 +21,5 @@
                 <i class="fa-regular fa-trash-can"></i>
         </span>
     </td>
+    <td> {{object.data_edicao|date:"d/m/Y - h:i:s"}}</td>
 </tr>
