@@ -2,11 +2,13 @@ from django.db import models
 from django.db.models.aggregates import Count
 from peca.models import Pecas
 from cliente.models import Cliente
+from servico.models import Servico
 
 
 class Orcamento(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     celular = models.CharField(max_length=90)
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('-pk',)
@@ -35,6 +37,7 @@ class ItemsOrcamento(models.Model):
     )
     quantidade = models.IntegerField()
     preco_orcamento = models.DecimalField(max_digits=9, decimal_places=2)
+   
 
     class Meta:
         ordering = ('pk',)

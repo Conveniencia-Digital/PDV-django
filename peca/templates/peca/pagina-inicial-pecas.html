@@ -6,6 +6,17 @@
         opacity: 0;
         transition: opacity 300ms ease-out;
     }
+    .card {
+        max-width: 20rem; 
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+
+    }
+    .card .card-text {
+        margin: 30px auto ;
+    }
+    .table {
+        font-size: 20px;
+    }
 </style>
 {% endblock style %}
 
@@ -13,52 +24,34 @@
 
 {% block conteudo %}
 <div class="row" id="relatorio-peca">
-    <div class="card border-secondary mb-3" style="max-width: 18rem;" >
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de custo</h5>
-            <h1 class="card-text">R$ {% total_peca %}</h1>
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Suas peças cadastradas <b>{% total_peca %}</b></h5>     
+          <h2 class="card-text">Seu Lucro R${% calculo %}</h2>       
+          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R${% preco_custo %}</h6>
+          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R${% preco_venda %}</h6>
         </div>
-    </div>
-
-    <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de venda</h5>
-            <h1 class="card-text">R$ {% total_peca %}</h1>
-        </div>
-    </div>
-
-     <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i>Lucro</h5>
-            <h1 class="card-text">R$ {% total_peca %}</h1>
-        </div>
-    </div>
-
+      </div>
 </div>
-<hr>
-<div>
-    <a href=""
-       class="btn btn-primary"
-       data-toggle="modal"
-       data-target="#staticBackdrop"
-       hx-get="{% url 'cadastrar-peca' %}"
-       hx-target="#recebe-conteudo-peca"
-       hx-swap="innerHTML">Cadastrar Peças</a>
+
+<div style="margin-top: 30px;">
+    <a href="" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"
+        hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML">Cadastrar Peças</a>
 </div>
 <div style="padding-top:18px">
-    <table class="table" id="myTable">
-        <thead>
-        <tr>
-            <th>Peça</th>
-            <th>Preço</th>
-            <th>Ações</th>
-        </tr>
+    <table class="table table-borderless table-hover">
+        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224) ">
+            <tr>
+                <th>Categoria</th>
+                <th>Peça</th>
+                <th>Preço de custo</th>
+                <th>Preço de venda</th>
+                <th>Ações</th>
+                <th>Data de cadastro</th>
+            </tr>
         </thead>
         <tbody id="peca-Tbody">
-        {% include 'peca/tabela/tabela-peca.html' %}
+            {% include 'peca/tabela/tabela-peca.html' %}
         </tbody>
     </table>
 </div>
@@ -68,9 +61,9 @@
 {% endblock conteudo%}
 {% block scripts %}
 <script>
-    $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
 
 </script>
 {% endblock scripts %}

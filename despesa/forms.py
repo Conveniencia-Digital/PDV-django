@@ -13,9 +13,11 @@ class CategoriaDespesaForms(forms.ModelForm):
 
 
 class DespesaForms(forms.ModelForm):
+    
     class Meta:
         model = Despesa
         fields = '__all__'
+
 
     def __init__(self, *args, **kwargs):
         super(DespesaForms, self).__init__(*args, **kwargs)

@@ -6,12 +6,38 @@ register = template.Library()
 
 
 @register.simple_tag
-def total_peca():
+def preco_venda():
     i = 0
     total = Pecas.objects.all().aggregate(total=Sum('preco_peca'))
-    print(total)
+ 
     for i in total.values():
         if i == None:
-            return('Nenhuma peça cadastrada no sistema')
-        print(i)
+            return(0.00)
     return i
+
+
+@register.simple_tag
+def preco_custo():
+    i = 0
+    tot_custo = Pecas.objects.all().aggregate(tot_custo=Sum('preco_de_custo'))
+    for i in tot_custo.values():
+        if i == None:
+            return(0.00)
+    return i
+
+@register.simple_tag
+def total_peca():
+    tot = Pecas.objects.all().count()
+    if tot == None:
+        return 0
+    else:
+        return tot
+
+        
+@register.simple_tag
+def calculo():
+    calc = preco_venda() - preco_custo()
+    return calc 
+
+
+

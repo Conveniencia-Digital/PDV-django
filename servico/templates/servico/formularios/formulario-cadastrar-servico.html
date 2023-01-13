@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 <div class="modal-header">
     <h5 class="modal-title" id="staticBackdropLabel">Cadastrar serviço</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -11,7 +12,12 @@
 
     <div class="modal-body">
     {% csrf_token %}
-    {{ form }}
+    <div class="form-row" style="margin-bottom: 10px;">
+        <div class="col form-floating">
+          {% render_field form.nome_servico class="form-control" %}
+          <label for="">Informe a descricao do serviço (Ex: Troca de tela)</label>
+        </div>
+      </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -36,12 +36,33 @@
         <div class="content">
             <p>Prezado(a), {{ object.cliente }}</p>
             <p>Conforme solicitado segue orçamento disponibilizado pela area tecnica.</p>
-            <p>Ordem de servico: {{ object.id }} <br>
-                Modelo do Aparelho:
-            </p>
-            <p>Descricao do serviço: Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p>Valor do orçamento: R$ {{ object.total }}</p>
-            <p>Obs.lLorem, ipsum dolor sit amet consectetur adipisicing elit</p>
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                    <tr class="bg-light">
+                        <th>Pecas</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                        <th>Sub Total</th>
+                    </tr>
+                    {% for items in object.orcamento_items.all %}
+                    <tr>
+                        <td>{{ items.peca }}</td>
+                        <td>{{ items.quantidade }}</td>
+                        <td>{{ items.preco_orcamento }}</td>
+                        <td>{{ items.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="bg-default table-borderless">
+                        <td></td>
+                        <td></td>
+                        <th>Total</th>
+                        <th>{{ object.total }}</th>
+                    </tr>
+                
+                </tbody>
+            </table>           
+
         </div>
     </div>
 </div>

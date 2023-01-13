@@ -51,10 +51,17 @@ def apagarpeca(request, pk):
 
 def relatoriopeca(request):
     template_name = 'peca/informacao-peca.html'
-    obj_peca = Pecas.objects.all().aggregate(preco_pecas=Sum('preco_peca'))
+    preco_venda = Pecas.objects.all().aggregate(preco_pecas=Sum('preco_peca'))
+    preco_custo = Pecas.objects.all().aggregate(preco_custo=Sum('preco_de_custo'))
+    total = Pecas.objects.all().count
 
-    for i in obj_peca.values():
-        obj_peca = i
+    for i in preco_venda.values():
+        preco_venda = i
+    
+    for c in preco_custo.values():
+        preco_custo = c
 
-    context = {'obj_peca': obj_peca}
+    lucro = preco_venda - preco_custo    
+
+    context = {'preco_venda': preco_venda, 'preco_custo': preco_custo, 'lucro': lucro, 'total': total}
     return render(request, template_name, context)

@@ -32,9 +32,9 @@ class Pecas(models.Model):
     ]
     nome_peca = models.CharField(max_length=99)
     preco_peca = models.DecimalField(max_digits=9, decimal_places=2)
-    categoria_peca = models.CharField(max_length=2, choices=CATEGORIAS_PECA)
+    categoria_peca = models.CharField(max_length=2, choices=CATEGORIAS_PECA, null=True, blank=True)
     quantidade = models.IntegerField()
-    codigo_de_barras = models.IntegerField()
+    codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
     fornecedor = models.CharField(max_length=99, null=True, blank=True)
 

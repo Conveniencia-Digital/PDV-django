@@ -1,23 +1,10 @@
-  <div class="card border-secondary mb-3" style="max-width: 18rem;">
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de custo</h5>
-            <h1 class="card-text"> R$ {{ obj_peca }}</h1>
+<div class="row" id="relatorio-peca">
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Suas peças cadastradas <b>{{ total }}</b></h5>     
+          <h2 class="card-text">Seu Lucro R${{ lucro }}</h2>       
+          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R${{ preco_custo }}</h6>
+          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R${{ preco_venda }}</h6>
         </div>
-    </div>
-
-  <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i> Preço de venda</h5>
-            <h1 class="card-text">R$ {{ obj_peca }}</h1>
-        </div>
-    </div>
-
-     <div class="card border-secondary mb-3" style="max-width: 18rem; margin-left:20px" >
-        <div class="card-header">Peças Cadastradas</div>
-        <div class="card-body text-secondary">
-            <h5 class="card-title"><i class="fa-regular fa-money-check-dollar"></i>Lucro</h5>
-            <h1 class="card-text">R$ {{ obj_peca }}</h1>
-        </div>
-    </div>
+      </div>
+</div>

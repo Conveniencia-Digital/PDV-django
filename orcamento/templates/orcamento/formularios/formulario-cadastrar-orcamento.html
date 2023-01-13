@@ -66,6 +66,13 @@
         </button>
           <hr>
         <label class="font-weight-lighter" style="font-size:1.2em">Serviço</label>
+        <div class="form-row" style="margin-bottom: 10px;">
+          <div class="col form-floating">
+           {% render_field form.servico class="form-control" %}
+            <label for="">Selecione o servico</label>
+           </div>
+        </div>
+        <button class="btn btn-link btn-sm" style="text-decoration: none;">Add serviço</button>
     </div>
 
     <div class="modal-footer">
