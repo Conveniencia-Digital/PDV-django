@@ -65,3 +65,4 @@ def relatoriopeca(request):
 
     context = {'preco_venda': preco_venda, 'preco_custo': preco_custo, 'lucro': lucro, 'total': total}
     return render(request, template_name, context)
+

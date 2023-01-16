@@ -3,26 +3,56 @@
 {% block titulo %}
 Colaboradores
 {% endblock titulo%}
+{% block style %}
+<style>
+    tr.htmx-swapping td {
+        opacity: 0;
+        transition: opacity 300ms ease-out;
+    }
+
+    .card {
+        max-width: 20rem;
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+
+    }
+
+    .card .card-text {
+        margin: 30px auto;
+    }
+
+    .table {
+        font-size: 20px;
+    }
+
+    .btn {
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+        font-size: 20px;
+
+
+    }
+</style>
+{% endblock style %}
 
 
 {% block conteudo %}
-<a
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-        hx-get="{% url 'cadastrar-colaborador' %}"
-        hx-target="#adicionar-conteudo"
-        hx-swap="innerHTML"
-
->Cadastrar colaborador</a>
-
+<div class="row" id="total-colaborador">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Seus colaboradores cadastrados <b></b></h5>
+        </div>
+    </div>
+</div>
+<div style="margin-top: 30px;">
+<a class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'cadastrar-colaborador' %}"
+    hx-target="#adicionar-conteudo" hx-swap="innerHTML">Cadastrar colaborador</a>
+</div>
 <div style="padding-top:18px">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Colaborador</th>
-            <th>Ações</th>
-        </tr>
+    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+            <tr>
+                <th>Colaborador</th>
+                <th>Ações</th>
+            </tr>
         </thead>
         <tbody id="colaborador-Tbody">
             {% include 'colaborador/tabela/tabela-colaborador.html' %}
@@ -31,5 +61,8 @@ Colaboradores
 </div>
 
 {% include 'colaborador/modal/modal-colaborador.html' %}
+{% include 'colaborador/modal/modal-alerta.html' %}
+{% include 'colaborador/modal/modal-alerta-editar.html' %}
+{% include 'colaborador/modal/modal-alerta-apagar.html' %}
 
 {% endblock conteudo %}

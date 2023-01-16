@@ -1,27 +1,60 @@
 {% extends 'dashboard/pagina-inicial.html' %}
 {% block titulo %}
-    Despesas
+Despesas
 {% endblock titulo %}
+{% block style %}
+<style>
+    tr.htmx-swapping td {
+        opacity: 0;
+        transition: opacity 300ms ease-out;
+    }
+
+    .card {
+        max-width: 20rem;
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+
+    }
+
+    .card .card-text {
+        margin: 30px auto;
+    }
+
+    .table {
+        font-size: 20px;
+    }
+
+    .btn {
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+        font-size: 20px;
+
+    }
+</style>
+{% endblock style %}
 
 {% block conteudo %}
-<a
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-        class="btn btn-primary"
-        hx-get="{% url 'cadastrar-despesa' %}"
-        hx-target="#adicionar-conteudo">Cadastrar despesa</a>
-        
-        <button data-toggle="modal" 
-                data-target="#staticBackdrop" 
-                class="btn btn-link"
-                hx-get="{% url 'categoria-despesa' %}"
-                hx-target="#adicionar-conteudo" 
-                style="text-decoration: none;">Nova gategoria despesa</button>
+<div class="row" id="relatorio-peca">
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Suas peças cadastradas <b></b></h5>     
+          <h2 class="card-text">Seu Lucro R$</h2>       
+          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
+          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
+        </div>
+      </div>
+</div>
+
+<div style="margin-top: 30px;">
+<a data-toggle="modal" data-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'cadastrar-despesa' %}"
+    hx-target="#adicionar-conteudo">Cadastrar despesa</a>
+
+<button data-toggle="modal" data-target="#staticBackdrop" class="btn btn-link" hx-get="{% url 'categoria-despesa' %}"
+    hx-target="#adicionar-conteudo" style="text-decoration: none;">Nova gategoria despesa</button>
+</div>
 
 
 <div style="padding-top: 18px">
-    <table class="table">
-        <thead>
+    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
             <tr>
                 <th>Despesa</th>
                 <th>Preço</th>
@@ -36,4 +69,7 @@
 </div>
 
 {% include 'despesa/modal/modal-despesa.html' %}
+{% include 'despesa/modal/modal-alerta.html' %}
+{% include 'despesa/modal/modal-alerta-editar.html' %}
+{% include 'despesa/modal/modal-alerta-apagar.html' %}
 {% endblock conteudo %}

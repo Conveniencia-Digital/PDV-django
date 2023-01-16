@@ -17,6 +17,10 @@
     .table {
         font-size: 20px;
     }
+    .btn {
+        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+
+    }
 </style>
 {% endblock style %}
 
@@ -35,19 +39,22 @@
 </div>
 
 <div style="margin-top: 30px;">
-    <a href="" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"
-        hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML">Cadastrar Peças</a>
+    <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop"
+        hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML" style="font-size: 20px; margin-bottom: 20px;">Cadastrar Peças</a>
 </div>
 <div style="padding-top:18px">
-    <table class="table table-borderless table-hover">
-        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224) ">
+    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
             <tr>
-                <th>Categoria</th>
+               
                 <th>Peça</th>
                 <th>Preço de custo</th>
                 <th>Preço de venda</th>
+                <th>Margem de lucro</th>
                 <th>Ações</th>
                 <th>Data de cadastro</th>
+                <th>Fornecedor</th>
+                <th>Ultima modificação</th>
             </tr>
         </thead>
         <tbody id="peca-Tbody">
@@ -58,6 +65,8 @@
 
 {% include 'peca/modais-vazios/modal-recebe-conteudo-add-peca.html' %}
 {% include 'peca/modais-vazios/modal-alerta.html' %}
+{% include 'peca/modais-vazios/modal-alerta-editar.html' %}
+{% include 'peca/modais-vazios/modal-alerta-apagar.html' %}
 {% endblock conteudo%}
 {% block scripts %}
 <script>

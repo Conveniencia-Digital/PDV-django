@@ -6,7 +6,8 @@ urlpatterns = [
     path('cadastrarpeca/', cadastrarpeca, name='cadastrar-peca'),
     path('editarpeca/<int:pk>/', editarpeca, name='editar-peca'),
     path('apagarpeca/<int:pk>/', apagarpeca, name='apagar-peca'),
-    path('informacao-peca/', relatoriopeca, name='relatorio-peca')
+    path('informacao-peca/', relatoriopeca, name='relatorio-peca'),
+   
 
 ]
 

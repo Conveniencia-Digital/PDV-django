@@ -76,9 +76,12 @@
 <script>
     $('form').on('submit', function () {
         $('#staticBackdrop').modal('toggle')
+        setTimeout(() => {
+            $('#success_tic').modal('toggle')
+        }, "500");
     });
-    $(document).ready(function(){
-        $('#cpf').mask('000.000.000-00', {reverse: false});
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: false });
         $('#telefone').mask('(00) 00000-0000');
         $('#telefone2').mask('(00) 00000-0000');
     })

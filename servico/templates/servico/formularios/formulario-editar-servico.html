@@ -1,26 +1,33 @@
+{% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Editar {{ object.nome_servico }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel">Editar {{ object.nome_servico }}</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
-<form
-    hx-post="{% url 'editar-servico' object.pk %}"
-    hx-target="#trServico{{ object.pk }}"
-    hx-swap="outerHTML">
+<form hx-post="{% url 'editar-servico' object.pk %}" hx-target="#trServico{{ object.pk }}" hx-swap="outerHTML">
 
-    <div class="modal-body">
+  <div class="modal-body">
     {% csrf_token %}
-    {{ form }}
-</div>
-<div class="modal-footer">
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.nome_servico class="form-control" %}
+        <label for="">Informe a descricao do serviço (Ex: Troca de tela)</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
     <button type="submit" class="btn btn-primary">Salvar</button>
-</div>
+  </div>
 </form>
 
 <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-      });
- </script>
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic_editar').modal('toggle')
+    }, "500");
+  });
+</script>

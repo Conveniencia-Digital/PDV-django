@@ -1,18 +1,71 @@
+{% load widget_tweaks %}
 <div class="modal-header">
     <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_cliente}}</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form
-        hx-post="{% url 'editar-colaborador' object.pk %}"
-        hx-target="#colaboradorTr{{ object.pk }}"
-        hx-indicator=".htmx-indicator"
-        hx-swap="outerHTML">
+<form hx-post="{% url 'editar-colaborador' object.pk %}" hx-target="#colaboradorTr{{ object.pk }}"
+    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
 
     <div class="modal-body">
         {% csrf_token %}
-        {{ form }}
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.nome_colaborador class="form-control" %}
+                <label for="">Escreva o nome do cliente</label>
+            </div>
+        </div>
+        <!---->
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.cpf class="form-control" id="cpf" %}
+                <label for="">Informe o CPF (opcional)</label>
+            </div>
+            <div class="col form-floating">
+                {% render_field form.data_nascimento class="form-control" type="date" %}
+                <label for="">Data de nascimento (opcional)</label>
+            </div>
+        </div>
+        <!---->
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.telefone_contato class="form-control" id="telefone" %}
+                <label for="">Telefone para contato</label>
+            </div>
+            <div class="col form-floating">
+                {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
+                <label for="">Outro telefone de contato (opcional)</label>
+            </div>
+        </div>
+        <!---->
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.rua class="form-control" %}
+                <label for="">Endereço (opcional)</label>
+            </div>
+            <div class="col form-floating">
+                {% render_field form.bairro class="form-control" %}
+                <label for="">Bairro (opcional)</label>
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.cargo class="form-control" %}
+                <label for="">Cargo ou função (opcional)</label>
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.salario class="form-control" %}
+                <label for="">Preço do salario (opcional)</label>
+            </div>
+            <div class="col form-floating">
+                {% render_field form.data_pagamento class="form-control" %}
+                <label for="">Data de pagamento do salario (opcional)</label>
+            </div>
+        </div>
+    </div>
     </div>
 
     <div class="modal-footer">
@@ -20,8 +73,11 @@
         <button type="submit" class="btn btn-primary">Finalizar</button>
     </div>
 </form>
-    <script>
-      $('form').on('submit', function() {
+<script>
+    $('form').on('submit', function () {
         $('#staticBackdrop').modal('toggle')
-      });
-    </script>
+        setTimeout(() => {
+            $('#success_tic_editar').modal('toggle')
+        }, "500");
+    });
+</script>

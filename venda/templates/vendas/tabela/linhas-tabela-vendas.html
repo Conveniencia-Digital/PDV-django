@@ -1,4 +1,5 @@
-<tr class="bg-light">
+
+<tr style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
     <th>Cliente</th>
     <th><a
         class="text-decoration-none"
@@ -16,7 +17,7 @@
     <td></td>
 </tr>
 
-<tr class="bg-light">
+<tr>
     <th>Produtos</th>
     <th>Quantidade</th>
     <th>Preço</th>
@@ -30,9 +31,12 @@
     <td>{{ items.subtotal }}</td>
 </tr>
 {% endfor %}
-<tr class="bg-default table-borderless">
+<tr>
     <td></td>
     <td></td>
     <th>Total</th>
     <th>{{ object.total }}</th>
+    
 </tr>
+
+

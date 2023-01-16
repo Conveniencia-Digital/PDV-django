@@ -1,27 +1,82 @@
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel"> Editar {{ object }} </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+{% load widget_tweaks %}
+<div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel"> Editar {{ object }} </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form hx-post="{% url 'editar-produtos' object.pk %}" hx-target="#trProduto{{ object.pk }}"
+    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+
+    <div class="modal-body">
+        {% csrf_token %}
+        <div class="row g-2">
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.nome_produto type="text" class="form-control" id="floatingInput" %}
+                        <label for="floatingInput" style="color: rgb(114, 112, 112);">Digite o nome do produto,
+                            descrição, marca e modelo </label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.categoria_produtos class="form-select" id="floatingSelectGrid" %}
+                        <label for="floatingSelectGrid">Escolha a categoria</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form
-                hx-post="{% url 'editar-produtos' object.pk %}"
-                hx-target="#trProduto{{ object.pk }}"
-                hx-indicator=".htmx-indicator"
-                hx-swap="outerHTML">
-
-            <div class="modal-body">
-                {% csrf_token %}
-                {{ form }}
+        <div class="row g-2">
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.codigo_de_barras %}
+                        <label for="floatingSelectGrid">Digite o codigo de barras(opcional)</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.quantidade value="01" %}
+                        <label for="floatingSelectGrid">Informe a quantidade</label>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Finalizar</button>
+        <div class="row g-2">
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.preco_de_custo value="0.00" %}
+                        <label for="floatingSelectGrid">Preço de custo</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        {% render_field form.preco value="0.00" %}
+                        <label for="floatingSelectGrid">Preço de venda</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        {% render_field form.fornecedor %}
+                        <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Finalizar</button>
+        </div>
+</form>
 <script>
-      $('form').on('submit', function() {
+    $('form').on('submit', function () {
         $('#staticBackdrop').modal('toggle')
-      });
+        setTimeout(() => {
+      $('#success_tic_editar').modal('toggle')
+    }, "500");
+    });
 </script>

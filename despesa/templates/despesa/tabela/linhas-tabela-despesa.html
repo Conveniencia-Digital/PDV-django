@@ -2,23 +2,18 @@
     <td>{{ object.nome_despesa }}</td>
     <td>{{ object.preco_despesa }}</td>
     <td>
-        <span
-            data-toggle="modal"
-            data-target="#staticBackdrop"
-            hx-get="{% url 'editar-despesa' object.pk %}"
+        <span data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'editar-despesa' object.pk %}"
             hx-target="#adicionar-conteudo">
-            <i class="fa-solid fa-pen-to-square"></i>
+            <i class="fa-solid fa-pen-to-square" style="color: rgb(5, 180, 84);"></i>
         </span>
 
 
 
-        <span
-            hx-get="{% url 'apagar-despesa' object.pk %}"
-            hx-confirm="Deseja mesmo apagar {{ object.nome_despesa }}"
-            hx-target="closest tr"
+        <span data-toggle="modal" data-target="#success_tic_delete" hx-get="{% url 'apagar-despesa' object.pk %}"
+            hx-confirm="Deseja mesmo apagar {{ object.nome_despesa }}" hx-target="closest tr"
             hx-swap="outerHTML swap:300ms">
-            <i class="fa-regular fa-trash-can"></i>
+            <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <td>{{ object.data_cadastro}}</td>
+    <td>{{ object.data_cadastro}}</td>
     </td>
 </tr>

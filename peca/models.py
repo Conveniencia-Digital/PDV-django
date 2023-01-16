@@ -30,6 +30,8 @@ class Pecas(models.Model):
         (TAMPAS, 'Tampas'),  
         (OUTROS, 'Outros')
     ]
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_edicao = models.DateTimeField(auto_now=True)
     nome_peca = models.CharField(max_length=99)
     preco_peca = models.DecimalField(max_digits=9, decimal_places=2)
     categoria_peca = models.CharField(max_length=2, choices=CATEGORIAS_PECA, null=True, blank=True)
@@ -40,3 +42,9 @@ class Pecas(models.Model):
 
     def __str__(self):
         return self.nome_peca
+
+    def lucro(self):
+         return f'R$ {self.preco_peca - self.preco_de_custo}'
+  
+
+   # Resolve when is how will be utility the field quantity 

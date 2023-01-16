@@ -78,13 +78,31 @@
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="sidebar-sticky pt-3">
-                <ul class="nav flex-column">
+                <ul class="nav flex-column" style="font-size: 16px;">
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'inicio' %}">
                             <span data-feather="home"></span>
                             Painel de Controle <span class="sr-only">(current)</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendas'  %}">
+                            <span data-feather="shopping-bag"></span>
+                            Vendas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'produtos' %}">
+                            <span data-feather="shopping-cart"></span>
+                            Produtos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cliente' %}">
+                            <span data-feather="users"></span>
+                            Clientes
+                        </a>
+                    </li>  
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'orcamento' %}">
                             <span data-feather="file"></span>
@@ -103,23 +121,15 @@
                             Serviços
                         </a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'produtos' %}">
-                            <span data-feather="shopping-cart"></span>
-                            Produtos
+                        <a class="nav-link" href="">
+                            <span data-feather="truck"></span>
+                            Fornecedores
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'vendas'  %}">
-                            <span data-feather="shopping-bag"></span>
-                            Vendas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'cliente' %}">
-                            <span data-feather="users"></span>
-                            Clientes
-                        </a>
+                    
+                      
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'colaborador' %}">
                             <span data-feather="user-check"></span>

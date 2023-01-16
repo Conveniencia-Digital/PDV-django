@@ -1,16 +1,16 @@
 <style>
-  #success_tic_delete .page-body{
+  #success_tic_editar .page-body{
   max-width:300px;
   background-color:#FFFFFF;
   margin:10% auto;
 }
- #success_tic_delete .page-body .head{
+ #success_tic_editar .page-body .head{
   text-align:center;
 }
 /* #success_tic .tic{
   font-size:186px;
 } */
-#success_tic_delete .close{
+#success_tic_editar .close{
 text-decoration: none;
       opacity: 1;
     position: absolute;
@@ -19,24 +19,24 @@ text-decoration: none;
     padding: 3px 15px;
   margin-bottom: 10px;
 }
-#success_tic_delete .checkmark-circle {
+#success_tic_editar .checkmark-circle {
   width: 150px;
   height: 150px;
   position: relative;
   display: inline-block;
   vertical-align: top;
 }
-#success_tic_delete .checkmark-circle .background {
+.checkmark-circle .background {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: #f44747;
+  background: #0dcaf0;
   position: absolute;
 }
-#success_tic_delete .checkmark-circle .checkmark {
+#success_tic_editar .checkmark-circle .checkmark {
   border-radius: 5px;
 }
-#success_tic_delete .checkmark-circle .checkmark.draw:after {
+#success_tic_editar .checkmark-circle .checkmark.draw:after {
   -webkit-animation-delay: 300ms;
   -moz-animation-delay: 300ms;
   animation-delay: 300ms;
@@ -58,7 +58,7 @@ text-decoration: none;
   -moz-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
-#success_tic_delete .checkmark-circle .checkmark:after {
+#success_tic_editar .checkmark-circle .checkmark:after {
   opacity: 1;
   height: 75px;
   width: 37.5px;
@@ -145,16 +145,16 @@ text-decoration: none;
 
 </style>
 <!-- Modal -->
-<div id="success_tic_delete" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="success_tic_editar" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog">
 
     <!-- Modal content-->
     <div class="modal-content">
-      <a class="close" href="#" data-dismiss="modal" hx-get="{% url 'total-clientes' %}" hx-target="#total-cliente" hx-swap="innerHTML">&times;</a>
+      <a class="close" href="#" data-dismiss="modal" hx-get="{% url 'relatorio-peca' %}" hx-target="#relatorio-peca" hx-swap="innerHTML">&times;</a>
       <div class="page-body">
     <div class="head">
-      <h3 style="margin-top:5px;">Colaborador</h3>
-      <h4>excluido definitivamente</h4>
+      <h3 style="margin-top:5px;">Cliente</h3>
+      <h4>atualizado(a) com sucesso</h4>
     </div>
 
   <h1 style="text-align:center;"><div class="checkmark-circle">
