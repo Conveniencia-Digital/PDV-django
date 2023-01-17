@@ -1,4 +1,6 @@
 from django.db import models
+from fornecedor.models import Fornecedores
+
 
 
 class Pecas(models.Model):
@@ -30,6 +32,18 @@ class Pecas(models.Model):
         (TAMPAS, 'Tampas'),  
         (OUTROS, 'Outros')
     ]
+    PIX = 'PX'
+    CARTAO_CREDITO = 'CC'
+    CARTAO_DEBITO = 'CD'
+    DINHEIRO = 'DN'
+    FIADO = 'FD'
+    FORMA_PAGAMENTO = [
+        (PIX, 'Pix'),
+        (CARTAO_CREDITO, 'Cartāo de credito'),
+        (CARTAO_DEBITO, 'Cartāo de debito'),
+        (DINHEIRO, 'Dinheiro'),
+        (FIADO, 'Fiado')
+    ]
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
     nome_peca = models.CharField(max_length=99)
@@ -38,7 +52,9 @@ class Pecas(models.Model):
     quantidade = models.IntegerField()
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
-    fornecedor = models.CharField(max_length=99, null=True, blank=True)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
+    observacao = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.nome_peca

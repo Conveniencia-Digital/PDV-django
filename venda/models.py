@@ -1,17 +1,48 @@
 from django.db import models
 from produto.models import Produto
 from cliente.models import Cliente
+from colaborador.models import Colaborador
 
 
 
 class Vendas(models.Model):
+    ENTREGUE = 'Entregue'
+    CANCELADA = 'Cancelada'
+    TROCA = 'Troca de produto'
+    RETORNO_GARANTIA = 'Retorno garantia'
+    STATUS = [
+        (ENTREGUE, 'Concluida e entregue'),
+        (CANCELADA, 'Cancelada e estornada'),
+        (TROCA, 'Troca de produto'),
+        (RETORNO_GARANTIA, 'Retorno para garantia')
+
+    ]
+    PIX = 'PX'
+    CARTAO_CREDITO = 'CC'
+    CARTAO_DEBITO = 'CD'
+    DINHEIRO = 'DN'
+    FIADO = 'FD'
+    FORMA_PAGAMENTO = [
+        (PIX, 'Pix'),
+        (CARTAO_CREDITO, 'Cartāo de credito'),
+        (CARTAO_DEBITO, 'Cartāo de debito'),
+        (DINHEIRO, 'Dinheiro'),
+        (FIADO, 'Fiado')
+    ]
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_edicao = models.DateTimeField(auto_now=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    vendedor = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
+    desconto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    observacao = models.TextField(null=True, blank=True)
+    status = models.CharField(choices=STATUS, max_length=20, default=ENTREGUE)
 
     class Meta:
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.cliente
+        return self.cliente, self.vendedor
     
     def total(self):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(

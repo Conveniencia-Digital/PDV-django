@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'orcamento',
     'widget_tweaks',
     'usuarios',
+    'fornecedor',
 
 ]
 # Application definition

@@ -66,12 +66,22 @@
                       <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
                     </div>
                   </div>
+                  <div class="form-row">
+                    <div class="col-md-6 mb-3 form-floating">
+                      {% render_field form.forma_pagamento class="form-control" %}
+                      <label>Forma de pagamento</label>
+                    </div>
+                    <div class="col-md-6 mb-3 form-floating">
+                      {% render_field form.observacao class="form-control" %}
+                      <label>Observaçāo</label>
+                    </div>
+                  </div>
                 </div>
     </div>
 
     <div class="modal-footer" style="margin-top: 15px;">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Finalizar</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
     </div>
 
 </form>

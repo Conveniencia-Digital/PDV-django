@@ -12,6 +12,7 @@ class Cliente(models.Model):
     rua = models.CharField(max_length=99, null=True, blank=True)
     numero_casa = models.IntegerField(null=True, blank=True)
     bairro = models.CharField(max_length=90, null=True, blank=True)
+    observacao = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.nome_cliente

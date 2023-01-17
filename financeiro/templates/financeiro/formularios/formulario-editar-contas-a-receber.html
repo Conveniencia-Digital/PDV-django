@@ -20,11 +20,17 @@
         <div class="form-row" style="margin-bottom: 10px;">
             <div class="col form-floating">
                 {% render_field form.nome_contas_a_receber class="form-control" %}
-                <label for="">Selecione a venda </label>
+                <label for="">Informe a venda ou serviço </label>
             </div>
             <div class="col form-floating">
-                {% render_field form.preco_contas_a_receber class="form-control" %}
-                <label for="">Data de nascimento (opcional)</label>
+                {% render_field form.preco_contas_a_receber class="form-control" value="0.00" %}
+                <label for="">Valor a receber</label>
+            </div>
+        </div>
+        <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+                {% render_field form.observacao class="form-control" %}
+                <label for="">Observaçāo</label>
             </div>
         </div>
     </div>

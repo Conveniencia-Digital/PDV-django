@@ -19,7 +19,7 @@
     <!---->
     <div class="form-row" style="margin-bottom: 10px;">
       <div class="col form-floating">
-        {% render_field form.cpf class="form-control" %}
+        {% render_field form.cpf class="form-control" id="cpf" %}
         <label for="">Informe o CPF (opcional)</label>
       </div>
       <div class="col form-floating">
@@ -30,11 +30,11 @@
     <!---->
     <div class="form-row" style="margin-bottom: 10px;">
       <div class="col form-floating">
-        {% render_field form.telefone_contato class="form-control" %}
+        {% render_field form.telefone_contato class="form-control" id="telefone" %}
         <label for="">Telefone para contato</label>
       </div>
       <div class="col form-floating">
-        {% render_field form.telefone_contato_2 class="form-control" %}
+        {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
         <label for="">Outro telefone de contato (opcional)</label>
       </div>
     </div>
@@ -49,11 +49,17 @@
         <label for="">Bairro (opcional</label>
       </div>
     </div>
+    <div class="form-row" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+          {% render_field form.observacao class="form-control" %}
+          <label for="">Observaçāo</label>
+      </div>
+  </div>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-    <button type="submit" class="btn btn-primary">Finalizar</button>
+    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
   </div>
 </form>
 <script>
@@ -64,4 +70,9 @@
       $('#success_tic').modal('toggle')
     }, "500");
   });
+  $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: false });
+        $('#telefone').mask('(00) 00000-0000');
+        $('#telefone2').mask('(00) 00000-0000');
+    })
 </script>

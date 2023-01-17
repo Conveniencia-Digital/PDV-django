@@ -4,14 +4,27 @@ from django.forms import inlineformset_factory, NumberInput
 from venda.models import Vendas, ItemsVenda
 from produto.models import Produto
 from cliente.models import Cliente
+from colaborador.models import Colaborador
+
+
 
 class VendasForm(forms.ModelForm):
     required_css_class = 'required'
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
+    vendedor = forms.ModelChoiceField(queryset=Colaborador.objects.all(), empty_label='Selecione o vendedor')
 
     class Meta:
         model = Vendas
-        fields = ('cliente',)
+        fields = ('cliente', 'vendedor', 'desconto', 'observacao', 'status', 'forma_pagamento')
+
+    def __init__(self, *args, **kwargs):
+        super(VendasForm, self).__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+        self.fields['status'].label = ''
+        self.fields['status'].widget = forms.HiddenInput()
 
 
 class ItemsVendaForm(forms.ModelForm):
@@ -39,6 +52,8 @@ class ItemsVendaForm(forms.ModelForm):
 
         self.fields['vendas'].label = ''
         self.fields['vendas'].widget = forms.HiddenInput()
+        
+        
 
         self.fields['preco'].widget.attrs['step'] = 0.01
 

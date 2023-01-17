@@ -23,7 +23,7 @@
         <!---->
         <div class="form-row" style="margin-bottom: 10px;">
             <div class="col form-floating">
-                {% render_field form.preco_despesa class="form-control" %}
+                {% render_field form.preco_despesa class="form-control" value="0.00" %}
                 <label for="">Informe o preco da despesa</label>
             </div>
             <div class="col form-floating">
@@ -41,8 +41,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Finalizar</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
     </div>
 </form>
 <script>

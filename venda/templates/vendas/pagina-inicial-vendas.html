@@ -31,30 +31,33 @@ Vendas
     }
 </style>
 {% endblock style %}
-{% block conteudo %}
-<div class="row" id="relatorio-venda">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Suas vendas <b></b></h5>
-            <h2 class="card-text">Seu Lucro R$</h2>
-            <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
+{% block conteudo %}<div class="teste">
+    
+    <div class="row" id="relatorio-venda">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Suas vendas <b></b></h5>
+                <h2 class="card-text">Seu Lucro R$</h2>
+                <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
+            </div>
         </div>
     </div>
+    
+    <div style="margin-top: 30px;">
+        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
+            hx-target="#addConteudo" hx-swap="innerHTML">Vender
+        </a>
+    </div>
+    <div style="padding-top: 18px;">
+        <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+            <thead></thead>
+            <tbody id="vendas-Tbody">
+                {% include 'vendas/tabela/tabela-venda.html' %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'vendas/modal/modal-venda.html' %}
+    {% include 'vendas/modal/modal-alerta.html' %}
 </div>
-
-<div style="margin-top: 30px;">
-    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
-        hx-target="#addConteudo" hx-swap="innerHTML">Vender
-    </a>
-</div>
-<div style="padding-top: 18px;">
-    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)"></thead>
-        <tbody id="vendas-Tbody">
-            {% include 'vendas/tabela/tabela-venda.html' %}        </tbody>
-    </table>
-</div>
-{% include 'vendas/modal/modal-venda.html' %}
-{% include 'vendas/modal/modal-alerta.html' %}
 {% endblock conteudo %}

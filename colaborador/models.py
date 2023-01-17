@@ -15,5 +15,13 @@ class Colaborador(models.Model):
     cargo = models.CharField(max_length=90, null=True, blank=True)
     salario = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     data_pagamento = models.DateField(null=True, blank=True)
+    observacao = models.TextField(null=True, blank=True)
+
+
+    def __str__(self) -> str:
+        return self.nome_colaborador
+
+
+
 
 

@@ -29,15 +29,15 @@
    
     <div id="mouse" class="col-md-6 mb-3 form-floating">
         {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-        <label class="font-weight-lighter">Informe o produto </label>    
+        <label>Informe o produto </label>    
       </div>
     <div class="col-md-3 mb-3 form-floating">
         {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
-        <label class="font-weight-lighter">Preço Unitario </label>
+        <label>Preço Unitario </label>
     </div>
     <div class="col-md-2 mb-2 form-floating">
         {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-        <label class="font-weight-lighter">Quantidade</label>
+        <label>Quantidade</label>
     </div>
     {% if items_venda_form.id.value %}
         <div class="col-md-1 mb-1">
@@ -51,7 +51,7 @@
              </span>
             {% else %}
             <span onclick="removeRow()">
-                <button type="submit" class="btn btn-danger btn-sm" id="remove">Remover</button>
+                <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">Remover</button>
             </span>
         </div>
     {% endif %}

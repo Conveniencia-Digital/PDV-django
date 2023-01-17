@@ -1,20 +1,25 @@
-
 <tr style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
     <th>Cliente</th>
-    <th><a
-        class="text-decoration-none"
-        hx-get="{% url 'detalhe-vendas' object.pk %}"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-        hx-target="#addConteudo">Detalhes</a></th>
-    <th></th>
-    <th></th>
+    <th>Data da venda</th>
+    <th>Status</th>
+    <th>Ações</th>
 </tr>
 <tr>
     <td>{{object.cliente.nome_cliente}}</td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
+    {% if object.status == 'Entregue' %}
+    <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
+    {% else %}
+    <td>{{ object.status }}</td>
+    {% endif %}
+    <td>
+        <a style="text-decoration: none;" hx-get="{% url 'detalhe-vendas' object.pk %}" data-toggle="modal"
+            data-target="#staticBackdrop" hx-target="#addConteudo">
+            <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
+        </a>
+        <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
+    </td>
+   
 </tr>
 
 <tr>
@@ -36,7 +41,5 @@
     <td></td>
     <th>Total</th>
     <th>{{ object.total }}</th>
-    
+
 </tr>
-
-

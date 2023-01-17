@@ -5,25 +5,28 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form hx-post="{% url 'cadastrar-vendas' %}" 
-      hx-target="#vendas-Tbody" 
-      hx-indicator=".htmx-indicator" 
-      hx-swap="afterbegin">
+<form hx-post="{% url 'cadastrar-vendas' %}" hx-target="#vendas-Tbody" hx-indicator=".htmx-indicator"
+  hx-swap="afterbegin">
   {% csrf_token %}
   <div class="modal-body">
     <div class="form-row">
-      <div class="col-md-6 mb-1">
-        <label class="font-weight-lighter" style="font-size:1.5em">Cliente </label>
+      <div class="col form-floating">
+        {% render_field form.status class='form-control'%}
+        {% render_field form.cliente class='form-control'%}
+        <label>Cliente </label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.vendedor class='form-control' %}
+        <label>Vendedor</label>
       </div>
     </div>
-    {% render_field form.cliente class='form-control'%}
     <hr>
     <div class="form-row">
       <div class="col-md-6 mb-1 ">
         <h2 class="fw-lighter" style="font-size: 1.5em;">Produtos</h2>
       </div>
     </div>
-    
+
     {{ formset.management_form }}
     <div id="venda">
       {% for itemsvendaform in formset %}
@@ -32,27 +35,55 @@
         {% render_field itemsvendaform.id data-field='id' %}
         <div class="col-md-6 mb-3 form-floating">
           {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-          <label class="font-weight-lighter">Informe o produto </label>
+          <label>Informe o produto </label>
         </div>
         <div class="col-md-3 mb-3 form-floating">
           {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
-          <label class="font-weight-lighter">Preço Unitario </label>
+          <label>Preço Unitario </label>
         </div>
         <div class="col-md-3 mb-3 form-floating">
           {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label class="font-weight-lighter">Quantidade</label>
+          <label>Quantidade</label>
         </div>
       </div>
       {% endfor %}
     </div>
 
-    <button type="submit" id="addItem" class="btn btn-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
-      hx-swap="beforeend" style="margin-bottom: 30px; margin-top: 30px;">Add produto
+    <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
+      hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add produto
     </button>
-
+    <hr>
+    <div class="form-row">
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Pagamento</h2>
+      </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6 mb-3 form-floating">
+          {% render_field form.forma_pagamento class="form-control" %}
+          <label>Forma de pagamento</label> 
+      </div>
+      <div class="col-md-3 mb-3 form-floating">
+        {% render_field form.desconto class="form-control" value="00.00" %}
+        <label>Desconto</label>
+      </div>
+      <h4 style="margin: 15px auto;">R$ 00.00</h4>
+    </div>
+    <hr>
+    <div class="form-row">
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações adicionais</h2>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col form-floating" style="margin-bottom: 10px;">
+        {% render_field form.observacao class="form-control" %}
+        <label>Observação</label>
+      </div>
+    </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+      <button type="submit" class="btn btn-outline-primary">Salvar</button>
     </div>
 
   </div>
@@ -115,11 +146,13 @@
         document.querySelector('#btn-close').style.display = 'block'
       })
     })
-    $('form').on('submit', function() {
+  $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
     setTimeout(() => {
       $('#success_tic').modal('toggle')
-    },500)
+    }, 500)
   });
+  
 
+ 
 </script>

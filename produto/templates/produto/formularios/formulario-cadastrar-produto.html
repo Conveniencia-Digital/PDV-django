@@ -14,8 +14,8 @@
       <div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            {% render_field form.nome_produto type="text" class="form-control" id="floatingInput" %}
-            <label for="floatingInput" style="color: rgb(114, 112, 112);">Digite o nome do produto, descrição, marca e
+            {% render_field form.nome_produto type="text" class="form-control" %}
+            <label for="floatingInput">Digite o nome do produto, descrição, marca e
               modelo </label>
           </div>
         </div>
@@ -49,13 +49,13 @@
         <div class="col-md">
           <div class="form-floating">
             {% render_field form.preco_de_custo value="0.00" %}
-            <label for="floatingSelectGrid">Preço de custo</label>
+            <label for="floatingSelectGrid">Preço custo(unidade)</label>
           </div>
         </div>
         <div class="col-md">
           <div class="form-floating">
             {% render_field form.preco value="0.00" %}
-            <label for="floatingSelectGrid">Preço de venda</label>
+            <label for="floatingSelectGrid">Preço venda(unidade)</label>
           </div>
         </div>
         <div class="col-md-6">
@@ -65,18 +65,27 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer" style="margin-top: 15px;">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-      <button type="submit" class="btn btn-primary">Finalizar</button>
-    </div>
+      <div class="form-row">
+        <div class="col-md-6 mb-3 form-floating">
+          {% render_field form.forma_pagamento class="form-control" %}
+          <label>Forma de pagamento</label>
+        </div>
+        <div class="col-md-6 mb-3 form-floating">
+          {% render_field form.observacao class="form-control" %}
+          <label>Observaçāo</label>
+        </div>
+      </div>
+      <div class="modal-footer" style="margin-top: 15px;">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+      </div>
 
 </form>
 <script>
   $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
     setTimeout(() => {
-        $('#success_tic').modal('toggle')
-        }, "500");
+      $('#success_tic').modal('toggle')
+    }, "500");
   });
 </script>

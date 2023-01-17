@@ -1,31 +1,55 @@
 from django.db import models
+from fornecedor.models import Fornecedores
 
 
 class Produto(models.Model):
     FONES = 'FN'
+    CAPAS = 'CP'
+    PELICULAS = 'PL'
+    ADAPTADORES = 'AD'
     CABOS = 'CB'
     CELULARES = 'CL'
     IPHONES = 'IP'
     CARREGADORES = 'CR'
     FONTES = 'FT'
     DIVERSOS = 'DV'
+    INFORMATICA = 'IN'
     CATEGORIAS_PRODUTOS = [
         (FONES, 'Fones'),
         (CABOS, 'Cabos'),
+        (CAPAS, 'Capas'),
+        (PELICULAS, 'Peliculas'),
+        (ADAPTADORES, 'Adaptadores'),
         (CELULARES, 'Celulares'),
         (IPHONES, 'iPhones'),
         (CARREGADORES, 'Carregadores'),
         (FONTES, 'Fontes'),
-        (DIVERSOS, 'Diversos')     
+        (DIVERSOS, 'Diversos'),
+        (INFORMATICA, 'Informatica')     
     ]
-
+    PIX = 'PX'
+    CARTAO_CREDITO = 'CC'
+    CARTAO_DEBITO = 'CD'
+    DINHEIRO = 'DN'
+    FIADO = 'FD'
+    FORMA_PAGAMENTO = [
+        (PIX, 'Pix'),
+        (CARTAO_CREDITO, 'Cartāo de credito'),
+        (CARTAO_DEBITO, 'Cartāo de debito'),
+        (DINHEIRO, 'Dinheiro'),
+        (FIADO, 'Fiado')
+    ]
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_edicao = models.DateTimeField(auto_now=True)
     nome_produto = models.CharField(max_length=99)
-    categoria_produtos = models.CharField(max_length=2, choices=CATEGORIAS_PRODUTOS)
+    categoria_produtos = models.CharField(max_length=2, choices=CATEGORIAS_PRODUTOS, null=True, blank=True)
     quantidade = models.IntegerField()
-    codigo_de_barras = models.IntegerField()
+    codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
     preco = models.DecimalField(max_digits=9, decimal_places=2)
-    fornecedor = models.CharField(max_length=99, null=True, blank=True)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
+    observacao = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
