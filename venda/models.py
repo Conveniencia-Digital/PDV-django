@@ -48,7 +48,8 @@ class Vendas(models.Model):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(
             'preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
-        return t
+        desc = t - self.desconto
+        return desc
 
 
 class ItemsVenda(models.Model):

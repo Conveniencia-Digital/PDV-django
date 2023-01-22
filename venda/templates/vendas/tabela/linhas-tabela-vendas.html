@@ -28,7 +28,7 @@
 <tr>
     <th>Produtos</th>
     <th>Quantidade</th>
-    <th>Preço</th>
+    <th>Preço Unidade</th>
     <th>Sub Total</th>
 </tr>
 {% for items in object.vendas_items.all %}
@@ -39,6 +39,12 @@
     <td>{{ items.subtotal }}</td>
 </tr>
 {% endfor %}
+<tr>
+    <td></td>
+    <td></td>
+    <th>Desconto</th>
+    <th>{{ object.desconto }}</th>
+</tr>
 <tr>
     <td></td>
     <td></td>
