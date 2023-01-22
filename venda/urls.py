@@ -1,9 +1,10 @@
 from django.urls import path
-from venda.views import cadastrarvendas, buscarpreco, addform, ListaVendas, apagaritemvenda, DetalheVendas
+from venda.views import cadastrarvendas, buscarpreco, addform, ListaVendas, apagaritemvenda, DetalheVendas, editarvendas
 
 urlpatterns = [
     path('vendas/', ListaVendas.as_view(), name='vendas'),
     path('cadastrarvendas/', cadastrarvendas, name='cadastrar-vendas'),
+    path('editarvendas/<int:pk>/', editarvendas, name='editar-vendas'),
     path('produto/preco/', buscarpreco, name='preco-produto'),
     path('addform/', addform, name='addform'),
     path('apagaritemvenda/', apagaritemvenda, name='apagar-item-venda'),

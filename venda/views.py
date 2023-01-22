@@ -60,3 +60,23 @@ def apagaritemvenda(pk):
 class DetalheVendas(DetailView):
     template_name = 'vendas/detalhe-venda.html'
     model = Vendas
+
+
+def editarvendas(request, pk):
+    template_name = 'vendas/formularios/formulario-editar-vendas.html'
+    venda_instance = Vendas.objects.get(pk=pk)
+
+    form = VendasForm(request.POST or None, instance=venda_instance, prefix='main')
+    formset = VendasItemsFormset(request.POST or None, instance=venda_instance, prefix='items')
+    if request.method == 'POST':
+        if form.is_valid() and formset.is_valid():
+            
+            template_name = 'vendas/tabela/linhas-tabela-vendas.html'
+            vendas = form.save()
+            items_venda = formset.save()
+            context = {'object': vendas, 'items': items_venda}
+            return render(request, template_name, context)
+   
+    context = {'object':venda_instance, 'form': form, 'formset': formset}
+    return render(request, template_name, context)
+    

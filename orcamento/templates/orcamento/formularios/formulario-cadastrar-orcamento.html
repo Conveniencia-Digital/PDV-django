@@ -13,11 +13,8 @@
     <div class="modal-body">
         <div class="form-row">
             <div class="col-md-6 mb-1">
-                <label class="font-weight-lighter" style="font-size:1.2em">Cliente </label>
+                <label class="font-weight-lighter" style="font-size:1.2em">Informações do cliente e do celular </label>
             </div>
-            <div class="col-md-6 mb-1">
-              <label class="font-weight-lighter" style="font-size:1.2em">Aparelho </label>
-          </div>
         </div>
         <div class="form-row">
           <div class="col-md-6 mb-3 form-floating">
@@ -28,6 +25,7 @@
             {% render_field form.celular class='form-control'%}
             <label >Informe a marca e modelo do celular </label>
           </div>
+         
         </div> 
         <hr>
     <div class="form-row">
@@ -65,14 +63,59 @@
         >Add peca
         </button>
           <hr>
-        <label class="font-weight-lighter" style="font-size:1.2em">Serviço</label>
-        <div class="form-row" style="margin-bottom: 10px;">
-          <div class="col form-floating">
-           {% render_field form.servico class="form-control" %}
-            <label for="">Selecione o servico</label>
-           </div>
+        <label class="font-weight-lighter" style="font-size:1.2em">Serviço</label> 
+           
+        <div id="servico">  
+          {% for items_orcamento_form in formset %}
+          <div class="form-row" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+             {% render_field items_orcamento_form.servico class="form-control" data-field="servico" %}
+              <label for="">Selecione o servico</label>
+             </div>
+          </div>
+          {% endfor %}
+          
         </div>
-        <button class="btn btn-link btn-sm" style="text-decoration: none;">Add serviço</button>
+        <button id="addItem" class="btn btn-link btn-sm" hx-get="{% url 'adicionar-linha-servico' %}" hx-target="#servico" hx-swap="beforeend settle:1s" style="text-decoration: none;">Add outro serviço</button>
+        <div class="form-row">
+          <div class="col-md-6 mb-1">
+              <label class="font-weight-lighter" style="font-size:1.2em">Informações de pagamento</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.forma_pagamento class='form-control'%}
+            <label>Selecione a forma de pagamento </label>
+          </div>
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.desconto class='form-control'%}
+            <label >Desconto</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6 mb-1">
+              <label class="font-weight-lighter" style="font-size:1.2em">Informações do orçamento </label>
+          </div>
+      </div>
+        <div class="form-row">
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.status class='form-control'%}
+            <label >Informe o status deste orcamento </label>
+          </div>
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.data_entrega class='form-control'%}
+            <label >Informe a data  de entrega </label>
+          </div>
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.tecnico class='form-control'%}
+            <label >Informe tecnico responsavel </label>
+          </div>
+          <div class="col form-floating">
+            {% render_field form.observacao class='form-control'%}
+            <label >Observaçāo </label>
+          </div>
+        </div>
+        
     </div>
 
     <div class="modal-footer">
@@ -82,8 +125,6 @@
 </form>
 {% block scripts %}
 <script>
-
-
 (function() {
   reorderItems()
 })();
@@ -96,7 +137,7 @@ document.querySelector('#addItem').addEventListener('click', function() {
 })
 
 function reorderItems() {
-
+  let total = 0;
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
@@ -108,14 +149,19 @@ function reorderItems() {
       item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
       item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
 
+
       item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
       item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
-
 
       item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
 
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+
+      item.querySelector('[data-field="servico"]').setAttribute('name', 'items-' + i + '-servico')
+      item.querySelector('[data-field="servico"]').setAttribute('id', 'id_items-' + i + '-servico')
+
+      total += parseFloat(item.querySelector('[data-field="preco_orcamento"]').value) * parseFloat(item.querySelector('[data-field="quantidade"]').value);
 
   })
 
@@ -127,8 +173,11 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
+  htmx.process(document.querySelector("#servico"))
  
+  document.getElementById("total").innerHTML = total;
 }
+
 
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')

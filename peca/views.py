@@ -32,10 +32,9 @@ def editarpeca(request, pk):
 
     if request.method == 'POST':
         if form.is_valid():
-            produto = form.save()
+            peca = form.save()
             template_name = 'peca/tabela/linhas-tabela-peca.html'
-
-            context = {'object': produto}
+            context = {'object': peca}
             return render(request, template_name, context)
 
     context = {'form': form, 'object': instance}

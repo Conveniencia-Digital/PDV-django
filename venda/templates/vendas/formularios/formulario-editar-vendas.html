@@ -1,18 +1,26 @@
+
 {% load widget_tweaks %}
 <div class="modal-header">
-  <h5 class="modal-title" id="staticBackdropLabel">Nova venda</h5>
+  <h5 class="modal-title" id="staticBackdropLabel">Atualizar venda</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form hx-post="{% url 'cadastrar-vendas' %}" hx-target="#vendas-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+<form hx-post="{% url 'editar-vendas' object.pk %}"
+      hx-target="#trVenda{{ object.pk }}"
+      hx-indicator=".htmx-indicator"
+      hx-swap="outerHTML">
   {% csrf_token %}
   <div class="modal-body">
     <div class="form-row">
-      <div class="col form-floating">
+      <div class="col form-floating" style="margin-bottom: 10px;">
         {% render_field form.status class='form-control' id="status" %}
-        {% render_field form.cliente class='form-control'%}
+        <label>Status </label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col form-floating">
+          {% render_field form.cliente class='form-control' %}
         <label>Cliente </label>
       </div>
       <div class="col form-floating">
@@ -152,10 +160,5 @@
       $('#success_tic').modal('toggle')
     }, 500)
   });
-  function MyFunction(){
-    document.querySelector('#status').setAttribute('hidden', 'hidden')
-
-  }
-  setTimeout( MyFunction, -1000) 
-
+  
 </script>

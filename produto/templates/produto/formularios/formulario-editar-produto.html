@@ -5,8 +5,10 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form hx-post="{% url 'editar-produtos' object.pk %}" hx-target="#trProduto{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+<form hx-post="{% url 'editar-produtos' object.pk %}" 
+      hx-target="#trProduto{{ object.pk }}"
+      hx-indicator=".htmx-indicator" 
+      hx-swap="outerHTML">
 
     <div class="modal-body">
         {% csrf_token %}

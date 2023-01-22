@@ -17,11 +17,11 @@ class Vendas(models.Model):
         (RETORNO_GARANTIA, 'Retorno para garantia')
 
     ]
-    PIX = 'PX'
-    CARTAO_CREDITO = 'CC'
-    CARTAO_DEBITO = 'CD'
-    DINHEIRO = 'DN'
-    FIADO = 'FD'
+    PIX = 'Pix'
+    CARTAO_CREDITO = 'Cartāo de credito'
+    CARTAO_DEBITO = 'Cartāo de debito'
+    DINHEIRO = 'Dinheiro'
+    FIADO = 'Fiado'
     FORMA_PAGAMENTO = [
         (PIX, 'Pix'),
         (CARTAO_CREDITO, 'Cartāo de credito'),
@@ -34,7 +34,7 @@ class Vendas(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     vendedor = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
     desconto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
-    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=20, default=PIX)
     observacao = models.TextField(null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=20, default=ENTREGUE)
 
@@ -67,7 +67,7 @@ class ItemsVenda(models.Model):
         ordering = ('pk',)
 
     def __str__(self):
-        return f' {self.pk} - {self.vendas.pk} - {self.produto}'
+        return f'{self.pk} - {self.vendas.pk} - {self.produto}'
 
     def subtotal(self):
         return self.quantidade * self.preco

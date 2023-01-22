@@ -37,6 +37,13 @@ def adicionarlinhas(request):
     return render(request, template_name, context)
 
 
+def adicionarlinhaservico(request):
+    template_name = 'orcamento/formularios/linha-servico-orcamento.html'
+    form = ItemsOrcamentoForms()
+    context = {'items_orcamento_form': form}
+    return render(request, template_name, context)
+
+
 def preco_peca(request):
     template_name = 'orcamento/formularios/preco-peca.html'
     url = request.get_full_path()

@@ -23,8 +23,7 @@ class VendasForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
-        self.fields['status'].label = ''
-        self.fields['status'].widget = forms.HiddenInput()
+
 
 
 class ItemsVendaForm(forms.ModelForm):

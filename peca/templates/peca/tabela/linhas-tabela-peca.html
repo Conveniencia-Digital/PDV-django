@@ -4,8 +4,9 @@
     <td> {{ object.preco_peca }} </td>
     <td>{{ object.lucro }}</td>
     <td>
-        <span data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'editar-peca' object.pk %}"
-            hx-target="#recebe-conteudo-peca">
+        <span data-toggle="modal" data-target="#staticBackdrop" 
+              hx-get="{% url 'editar-peca' object.pk %}"
+              hx-target="#recebe-conteudo-peca">
             <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
         </span>
         <span data-toggle="modal" data-target="#success_tic_delete" hx-get="{% url 'apagar-peca' object.pk %}"

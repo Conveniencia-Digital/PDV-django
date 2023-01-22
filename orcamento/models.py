@@ -3,13 +3,61 @@ from django.db.models.aggregates import Count
 from peca.models import Pecas
 from cliente.models import Cliente
 from servico.models import Servico
+from colaborador.models import Colaborador
 
 
 class Orcamento(models.Model):
+    ANALISE = 'Em analise'
+    PASSAR_ORCAMENTO = 'Passar orçamento'
+    AGUARDANDO_LIBERACAO = 'Aguardando liberaçāo'
+    LIBERADO = 'Liberado'
+    EM_REPARO = 'Em reparo'
+    FINALIZADO = 'Finalizado'
+    FINALIZADO_ENTREGUE = 'Finalizado e entregue'
+    GARANTIA_ENCERRADA = 'Garantia encerrada'
+    RETORNO_GARANTIA = 'Retorno garantia'
+    CANCELADO = 'Cancelado'
+    CANCELADO_ENTREGUE = 'Cancelado e entregue'
+   
+    STATUS = [
+
+        (ANALISE, 'Em analise'),
+        (PASSAR_ORCAMENTO, 'Passar orçamento'),
+        (AGUARDANDO_LIBERACAO, 'Aguardando liberaçāo'),
+        (LIBERADO,'Liberado'),
+        (EM_REPARO, 'Em reparo'),
+        (FINALIZADO, 'Finalizado'),
+        (FINALIZADO_ENTREGUE, 'Finalizado e entregue'),
+        (GARANTIA_ENCERRADA, 'Garantia encerrada'),
+        (RETORNO_GARANTIA, 'Retorno garantia'),
+        (CANCELADO, 'Cancelado'),
+        (CANCELADO_ENTREGUE, 'Cancelado e entregue')
+
+    ]
+    PIX = 'PX'
+    CARTAO_CREDITO = 'CC'
+    CARTAO_DEBITO = 'CD'
+    DINHEIRO = 'DN'
+    FIADO = 'FD'
+    FORMA_PAGAMENTO = [
+        (PIX, 'Pix'),
+        (CARTAO_CREDITO, 'Cartāo de credito'),
+        (CARTAO_DEBITO, 'Cartāo de debito'),
+        (DINHEIRO, 'Dinheiro'),
+        (FIADO, 'Fiado')
+    ]
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     celular = models.CharField(max_length=90)
-    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
+    data_entrega = models.DateTimeField(null=True, blank=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_edicao = models.DateTimeField(auto_now=True)
+    status = models.CharField(choices=STATUS, max_length=21)
+    observacao = models.TextField(null=True, blank=True)
+    tecnico = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
+    desconto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
 
+    
     class Meta:
         ordering = ('-pk',)
 
@@ -35,6 +83,13 @@ class ItemsOrcamento(models.Model):
         Pecas,
         on_delete=models.CASCADE,
     )
+    servico = models.ForeignKey(
+        Servico, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+   
     quantidade = models.IntegerField()
     preco_orcamento = models.DecimalField(max_digits=9, decimal_places=2)
    
@@ -44,7 +99,8 @@ class ItemsOrcamento(models.Model):
 
     @property
     def __str__(self):
-        return f'{self.pk} - {self.orcamento.pk} - {self.peca}'
+        return f'{self.pk} - {self.orcamento.pk} - {self.peca} - {self.servico}'
 
     def subtotal(self):
         return self.preco_orcamento * (self.quantidade or 0)
+

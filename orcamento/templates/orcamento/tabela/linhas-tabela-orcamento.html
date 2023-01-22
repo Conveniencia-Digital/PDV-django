@@ -22,12 +22,11 @@
     <th>Preço</th>
     <th>Sub Total</th>
 </tr>
-<tr>
-    <td>{{ object.servico }}</td>
-</tr>
+
 {% for items in object.orcamento_items.all %}
 <tr>
-    <td></td>
+   
+    <td>{{ items.servico }}</td>
     <td>{{ items.peca }}</td>
     <td>{{ items.quantidade }}</td>
     <td>{{ items.preco_orcamento }}</td>
@@ -35,6 +34,7 @@
 </tr>
 {% endfor %}
 <tr class="bg-default table-borderless">
+    <td></td>
     <td></td>
     <td></td>
     <th>Total</th>
