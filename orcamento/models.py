@@ -68,7 +68,8 @@ class Orcamento(models.Model):
         qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
             'preco_orcamento', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
-        return t
+        desc = t - self.desconto
+        return desc
 
 
 class ItemsOrcamento(models.Model):

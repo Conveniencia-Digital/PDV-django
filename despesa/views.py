@@ -2,13 +2,22 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from despesa.forms import DespesaForms, CategoriaDespesaForms
 from despesa.models import Despesa
+from peca.models import Pecas
+from produto.models import Produto
 
 
 class ListaDespesa(ListView):
     model = Despesa
     template_name = 'despesa/pagina-inicial-despesa.html'
+    context_object_name = 'object'
 
+    def get_context_data(self, **kwargs):
+        context = super(ListaDespesa, self).get_context_data(**kwargs)
+        context['peca'] = Pecas.objects.filter(forma_pagamento='FD') 
+        context['produto'] = Produto.objects.filter(forma_pagamento='FD') 
+        return context
 
+   
 def cadastrardespesa(request):
     template_name = 'despesa/formularios/formulario-cadastrar-despesa.html'
     form = DespesaForms(request.POST or None)
@@ -53,3 +62,5 @@ def apagardespesa(request, pk):
     obj = Despesa.objects.get(pk=pk)
     obj.delete()
     return render(request, template_name)
+
+

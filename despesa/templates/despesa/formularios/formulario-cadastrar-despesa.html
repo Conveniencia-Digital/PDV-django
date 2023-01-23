@@ -22,11 +22,15 @@
     </div>
     <!---->
     <div class="form-row" style="margin-bottom: 10px;">
-      <div class="col form-floating">
+      <div class="col-3 form-floating">
         {% render_field form.preco_despesa class="form-control" value="0.00" %}
         <label for="">Informe o preco da despesa</label>
       </div>
-      <div class="col form-floating">
+      <div class="col-3 form-floating">
+        {% render_field form.forma_pagamento class="form-control" value="0.00" %}
+        <label for="">Forma de pagamento</label>
+      </div>
+      <div class="col-6 form-floating">
         {% render_field form.fornecedor class="form-control" %}
         <label for="">Informe o fornecedor se houver(opcional)</label>
       </div>

@@ -8,9 +8,9 @@
     <td>{{object.cliente.nome_cliente}}</td>
     <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
     {% if object.status == 'Entregue' %}
-    <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
+    <th style="color: rgb(23, 99, 23);">{{ object.status }}</th>
     {% else %}
-    <td>{{ object.status }}</td>
+    <th>{{ object.status }}</th>
     {% endif %}
     <td>
         <a style="text-decoration: none;" hx-get="{% url 'detalhe-vendas' object.pk %}" data-toggle="modal"
@@ -39,13 +39,13 @@
     <td>{{ items.subtotal }}</td>
 </tr>
 {% endfor %}
-<tr>
+<tr style="color: red;">
     <td></td>
     <td></td>
     <th>Desconto</th>
     <th>{{ object.desconto }}</th>
 </tr>
-<tr>
+<tr style="color: green;">
     <td></td>
     <td></td>
     <th>Total</th>

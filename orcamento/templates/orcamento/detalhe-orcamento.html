@@ -36,6 +36,10 @@
         <div class="content">
             <p>Prezado(a), {{ object.cliente }}</p>
             <p>Conforme solicitado segue orçamento disponibilizado pela area tecnica.</p>
+            <p>Ordem de servico: {{ object.id }} <br></p>
+            <p>Tecnico responsavel: {{ object.tecnico }} <br></p>
+            <p>Data e hora da compra: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
+            <p>Status: {{ object.status }} <br></p>
             <table class="table">
                 <thead></thead>
                 <tbody>
@@ -53,11 +57,23 @@
                         <td>{{ items.subtotal }}</td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Desconto</td>
+                        <td>{{ object.desconto }}</td>
+                    </tr>
                     <tr class="bg-default table-borderless">
                         <td></td>
                         <td></td>
                         <th>Total</th>
                         <th>{{ object.total }}</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Forma de pagamento</td>
+                        <td>{{ object.forma_pagamento }}</td>
                     </tr>
                 
                 </tbody>
