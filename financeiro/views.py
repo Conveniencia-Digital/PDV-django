@@ -3,11 +3,20 @@ from django.views.generic import ListView
 
 from financeiro.models import ContasAReceber
 from financeiro.forms import ContasAReceberForms
+from venda.models import Vendas
+from orcamento.models import Orcamento
+
 
 
 class ListaContasAReceber(ListView):
     model = ContasAReceber
     template_name = 'financeiro/pagina-inicial-contas-a-receber.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ListaContasAReceber, self).get_context_data(**kwargs)
+        context['venda'] = Vendas.objects.filter(forma_pagamento = 'Fiado')
+        context['orcamento'] = Orcamento.objects.filter(forma_pagamento = 'FD')
+        return context 
 
 
 def cadastrarcontas_a_receber(request):
