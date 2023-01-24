@@ -13,7 +13,7 @@ class Despesa(models.Model):
     CARTAO_CREDITO = 'Cartāo de credito'
     CARTAO_DEBITO = 'Cartāo de debito'
     DINHEIRO = 'Dinheiro'
-    FIADO = 'Fiado'
+    FIADO = 'Fiado a pagar'
     FORMA_PAGAMENTO = [
         (PIX, 'Pix'),
         (CARTAO_CREDITO, 'Cartāo de credito'),
@@ -21,6 +21,7 @@ class Despesa(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado')
     ]
+    
     categoria_despesa = models.ForeignKey(CategoriaDespesa, on_delete=models.CASCADE, null=True, blank=True)
     nome_despesa = models.CharField(max_length=90)
     preco_despesa = models.DecimalField(max_digits=9, decimal_places=2)
@@ -28,4 +29,5 @@ class Despesa(models.Model):
     observacao = models.TextField(max_length=1000, null=True, blank=True)
     data_cadastro = models.DateTimeField(auto_now_add=True, editable=False)
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=17, null=True, blank=True)
+    
    

@@ -1,8 +1,7 @@
 <tr id="trPeca{{ object.pk }}">
+    <td>{{ object.quantidade }}</td>
     <td> {{ object.nome_peca }} </td>
-    <td>{{ object.preco_de_custo }}</td>
-    <td> {{ object.preco_peca }} </td>
-    <td>{{ object.lucro }}</td>
+    <td>R$ {{ object.preco_de_custo }}</td> 
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop" 
               hx-get="{% url 'editar-peca' object.pk %}"
@@ -14,8 +13,9 @@
             hx-swap="outerHTML swap:300ms">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <td> {{ object.data_criacao|date:'d/m/y h:i:s' }}</td>
-        <td>{{ object.fornecedor|default:'---' }}</td>
-        <td> {{ object.data_edicao|date:'d/m/y h:i:s' }}</td>
+        <td>{{ object.data_criacao|date:'d/m/y h:i' }}</td>
+        <td>{{ object.data_edicao|date:'d/m/y h:i' }}</td>
     </td>
+    <td>R$ {{ object.preco_peca }}</td>
+    <td>{{ object.lucro }}</td>
 </tr>

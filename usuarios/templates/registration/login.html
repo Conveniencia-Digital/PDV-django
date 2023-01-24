@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -43,21 +44,28 @@
               </a>
             </div>
           </form>
-          <form action="#" class="sign-up-form">
+          <form method="post" class="sign-up-form">
+            {% csrf_token %}
+            
             <h2 class="title">Cadastrar-se</h2>
             <div class="input-field">
               <i class="fas fa-user"></i>
-              <input type="text" placeholder="Username" />
+              {% render_field form.username placeholder="Nome de  usuario" %}
             </div>
             <div class="input-field">
               <i class="fas fa-envelope"></i>
-              <input type="email" placeholder="Email" />
+              {% render_field form.email placeholder="Email" %}
             </div>
             <div class="input-field">
               <i class="fas fa-lock"></i>
-              <input type="password" placeholder="Password" />
+              {% render_field form.password1 placeholder="Crie uma senha" %}
             </div>
-            <input type="submit" class="btn" value="Sign up" />
+            <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente numérica.</p>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              {% render_field form.password2 placeholder="Confirme a senha" %}
+            </div>
+            <input type="submit" class="btn" value="Cadastrar" />
             <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
             <div class="social-media">
               <a href="#" class="social-icon">
@@ -85,7 +93,7 @@
               Tenha controle da sua loja, para nao perder dinheiro e lucrar muito mais. Com 
               Sistema Cell!
             </p>
-            <button class="btn transparent" id="sign-up-btn">
+            <button hx-get="{% url 'register' %}" class="btn transparent" id="sign-up-btn">
               Cadastrar-se
             </button>
           </div>

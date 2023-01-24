@@ -2,6 +2,7 @@
     <td>{{ object.cliente }}</td>
     <td>{{ object.nome_contas_a_receber }}</td>
     <td>{{ object.preco_contas_a_receber }}</td>
+    <td></td>
     <td>
         <span
             data-toggle="modal"
@@ -10,8 +11,6 @@
             hx-target="#adicionar-conteudo">
             <i class="fa-solid fa-pen-to-square" style="color: rgb(5, 180, 84);"></i>
         </span>
-
-
 
         <span
         data-toggle="modal"
@@ -23,4 +22,6 @@
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
     </td>
+    <td>{{object.data_criacao|date:"d/m/Y - h:i:s"}}</td>
+    <td>{{object.data_edicao|date:"d/m/Y - h:i:s"}}</td>
 </tr>

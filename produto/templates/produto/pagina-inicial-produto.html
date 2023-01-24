@@ -50,16 +50,20 @@
             hx-target="#adicionar-conteudo"
             hx-swap="innerHTML"> Cadastrar produto</a>
 </div>
-<div style="padding-top:18px">
+<div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
         <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
         <tr>
-            <th>Qtd em estoque</th>
+            <th>Qtd.</th>
             <th>Produto</th>
-            <th>Preço de venda</th>
+            <th>Preço venda</th>
             <th>Ações</th>
+            <th>Data cadastro</th>
+            <th>Ultima atualização</th>
+            <th>Preço custo</th>
+            <th>Lucro Und.</th>
         </tr>
-        </thead>
+        </thead>   
         <tbody id="produto-Tbody">
             {% include "produto/tabela/tabela-produto.html" %}
         </tbody>

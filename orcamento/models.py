@@ -34,17 +34,17 @@ class Orcamento(models.Model):
         (CANCELADO_ENTREGUE, 'Cancelado e entregue')
 
     ]
-    PIX = 'PX'
-    CARTAO_CREDITO = 'CC'
-    CARTAO_DEBITO = 'CD'
-    DINHEIRO = 'DN'
-    FIADO = 'FD'
+    PIX = 'Pix'
+    CARTAO_CREDITO = 'Cartāo de credito'
+    CARTAO_DEBITO = 'Cartāo de debito'
+    DINHEIRO = 'Dinheiro'
+    FIADO = 'Fiado a receber'
     FORMA_PAGAMENTO = [
         (PIX, 'Pix'),
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado')
+        (FIADO, 'Fiado a receber')
     ]
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     celular = models.CharField(max_length=90)
@@ -55,7 +55,7 @@ class Orcamento(models.Model):
     observacao = models.TextField(null=True, blank=True)
     tecnico = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
     desconto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
-    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
 
     
     class Meta:

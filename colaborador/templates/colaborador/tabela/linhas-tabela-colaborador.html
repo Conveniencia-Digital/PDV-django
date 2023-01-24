@@ -1,5 +1,7 @@
 <tr id="colaboradorTr{{ object.pk }}">
     <td>{{ object.nome_colaborador }}</td>
+    <td>{{ object.telefone_contato }}</td>
+    <td>R$ {{ object.salario|default:'1.200' }}</td>
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'editar-colaborador' object.pk %}"
             hx-target="#adicionar-conteudo">

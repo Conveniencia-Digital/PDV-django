@@ -21,13 +21,13 @@ class Vendas(models.Model):
     CARTAO_CREDITO = 'Cartāo de credito'
     CARTAO_DEBITO = 'Cartāo de debito'
     DINHEIRO = 'Dinheiro'
-    FIADO = 'Fiado'
+    FIADO = 'Fiado a receber'
     FORMA_PAGAMENTO = [
         (PIX, 'Pix'),
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado')
+        (FIADO, 'Fiado a receber')
     ]
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)

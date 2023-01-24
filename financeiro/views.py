@@ -14,8 +14,8 @@ class ListaContasAReceber(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListaContasAReceber, self).get_context_data(**kwargs)
-        context['venda'] = Vendas.objects.filter(forma_pagamento = 'Fiado')
-        context['orcamento'] = Orcamento.objects.filter(forma_pagamento = 'FD')
+        context['venda'] = Vendas.objects.filter(forma_pagamento = 'Fiado a receber')
+        context['orcamento'] = Orcamento.objects.filter(forma_pagamento = 'Fiado a receber')
         return context 
 
 

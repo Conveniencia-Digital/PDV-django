@@ -13,8 +13,8 @@ class ListaDespesa(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListaDespesa, self).get_context_data(**kwargs)
-        context['peca'] = Pecas.objects.filter(forma_pagamento='FD') 
-        context['produto'] = Produto.objects.filter(forma_pagamento='FD') 
+        context['peca'] = Pecas.objects.filter(forma_pagamento='Fiado a pagar') 
+        context['produto'] = Produto.objects.filter(forma_pagamento='Fiado a pagar') 
         return context
 
    

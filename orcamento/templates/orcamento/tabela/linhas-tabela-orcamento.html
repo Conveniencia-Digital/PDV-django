@@ -1,21 +1,26 @@
-<tr class="bg-light">
+<tr style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
     <th>Cliente</th>
     <th>Telefone para contato</th>
-    <th></th>
-    <th></th>
-    <th><a class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"
-            hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">Detalhe</a></th>
+    <th>Status</th>
+    <th>Data cadastro</th>
+    <th>Ações</th>
     
    
 </tr>
 <tr>
     <td>{{object.cliente.nome_cliente}}</td>
     <td>{{object.cliente.telefone_contato}}</td>
-    <td></td>
-    <td></td>
+    <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
+    <td>{{object.data_criacao|date:'d/m/y - h:i'}}</td>
+    <td><a data-toggle="modal" data-target="#staticBackdrop"
+        hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">
+        <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
+    </a>
+        <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
+    </td>
 </tr>
 
-<tr class="bg-light">
+<tr>
     <th>Serviços</th>
     <th>Peças</th>
     <th>Quantidade</th>
@@ -42,8 +47,8 @@
 </tr>
 <tr class="bg-default table-borderless">
     <td></td>
-    <td></td>
-    <td></td>
+    <td>Forma de pagamento</td>
+    <td>{{ object.forma_pagamento }}</td>
     <th>Total</th>
     <th>{{ object.total }}</th>
 </tr>

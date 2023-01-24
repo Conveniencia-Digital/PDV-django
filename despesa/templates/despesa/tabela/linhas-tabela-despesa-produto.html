@@ -1,7 +1,10 @@
 
 <tr id="pecaTr{{ object.pk }}">
+    
+    <td>{{ produto.fornecedor|default:'---' }}</td>
     <td>{{ produto.nome_produto }}</td>
-    <td>{{ produto.preco_de_custo }}</td>
+    <td>R$ {{ produto.preco_de_custo }}</td>
+    <td>{{ produto.forma_pagamento }}</td>
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop" hx-target="#adicionar-conteudo">
             <i class="fa-solid fa-pen-to-square" style="color: rgb(5, 180, 84);"></i>
@@ -11,6 +14,6 @@
             hx-confirm="Deseja mesmo apagar {{ produto.nome_produto }}" hx-target="closest tr" hx-swap="outerHTML swap:300ms">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-    <td>{{ produto.data_cadastro}}</td>
+    <td>{{ produto.data_criacao|date:'d/m/y - h:i' }}</td>
     </td>
 </tr>

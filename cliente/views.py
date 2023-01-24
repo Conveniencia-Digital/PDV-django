@@ -57,3 +57,5 @@ def total_clientes(request):
     context = {'total_cliente': total_cliente}
     return render(request, template_name, context)
     
+
+#source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate

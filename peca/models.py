@@ -32,17 +32,17 @@ class Pecas(models.Model):
         (TAMPAS, 'Tampas'),  
         (OUTROS, 'Outros')
     ]
-    PIX = 'PX'
-    CARTAO_CREDITO = 'CC'
-    CARTAO_DEBITO = 'CD'
-    DINHEIRO = 'DN'
-    FIADO = 'FD'
+    PIX = 'Cartāo de credito'
+    CARTAO_CREDITO = 'Cartāo de credito'
+    CARTAO_DEBITO = 'Cartāo de debito'
+    DINHEIRO = 'Dinheiro'
+    FIADO = 'Fiado a pagar'
     FORMA_PAGAMENTO = [
         (PIX, 'Pix'),
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado')
+        (FIADO, 'Fiado a pagar')
     ]
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
@@ -52,7 +52,7 @@ class Pecas(models.Model):
     quantidade = models.IntegerField()
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
-    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=2, default=PIX)
+    forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
     fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
 

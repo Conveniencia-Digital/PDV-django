@@ -1,8 +1,8 @@
 <tr>
     <td>{{ orcamento.cliente }}</td>
     <td></td>
-    <td>{{ orcamento.total }}</td>
-    
+    <td>R$ {{ orcamento.total }}</td>
+    <td>{{ orcamento.forma_pagamento }}</td>
     <td>
         <span
             data-toggle="modal"
@@ -22,4 +22,5 @@
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
     </td>
+    <td>{{ orcamento.data_criacao|date:'d/m/y - h:i' }}</td>
 </tr>

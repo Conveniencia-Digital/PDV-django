@@ -1,7 +1,7 @@
 <tr id="trProduto{{ object.pk }}">
     <td>{{ object.quantidade }}</td>
     <td>{{ object.nome_produto }}</td>
-    <td>{{ object.preco|default:'---' }}</td>
+    <td>R$ {{ object.preco|default:'---' }}</td>
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop"
             hx-get="{% url 'editar-produtos' object.pk %}" 
@@ -13,6 +13,10 @@
             hx-target="closest tr" hx-swap="outerHTML swap:300ms">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-
     </td>
+    <td>{{object.data_criacao|date:"d/m/y - h:i"}}</td>
+    <td>{{object.data_edicao|date:"d/m/y - h:i"}}</td>
+    <td>R$ {{ object.preco_de_custo }}</td>
+    <td>R$ {{ object.lucro }}</td>
+
 </tr>
