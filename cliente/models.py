@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Cliente(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True, editable=False)
     data_edicao = models.DateTimeField(auto_now=True, editable=False)
     nome_cliente = models.CharField(max_length=90)
