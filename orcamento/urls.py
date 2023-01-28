@@ -1,12 +1,14 @@
 from django.urls import path
-from orcamento.views import ListaOrcamento, cadastrarorcamento, adicionarlinhas, preco_peca, apagaritemorcamento, DetalheOrcamento, adicionarlinhaservico
+from django.contrib.auth.decorators import login_required
+from orcamento.views import ListaOrcamento, cadastrarorcamento, adicionarlinhas, preco_peca, apagaritemorcamento, DetalheOrcamento, adicionarlinhaservico, editarorcamento
 
 urlpatterns = [
-    path('orcamento/', ListaOrcamento.as_view(), name='orcamento'),
-    path('cadastrarorcamento/', cadastrarorcamento, name='cadastrar-orcamento'),
-    path('adicionarlinhas/', adicionarlinhas, name='adicionar-linhas'),
-    path('adicionarlinhaservico/', adicionarlinhaservico, name='adicionar-linha-servico'),
-    path('peca/preco/', preco_peca, name='preco-peca'),
-    path('apagar-item/<int:pk>/orcamento/', apagaritemorcamento, name='apagar-item-orcamento'),
-    path('detalheorcamento/<int:pk>', DetalheOrcamento.as_view(), name='detalhe-orcamento'),
+    path('orcamento/', login_required(ListaOrcamento.as_view()), name='orcamento'),
+    path('cadastrarorcamento/', login_required(cadastrarorcamento), name='cadastrar-orcamento'),
+    path('editarorcamento/<int:pk>/', login_required(editarorcamento), name='editar-orcamento'),
+    path('adicionarlinhas/', login_required(adicionarlinhas), name='adicionar-linhas'),
+    path('adicionarlinhaservico/', login_required(adicionarlinhaservico), name='adicionar-linha-servico'),
+    path('peca/preco/', login_required(preco_peca), name='preco-peca'),
+    path('apagar-item/<int:pk>/orcamento/', login_required(apagaritemorcamento), name='apagar-item-orcamento'),
+    path('detalheorcamento/<int:pk>', login_required(DetalheOrcamento.as_view()), name='detalhe-orcamento'),
 ]

@@ -3,16 +3,20 @@ from django.views.generic import ListView
 from django.db.models.aggregates import Sum
 from peca.models import Pecas
 from peca.forms import PecasForms
-
+from django.contrib.auth.decorators import login_required
 
 class Peca(ListView):
     model = Pecas
     template_name = 'peca/pagina-inicial-pecas.html'
 
+    def get_queryset(self):
+        return Pecas.objects.filter(usuario=self.request.user)
 
+
+@login_required
 def cadastrarpeca(request):
     template_name = 'peca/formularios/formulario-cadastrar-peca.html'
-    form = PecasForms(request.POST or None)
+    form = PecasForms(request.POST or None, initial={'usuario': request.user})
 
     if request.method == 'POST':
         if form.is_valid():
@@ -25,10 +29,14 @@ def cadastrarpeca(request):
     return render(request, template_name, context)
 
 
+
+@login_required
 def editarpeca(request, pk):
     template_name = 'peca/formularios/formulario-editar-peca.html'
     instance = Pecas.objects.get(pk=pk)
-    form = PecasForms(request.POST or None, instance=instance)
+    form = PecasForms(request.POST or None, instance=instance, initial={'usuario': request.user})
+    if instance.usuario != request.user:
+        raise PermissionError
 
     if request.method == 'POST':
         if form.is_valid():
@@ -41,18 +49,22 @@ def editarpeca(request, pk):
     return render(request, template_name, context)
 
 
+@login_required
 def apagarpeca(request, pk):
     template_name = 'peca/tabela/tabela-peca.html'
     objeto = Pecas.objects.get(pk=pk)
-    objeto.delete()
+    if objeto.usuario == request.user:
+        objeto.delete()
+    else:
+        raise PermissionError
     return render(request, template_name)
 
 
 def relatoriopeca(request):
     template_name = 'peca/informacao-peca.html'
-    preco_venda = Pecas.objects.all().aggregate(preco_pecas=Sum('preco_peca'))
-    preco_custo = Pecas.objects.all().aggregate(preco_custo=Sum('preco_de_custo'))
-    total = Pecas.objects.all().count
+    preco_venda = Pecas.objects.filter(usuario=request.user).aggregate(preco_pecas=Sum('preco_peca'))
+    preco_custo = Pecas.objects.filter(usuario=request.user).aggregate(preco_custo=Sum('preco_de_custo'))
+    total = Pecas.objects.filter(usuario=request.user).count
 
     for i in preco_venda.values():
         preco_venda = i

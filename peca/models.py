@@ -1,5 +1,6 @@
 from django.db import models
 from fornecedor.models import Fornecedores
+from django.contrib.auth.models import User
 
 
 
@@ -44,6 +45,7 @@ class Pecas(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado a pagar')
     ]
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
     nome_peca = models.CharField(max_length=99)

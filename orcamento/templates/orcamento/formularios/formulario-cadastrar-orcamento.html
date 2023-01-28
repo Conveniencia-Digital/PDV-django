@@ -10,6 +10,7 @@
       hx-indicator=".htmx-indicator"
       hx-swap="afterbegin">
     {% csrf_token %}
+   
     <div class="modal-body">
         <div class="form-row">
             <div class="col-md-6 mb-1">
@@ -18,6 +19,7 @@
         </div>
         <div class="form-row">
           <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.usuario class='form-control' %}
             {% render_field form.cliente class='form-control'%}
             <label>Selecione o cliente </label>
           </div>

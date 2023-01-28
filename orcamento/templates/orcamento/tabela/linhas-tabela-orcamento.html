@@ -1,4 +1,4 @@
-<tr style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
+<tr id="trOrcamento{{ object.pk }}" style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224);">
     <th>Cliente</th>
     <th>Telefone para contato</th>
     <th>Status</th>
@@ -16,7 +16,11 @@
         hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">
         <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
     </a>
+    <a href="" hx-get="{% url 'editar-orcamento' object.pk %}" data-toggle="modal"
+    data-target="#staticBackdrop" hx-target="#adicionar-conteudo">
         <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
+    </a>
+        
     </td>
 </tr>
 

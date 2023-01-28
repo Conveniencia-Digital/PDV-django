@@ -4,6 +4,7 @@ from peca.models import Pecas
 from cliente.models import Cliente
 from servico.models import Servico
 from colaborador.models import Colaborador
+from django.contrib.auth.models import User
 
 
 class Orcamento(models.Model):
@@ -46,6 +47,7 @@ class Orcamento(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado a receber')
     ]
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     celular = models.CharField(max_length=90)
     data_entrega = models.DateTimeField(null=True, blank=True)
@@ -73,6 +75,7 @@ class Orcamento(models.Model):
 
 
 class ItemsOrcamento(models.Model):
+    
     orcamento = models.ForeignKey(
         Orcamento,
         on_delete=models.SET_NULL,
@@ -80,6 +83,7 @@ class ItemsOrcamento(models.Model):
         null=True,
         blank=True
     )
+   
     peca = models.ForeignKey(
         Pecas,
         on_delete=models.CASCADE,

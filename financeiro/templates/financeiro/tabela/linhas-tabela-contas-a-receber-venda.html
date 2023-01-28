@@ -1,8 +1,8 @@
 <tr>
     <td>{{ venda.cliente }}</td>
     <td></td>
-    <td>{{ venda.total }}</td>
-    
+    <td>R${{ venda.total }}</td>
+    <td>{{ venda.status}}</td>
     <td>
         <span
             data-toggle="modal"
@@ -22,4 +22,5 @@
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
     </td>
+    <td>{{venda.data_criacao|date:'d/m/y - H:i'}}</td>
 </tr>

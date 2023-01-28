@@ -14,6 +14,7 @@
       <div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
+            {% render_field form.usuario class="form-control" %}
             {% render_field form.nome_produto type="text" class="form-control" %}
             <label for="floatingInput">Digite o nome do produto, descrição, marca e
               modelo </label>

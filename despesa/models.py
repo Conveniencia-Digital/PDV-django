@@ -1,5 +1,6 @@
 from django.db import models
 from fornecedor.models import Fornecedores
+from django.contrib.auth.models import User
 
 class CategoriaDespesa(models.Model):
     nome_categoria_despesa = models.CharField(max_length=100)
@@ -22,6 +23,7 @@ class Despesa(models.Model):
         (FIADO, 'Fiado')
     ]
     
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     categoria_despesa = models.ForeignKey(CategoriaDespesa, on_delete=models.CASCADE, null=True, blank=True)
     nome_despesa = models.CharField(max_length=90)
     preco_despesa = models.DecimalField(max_digits=9, decimal_places=2)

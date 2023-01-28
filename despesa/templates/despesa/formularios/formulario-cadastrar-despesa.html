@@ -12,6 +12,7 @@
     {% csrf_token %}
     <div class="form-row" style="margin-bottom: 10px;">
       <div class="col form-floating">
+        {% render_field form.usuario class="form-control" %}
         {% render_field form.nome_despesa class="form-control" %}
         <label for="">Descrição da despesa </label>
       </div>

@@ -1,10 +1,11 @@
 from django.urls import path
 from colaborador.views import ListaColaborador, cadastrarcolaborador, apagarcolaborador, editarcolaborador
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('colaborador/', ListaColaborador.as_view(), name='colaborador'),
-    path('cadastrarcolaborador/', cadastrarcolaborador, name='cadastrar-colaborador'),
-    path('editarcolaborador/<int:pk>/', editarcolaborador, name='editar-colaborador'),
-    path('apagarcolaborador/<int:pk>/', apagarcolaborador, name='apagar-colaborador'),
+    path('colaborador/', login_required(ListaColaborador.as_view()), name='colaborador'),
+    path('cadastrarcolaborador/', login_required(cadastrarcolaborador), name='cadastrar-colaborador'),
+    path('editarcolaborador/<int:pk>/', login_required(editarcolaborador), name='editar-colaborador'),
+    path('apagarcolaborador/<int:pk>/', login_required(apagarcolaborador), name='apagar-colaborador'),
 
 ]

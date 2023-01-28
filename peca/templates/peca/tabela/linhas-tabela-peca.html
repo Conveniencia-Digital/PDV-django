@@ -1,7 +1,7 @@
 <tr id="trPeca{{ object.pk }}">
     <td>{{ object.quantidade }}</td>
     <td> {{ object.nome_peca }} </td>
-    <td>R$ {{ object.preco_de_custo }}</td> 
+    <td>R$ {{ object.preco_peca }}</td> 
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop" 
               hx-get="{% url 'editar-peca' object.pk %}"
@@ -16,6 +16,6 @@
         <td>{{ object.data_criacao|date:'d/m/y h:i' }}</td>
         <td>{{ object.data_edicao|date:'d/m/y h:i' }}</td>
     </td>
-    <td>R$ {{ object.preco_peca }}</td>
+    <td>R$ {{ object.preco_de_custo }}</td>
     <td>{{ object.lucro }}</td>
 </tr>

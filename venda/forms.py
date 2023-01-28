@@ -15,15 +15,16 @@ class VendasForm(forms.ModelForm):
 
     class Meta:
         model = Vendas
-        fields = ('cliente', 'vendedor', 'desconto', 'observacao', 'status', 'forma_pagamento')
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(VendasForm, self).__init__(*args, **kwargs)
-
+        user = kwargs.pop('user')
+        super(VendasForm, self).__init__(*args, **kwargs)      
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-
-
+        self.fields['usuario'].widget = forms.HiddenInput()
+        self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
+        self.fields['vendedor'].queryset = Colaborador.objects.filter(usuario=user)
 
 
 class ItemsVendaForm(forms.ModelForm):
@@ -41,20 +42,18 @@ class ItemsVendaForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
         super(ItemsVendaForm, self).__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-
         self.fields['id'].label = ''
         self.fields['id'].widget = forms.HiddenInput()
-
         self.fields['vendas'].label = ''
         self.fields['vendas'].widget = forms.HiddenInput()
-        
-        
-
         self.fields['preco'].widget.attrs['step'] = 0.01
+
+        self.fields['produto'].queryset = Produto.objects.filter(usuario=user)
 
 
 VendasItemsFormset = inlineformset_factory(
