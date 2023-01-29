@@ -12,7 +12,7 @@ class ListaDespesa(ListView):
     template_name = 'despesa/pagina-inicial-despesa.html'
     context_object_name = 'object'
 
-    def get_queryset(self) :
+    def get_queryset(self):
         return Despesa.objects.filter(usuario=self.request.user)
 
     def get_context_data(self, **kwargs):

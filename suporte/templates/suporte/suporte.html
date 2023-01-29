@@ -80,9 +80,9 @@ Suporte Tecnico
                 </div>
             </div>
            
-            <div class="chat-history">                 
+            <div class="chat-history" style="margin-bottom:190px ;">                 
                 <ul id="minha-msg" class="m-b-0">
-                    {% include 'comunidade/conversa.html' %}
+                    {% include 'suporte/conversa-suporte.html' %}
                 </ul>
             </div>
             
@@ -90,8 +90,19 @@ Suporte Tecnico
         </div>
     </div>
 <nav class="navbar fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4">
-    <div class="container-fluid">
-      <input type="text" placeholder="Mensagem" class="form-control" style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;">
+    <div class="container-fluid" id="form-suporte">
+            <div class="fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4" style="display: flex;">
+                <div
+                     class="form-control"
+                     hx-get="{% url 'enviar-suporte' %}"
+                     hx-target="#form-suporte"
+                     hx-swap="innerHTML"
+                     hx-indicator=".htmx-indicator"
+                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;">
+                
+                </div>
+                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 38px;"><i class="fa fa-send""></i></button>
+            </div>  
     </div>
   </nav>
 
