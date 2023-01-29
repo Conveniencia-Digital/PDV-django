@@ -1,0 +1,24 @@
+{% load widget_tweaks %}
+<form hx-post="{% url 'enviar-mensagem' %}" hx-target="#minha-msg" hx-indicator=".htmx-indicator" hx-swap="beforeend">
+    <div class="chat-message clearfix">
+        <div class="input-group-prepend ">
+            <div class="input-group mb-0">
+                {% csrf_token %}
+                {% render_field form.usuario class="form-control"  %}
+                {% render_field form.mensagem class="form-control" %}
+                <button type="submit" class="input-group-text" onclick="limpar()"><i class="fa fa-send"></i></button> 
+            </div>                                                      
+        </div>
+    </div>
+  
+</form>
+
+<script>
+    function limpar() {
+        setTimeout(() => {
+            document.getElementById('id_mensagem').value = ""
+        },1000)
+        
+    }
+  
+</script>

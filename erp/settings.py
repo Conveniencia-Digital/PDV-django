@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'usuarios',
     'fornecedor',
+    'comunidade'
 
 ]
 # Application definition

@@ -1,0 +1,57 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
+
+{% block style %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock style %}
+
+{% block titulo %}
+Comunidade Tecnica
+{% endblock titulo %}
+
+{% block conteudo %}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="chat">
+                <div class="chat-header clearfix">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                            </a>
+                            <div class="chat-about">
+                                <h6 class="m-b-0">Grupo privado</h6>
+                                <small>Perguntas e respostas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="chat-history">                 
+                    <ul id="minha-msg" class="m-b-0">
+                        {% include 'comunidade/conversa.html' %}
+                    </ul>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mensagem" style="margin-bottom: 60px;">                  
+    <div class="chat-message clearfix">
+            <div class="input-group-prepend">
+                <div class="input-group mb-0" >
+                    <div hx-get="{% url 'enviar-mensagem' %}" hx-target="#mensagem" 
+                    hx-swap="innerHTML" hx-indicator=".htmx-indicator" class="form-control"
+                    >
+                    </div>
+                    <span class="input-group-text"><i class="fa fa-send"></i></span>
+                </div>
+            </div>
+    </div>
+</div>
+
+{% endblock conteudo %}
