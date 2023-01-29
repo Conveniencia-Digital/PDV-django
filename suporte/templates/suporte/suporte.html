@@ -1,0 +1,105 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
+{% block style %}
+<style>
+    .offcanvas-body {
+        font-size: 20px;
+    }
+
+    .text {
+        margin: 20px 40px 40px 30px;
+    }
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock style %}
+{% block titulo %}
+Suporte Tecnico
+{% endblock titulo %}
+{% block conteudo %}
+<button class="btn btn-outline-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+    aria-controls="offcanvasRight">Falar no whatsapp</button>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Suporte tecnico</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="text">Sistema Cell <br></div>
+        <hr>
+        <div class="text">
+            Horario de funcionamento<br>
+            Seg - Sex 7:00 - 20:00<br>
+            Sab - 7:00 - 18:00<br>
+        </div>
+
+        <div class="text">
+            Endereço <br>
+            Rua das Nogueiras 3360<br>
+            Dourados MS 79839-043<br>
+        </div>
+
+        <div class="text">
+            Telefone para contato<br>
+            <a href="tel:+5567996649605">(67) 9 9664 - 9605</a><br>
+        </div>
+
+        <div class="text">
+            Converse conosco no whatsapp <br>
+            Click no icone abaixo <br>
+        </div>
+
+        <div class="text">
+            Tempo medio para responder <br>
+            Aproximadamente 2 minutos<br>
+        </div>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <a href="https://wa.me/5567996649605?text=Olá%20preciso%20de%20ajuda%20!!!%20" style="position:fixed;width:60px;height:60px;bottom:40px;right:40px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+                 z-index:1000;" target="_blank">
+            <i style="margin-top:16px" class="fa fa-whatsapp"></i>
+        </a>
+
+    </div>
+
+</div>
+<div class="row clearfix" style="margin-top: 20px">
+    <div class="col-lg-12">
+        <div class="chat">
+            <div class="chat-header clearfix">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                        </a>
+                        <div class="chat-about">
+                            <h6 class="m-b-0">Elton Machado</h6>
+                            <small>Como posso te atender ?</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="chat-history">                 
+                <ul id="minha-msg" class="m-b-0">
+                    {% include 'comunidade/conversa.html' %}
+                </ul>
+            </div>
+            
+            
+        </div>
+    </div>
+<nav class="navbar fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <div class="container-fluid">
+      <input type="text" placeholder="Mensagem" class="form-control" style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;">
+    </div>
+  </nav>
+
+{% endblock conteudo %}
+
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+{% endblock scripts %}

@@ -59,7 +59,7 @@
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+   
 
     {% block style %}{% endblock style %}
 </head>
@@ -178,9 +178,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'suporte' %}">
                             <span data-feather="phone"></span>
-                            Suporte tecnico
+                            Suporte 
                         </a>
                     </li>
                 </ul>
@@ -244,6 +244,7 @@
                     </button>
                 </div>
             </div>
+            
             {% block conteudo %}
             
 
@@ -255,7 +256,6 @@
         </main>
     </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -275,6 +275,7 @@
 
 
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
 {% block scripts %}
 
 {% endblock scripts %}
