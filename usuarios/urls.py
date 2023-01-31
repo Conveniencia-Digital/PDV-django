@@ -4,6 +4,6 @@ from usuarios.views import SignUp
 
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
-    path('register/', SignUp.as_view(), name='register')
+    path('cadastrar/', SignUp.as_view(), name='cadastrar')
     
 ]

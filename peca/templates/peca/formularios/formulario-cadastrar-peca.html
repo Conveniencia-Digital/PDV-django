@@ -52,13 +52,13 @@
                   <div class="col-md">
                       <div class="form-floating">
                         {% render_field form.preco_de_custo value="0.00" %}
-                        <label for="floatingSelectGrid">Preço de custo</label>    
+                        <label for="floatingSelectGrid">Preço custo(unidade)</label>    
                       </div>
                   </div>
                   <div class="col-md">
                       <div class="form-floating">
                         {% render_field form.preco_peca value="0.00" %}
-                        <label for="floatingSelectGrid">Preço de venda</label>
+                        <label for="floatingSelectGrid">Preço venda (instalada)</label>
                       </div>
                   </div>
                   <div class="col-md-6">
@@ -91,7 +91,7 @@
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
         setTimeout(() => {
-        $('#success_tic').modal('toggle')
+          $('#success_tic').modal('toggle')
         }, "500");
   });
 </script>

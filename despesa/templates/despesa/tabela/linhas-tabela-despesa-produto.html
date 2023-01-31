@@ -2,6 +2,7 @@
 <tr id="pecaTr{{ object.pk }}">
     
     <td>{{ produto.fornecedor|default:'---' }}</td>
+    <td><a href="tel:+55{{ produto.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ produto.fornecedor.telefone_contato }}</a></td>
     <td>{{ produto.nome_produto }}</td>
     <td>R$ {{ produto.preco_de_custo }}</td>
     <td>{{ produto.forma_pagamento }}</td>

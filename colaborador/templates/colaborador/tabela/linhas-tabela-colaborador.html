@@ -1,6 +1,6 @@
 <tr id="colaboradorTr{{ object.pk }}">
     <td>{{ object.nome_colaborador }}</td>
-    <td>{{ object.telefone_contato }}</td>
+    <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a></td>
     <td>R$ {{ object.salario|default:'1.200' }}</td>
     <td>
         <span data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'editar-colaborador' object.pk %}"

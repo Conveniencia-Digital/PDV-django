@@ -1,8 +1,9 @@
 <tr>
     <td>{{ venda.cliente }}</td>
-    <td></td>
+    <td><a href="tel:+55{{ venda.cliente.telefone_contato }}" style="text-decoration: none;">{{ venda.cliente.telefone_contato }}</a></td>
+    <td>Compra de produtos</td>
     <td>R${{ venda.total }}</td>
-    <td>{{ venda.status}}</td>
+    <td>{{ venda.forma_pagamento}}</td>
     <td>
         <span
             data-toggle="modal"

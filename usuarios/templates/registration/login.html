@@ -10,13 +10,17 @@
       crossorigin="anonymous"
     ></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+     <!-- HTMX -->
+     <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+     <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
     <title>Sign in & Sign up Form</title>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="container">
       <div class="forms-container">
         <div class="signin-signup">
-          <form class="sign-in-form" method="post">
+          <form class="sign-in-form" method="post" id="login">
             {% csrf_token %}
             <h2 class="title">Entrar no sistema</h2>
             <div class="input-field">
@@ -44,7 +48,7 @@
               </a>
             </div>
           </form>
-          <form method="post" class="sign-up-form">
+          <form hx-post="{% url 'cadastrar' %}" class="sign-up-form" id="cadastrar">
             {% csrf_token %}
             
             <h2 class="title">Cadastrar-se</h2>
@@ -93,7 +97,7 @@
               Tenha controle da sua loja, para nao perder dinheiro e lucrar muito mais. Com 
               Sistema Cell!
             </p>
-            <button hx-get="{% url 'register' %}" class="btn transparent" id="sign-up-btn">
+            <button hx-get="{% url 'cadastrar' %}" hx-target="#cadastrar" hx-swap="inneHTML" hx-indicator=".htmx-indicator" class="btn transparent" id="sign-up-btn">
               Cadastrar-se
             </button>
           </div>
@@ -105,7 +109,7 @@
             <p>
               Poderoso, rapido, e facil de usar.<br> Sistema Cell
             </p>
-            <button class="btn transparent" id="sign-in-btn">
+            <button class="btn transparent" hx-get="{% url 'login' %}" hx-target="#cadastrar" hx-swap="inneHTML" hx-indicator=".htmx-indicator" id="sign-in-btn">
               Entrar
             </button>
           </div>

@@ -9,7 +9,7 @@
 </tr>
 <tr>
     <td>{{object.cliente.nome_cliente}}</td>
-    <td>{{object.cliente.telefone_contato}}</td>
+    <td><a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
     <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
     <td>{{object.data_criacao|date:'d/m/y - h:i'}}</td>
     <td><a data-toggle="modal" data-target="#staticBackdrop"

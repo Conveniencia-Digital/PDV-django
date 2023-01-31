@@ -5,7 +5,7 @@
     <th>Ações</th>
 </tr>
 <tr>
-    <td>{{object.cliente.nome_cliente}}</td>
+    <td>{{object.cliente.nome_cliente}}<br> <a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
     <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
     {% if object.status == 'Entregue' %}
     <th style="color: rgb(23, 99, 23);">{{ object.status }}</th>

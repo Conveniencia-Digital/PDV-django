@@ -39,7 +39,7 @@
 </div>
 
 <div style="margin-top: 30px;">
-    <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop"
+    <a id="teste" href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop"
         hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML" style="font-size: 20px; margin-bottom: 20px;">Cadastrar Peças</a>
 </div>
 <div class="table-responsive" style="padding-top:18px">
@@ -73,6 +73,5 @@
     $(document).ready(function () {
         $('#myTable').DataTable();
     });
-
 </script>
 {% endblock scripts %}

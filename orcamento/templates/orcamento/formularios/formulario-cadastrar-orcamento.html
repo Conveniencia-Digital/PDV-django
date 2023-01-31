@@ -115,7 +115,12 @@
           <div class="col form-floating">
             {% render_field form.observacao class='form-control'%}
             <label >Observaçāo </label>
+            <input id="teste" type="text">
           </div>
+        </div>
+        <div id="total">
+          <!-- aqui e pra vir oo valor total-->
+          {{ total }}
         </div>
         
     </div>
@@ -139,6 +144,18 @@ document.querySelector('#addItem').addEventListener('click', function() {
 })
 
 function reorderItems() {
+  var selectElement = document.getElementById("id_main-forma_pagamento");
+  
+
+  // Propriedade selectedIndex do objeto do tipo HTMLSelectElement
+  var selectedIndex = selectElement.selectedIndex;
+
+  // Valor da opção selecionada
+  var selectedValue = selectElement.options[selectedIndex].value;
+  console.log('pica');
+  if (selectedValue == 4){
+    document.querySelector('#teste').setAttribute('type', 'hidden')
+  }
   let total = 0;
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
@@ -177,9 +194,14 @@ function reorderItems() {
   htmx.process(document.querySelector("#orcamento"))
   htmx.process(document.querySelector("#servico"))
  
-  document.getElementById("total").innerHTML = total;
+  document.querySelector("#total").innerHTML = total;
 }
+function pagamento () {
+  fp = document.querySelector('#id_forma_pagamento').value
+ print(fp)
 
+}
+ 
 
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')

@@ -1,0 +1,41 @@
+
+{% load widget_tweaks %}
+<form hx-post="{% url 'cadastrar' %}" hx-target="body" hx-swap="innerHTML" hx-indicator=".htmx-indicator" class="sign-up-form">
+    {% csrf_token %}
+    
+    <h2 class="title">Cadastrar-se</h2>
+    <div class="input-field">
+      <i class="fas fa-user"></i>
+      {% render_field form.username placeholder="Nome de  usuario" %}
+    </div>
+    <div class="input-field">
+      <i class="fas fa-envelope"></i>
+      {% render_field form.email placeholder="Email" %}
+    </div>
+    <div class="input-field">
+      <i class="fas fa-lock"></i>
+      {% render_field form.password1 placeholder="Crie uma senha" %}
+    </div>
+    <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente numérica.</p>
+    <div class="input-field">
+      <i class="fas fa-lock"></i>
+      {% render_field form.password2 placeholder="Confirme a senha" %}
+    </div>
+    <button type="submit" class="btn" value="Cadastrar">Cadastrar</button>
+    
+    <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
+    <div class="social-media">
+      <a href="#" class="social-icon">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="#" class="social-icon">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#" class="social-icon">
+        <i class="fab fa-google"></i>
+      </a>
+      <a href="#" class="social-icon">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </div>
+  </form>
