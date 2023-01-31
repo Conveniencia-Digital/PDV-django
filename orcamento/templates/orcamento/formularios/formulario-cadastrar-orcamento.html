@@ -144,19 +144,6 @@ document.querySelector('#addItem').addEventListener('click', function() {
 })
 
 function reorderItems() {
-  var selectElement = document.getElementById("id_main-forma_pagamento");
-  
-
-  // Propriedade selectedIndex do objeto do tipo HTMLSelectElement
-  var selectedIndex = selectElement.selectedIndex;
-
-  // Valor da opção selecionada
-  var selectedValue = selectElement.options[selectedIndex].value;
-  console.log('pica');
-  if (selectedValue == 4){
-    document.querySelector('#teste').setAttribute('type', 'hidden')
-  }
-  let total = 0;
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
@@ -196,13 +183,6 @@ function reorderItems() {
  
   document.querySelector("#total").innerHTML = total;
 }
-function pagamento () {
-  fp = document.querySelector('#id_forma_pagamento').value
- print(fp)
-
-}
- 
-
   $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
   });

@@ -108,4 +108,10 @@ class ItemsOrcamento(models.Model):
 
     def subtotal(self):
         return self.preco_orcamento * (self.quantidade or 0)
+    
+    def save(self, *args, **kwargs):
+        self.peca.quantidade -= self.quantidade
+        self.peca.save()
+        super(ItemsOrcamento, self).save(*args, **kwargs)
+
 

@@ -28,6 +28,7 @@ def cadastrarvendas(request):
             template_name = 'vendas/tabela/linhas-tabela-vendas.html'
             vendas = form.save()
             items_venda = formset.save()
+                   
             context = {'object': vendas, 'items': items_venda}
             return render(request, template_name, context)
 

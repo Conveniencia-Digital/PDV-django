@@ -3,6 +3,7 @@ from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
 
 
+
 class Produto(models.Model):
     FONES = 'FN'
     CAPAS = 'CP'
@@ -15,6 +16,7 @@ class Produto(models.Model):
     FONTES = 'FT'
     DIVERSOS = 'DV'
     INFORMATICA = 'IN'
+    CAIXA_SOM = 'CS'
     CATEGORIAS_PRODUTOS = [
         (FONES, 'Fones'),
         (CABOS, 'Cabos'),
@@ -26,7 +28,8 @@ class Produto(models.Model):
         (CARREGADORES, 'Carregadores'),
         (FONTES, 'Fontes'),
         (DIVERSOS, 'Diversos'),
-        (INFORMATICA, 'Informatica')     
+        (INFORMATICA, 'Informatica'),    
+        (CAIXA_SOM, 'Caixa de som')     
     ]
     PIX = 'Cartāo de credito'
     CARTAO_CREDITO = 'Cartāo de credito'
@@ -60,3 +63,6 @@ class Produto(models.Model):
 
     def lucro(self):
         return self.preco - self.preco_de_custo 
+
+
+    

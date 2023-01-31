@@ -74,3 +74,9 @@ class ItemsVenda(models.Model):
 
     def subtotal(self):
         return self.quantidade * self.preco
+
+    def save(self, *args, **kwargs):
+        self.produto.quantidade -= self.quantidade
+        self.produto.save()
+        super(ItemsVenda, self).save(*args, **kwargs)
+
