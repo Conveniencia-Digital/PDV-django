@@ -6,6 +6,9 @@ class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedores
         fields = '__all__'
+        widgets = {
+            'observacao': forms.TextInput()
+        }
 
        
 

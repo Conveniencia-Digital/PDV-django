@@ -1,8 +1,8 @@
 {% load widget_tweaks %}
 <div class="modal-header">
     <h5 class="modal-title" id="staticBackdropLabel"> Editar {{ object }} </h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        
     </button>
 </div>
 <form hx-post="{% url 'editar-produtos' object.pk %}" 
@@ -68,7 +68,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-row">
+            <div class="row g-2">
               <div class="col-md-6 mb-3 form-floating">
                 {% render_field form.forma_pagamento class="form-control" %}
                 <label>Forma de pagamento</label>
@@ -78,16 +78,64 @@
                 <label>Observaçāo</label>
               </div>
             </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-outline-primary">Finalizar</button>
-        </div>
-</form>
-<script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-      $('#success_tic_editar').modal('toggle')
-    }, "500");
-    });
-</script>
+            <div class="row g-2">
+              <div class="col-md-6 mb-3 form-floating">
+                {% render_field form.valor_entrada class="form-control" value="0.00" type="Number" %}
+                <label id="label_valor_entrada">Valor de entrada</label>
+              </div>
+              <div class="col-md-3 mb-3 form-floating">
+                {% render_field form.qtd_parcela class="form-control" value="01" type="Number" %}
+                <label id="label_qtd_parcela">Qtd. parcela</label>
+              </div>
+              <div class="col-md-3 mb-3 form-floating">
+                {% render_field form.data_vencimento class="form-control" type="Date" %}
+                <label id="label_data_vencimento">Data vencimento</label>
+              </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 15px;">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+            </div>
+      
+      </form>
+      <script>
+        $('form').on('submit', function () {
+          $('#staticBackdrop').modal('toggle')
+          setTimeout(() => {
+            $('#success_tic_editar').modal('toggle')
+          }, "500");
+        });
+      
+        document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
+          var valor_entrada = document.querySelector('#id_valor_entrada');
+          var data_vencimento = document.querySelector('#id_data_vencimento');
+          var qtd_parcela = document.querySelector('#id_qtd_parcela');
+          var label_valor_entrada = document.querySelector('#label_valor_entrada');
+          var label_data_vencimento = document.querySelector('#label_data_vencimento')
+          var label_qtd_parcela = document.querySelector('#label_qtd_parcela')
+      
+      
+      
+          if (this.value === "Fiado a pagar") {
+            valor_entrada.setAttribute('type', 'Number');
+            data_vencimento.setAttribute('type', 'Date');
+            qtd_parcela.setAttribute('type', 'Number');
+            label_valor_entrada.style.color  = "rgb(67, 67, 67)";
+            label_data_vencimento.style.color = "rgb(67, 67, 67)";
+            label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+          }
+          else {
+            valor_entrada.setAttribute('type', 'Hidden');
+            data_vencimento.setAttribute('type', 'Hidden');
+            qtd_parcela.setAttribute('type', 'Hidden');
+            label_valor_entrada.style.color  = "#FFFFFF";
+            label_data_vencimento.style.color = "#FFFFFF";
+            label_qtd_parcela.style.color = "#FFFFFF";
+          }
+      
+      
+        });
+      
+      
+      
+      </script>

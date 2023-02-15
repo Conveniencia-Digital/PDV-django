@@ -160,7 +160,9 @@
 
 .chat .chat-history .other-message {
     background: #e8f1f3;
-    text-align: right
+    text-align: left;
+    left: 30px;
+    
 }
 
 .chat .chat-history .other-message:after {
@@ -196,6 +198,7 @@
 .float-right {
     float: right
 }
+
 
 .clearfix:after {
     visibility: hidden;

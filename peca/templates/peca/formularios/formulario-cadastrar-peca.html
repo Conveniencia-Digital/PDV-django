@@ -1,97 +1,132 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel"> Nova Peça </h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<form
-        hx-post="{% url 'cadastrar-peca' %}"
-        hx-target="#peca-Tbody"
-        hx-indicator=".htmx-indicator"
-        hx-swap="afterbegin">
+  <h5 class="modal-title" id="staticBackdropLabel"> Nova Peça </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
-    <div class="modal-body">
-        {% csrf_token %}
+  </button>
+</div>
+<form hx-post="{% url 'cadastrar-peca' %}" hx-target="#peca-Tbody" hx-indicator=".htmx-indicator" hx-swap="afterbegin">
+
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2">
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.usuario class="form-control"%}
+            {% render_field form.nome_peca type="text" class="form-control" id="floatingInput" %}
+            <label for="floatingInput">Digite o nome do peça, descrição, marca e modelo </label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.categoria_peca class="form-select" id="floatingSelectGrid" %}
+            <label for="floatingSelectGrid">Escolha a categoria</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.codigo_de_barras %}
+            <label for="floatingSelectGrid">Digite o codigo de barras(opcional)</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.quantidade value="01" %}
+            <label for="floatingSelectGrid">Informe a quantidade</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-2">
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.preco_de_custo value="0.00" id="preco_de_custo" type="Number" %}
+            <label for="floatingSelectGrid">Preço custo(unidade)</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.preco_peca value="0.00" %}
+            <label for="floatingSelectGrid">Preço venda (instalada)</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-floating">
+            {% render_field form.fornecedor %}
+            <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
+          </div>
+        </div>
         <div class="row g-2">
-            <div class="row g-2">
-                <div class="col-md">
-                  <div class="form-floating">
-                    {% render_field form.usuario class="form-control"%}
-                    {% render_field form.nome_peca type="text" class="form-control" id="floatingInput" %}
-                     <label for="floatingInput">Digite o nome do peça, descrição, marca e modelo </label>
-                  </div>
-                </div>
-                <div class="col-md">
-                  <div class="form-floating">
-                    {% render_field form.categoria_peca class="form-select" id="floatingSelectGrid" %}
-                    <label for="floatingSelectGrid">Escolha a categoria</label>
-                  </div>
-                </div>
-            </div>
-        </div> 
-            <div class="row g-2">
-              <div class="row g-2">
-                <div class="col-md">
-                    <div class="form-floating">
-                        {% render_field form.codigo_de_barras %}
-                        <label for="floatingSelectGrid">Digite o codigo de barras(opcional)</label>    
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        {% render_field form.quantidade value="01" %}
-                        <label for="floatingSelectGrid">Informe a quantidade</label>
-                     </div>
-                </div>
-            </div>
-            </div>
-    
-            <div class="row g-2">
-                <div class="row g-2">
-                  <div class="col-md">
-                      <div class="form-floating">
-                        {% render_field form.preco_de_custo value="0.00" %}
-                        <label for="floatingSelectGrid">Preço custo(unidade)</label>    
-                      </div>
-                  </div>
-                  <div class="col-md">
-                      <div class="form-floating">
-                        {% render_field form.preco_peca value="0.00" %}
-                        <label for="floatingSelectGrid">Preço venda (instalada)</label>
-                      </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                        {% render_field form.fornecedor %}
-                      <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
-                    </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="col-md-6 mb-3 form-floating">
-                      {% render_field form.forma_pagamento class="form-control" %}
-                      <label>Forma de pagamento</label>
-                    </div>
-                    <div class="col-md-6 mb-3 form-floating">
-                      {% render_field form.observacao class="form-control" %}
-                      <label>Observaçāo</label>
-                    </div>
-                  </div>
-                </div>
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.forma_pagamento class="form-control" %}
+            <label>Forma de pagamento</label>
+          </div>
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.observacao class="form-control" %}
+            <label>Observaçāo</label>
+          </div>
+        </div>
+        <div class="row g-2" style="color: #FFFFFF;">
+          <div class="col-md-6 mb-3 form-floating">
+            {% render_field form.qtd_parcela class="form-control" value="01" %}
+            <label id="label_qtd_parcela">Quantidade de parcelas</label>
+          </div>
+          <div class="col-md-3 mb-3 form-floating">
+            {% render_field form.valor_entrada class="form-control" value="0.00" %}
+            <label id="label_valor_entrada">Valor de entrada</label>
+          </div>
+          <div class="col-md-3 mb-3 form-floating">
+            {% render_field form.data_vencimento class="form-control" %}
+            <label id="label_data_vencimento">Dia vencimento</label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="modal-footer" style="margin-top: 15px;">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+      <button type="submit" class="btn btn-outline-primary">Finalizar</button>
     </div>
 
 </form>
 
 <script>
-  $('form').on('submit', function() {
+  document.getElementById('id_forma_pagamento').addEventListener('change', function () {
+    var qtd_parcela = document.getElementById('id_qtd_parcela');
+    var valor_entrada = document.getElementById('id_valor_entrada');
+    var dia_vencimento = document.getElementById('id_data_vencimento');
+    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+    var label_data_vencimento = document.getElementById('label_data_vencimento');
+    var label_valor_entrada = document.getElementById('label_valor_entrada');
+
+    if (this.value === 'Fiado a pagar') {
+      qtd_parcela.setAttribute('type', 'Number');
+      valor_entrada.setAttribute('type', 'Number');
+      dia_vencimento.setAttribute('type', 'Date');
+      label_valor_entrada.style.color = "rgb(67, 67, 67)";
+      label_data_vencimento.style.color = "rgb(67, 67, 67)";
+      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+    } else {
+      qtd_parcela.setAttribute('type', 'Hidden');
+      valor_entrada.setAttribute('type', 'Hidden');
+      dia_vencimento.setAttribute('type', 'Hidden');
+      label_valor_entrada.style.color = "#FFFFFF";
+      label_data_vencimento.style.color = "#FFFFFF";
+      label_qtd_parcela.style.color = "#FFFFFF";
+
+    }
+  });
+  $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-          $('#success_tic').modal('toggle')
-        }, "500");
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, "500");
   });
 </script>

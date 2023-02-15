@@ -84,33 +84,28 @@ Suporte Tecnico
                 <ul id="minha-msg" class="m-b-0">
                     {% include 'suporte/conversa-suporte.html' %}
                 </ul>
-            </div>
-            
-            
+            </div>      
         </div>
     </div>
-<nav class="navbar fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4">
-    <div class="container-fluid" id="form-suporte">
-            <div class="fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4" style="display: flex;">
-                <div
+</div>
+<nav class="navbar fixed-bottom bg-body-tertiary">
+    <div class="container-fluid">
+            <div class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" style="display: flex;">
+                <input
+                     id="form-suporte" 
                      class="form-control"
                      hx-get="{% url 'enviar-suporte' %}"
+                     hx-trigger="mouseenter"
                      hx-target="#form-suporte"
-                     hx-swap="innerHTML"
+                     hx-swap="outerHTML"
                      hx-indicator=".htmx-indicator"
-                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;">
+                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;"
+                     placeholder="Mensagem...">
                 
-                </div>
-                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 38px;"><i class="fa fa-send""></i></button>
+                </input>
+                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 50px;"><i class="fa fa-send"></i></button>
             </div>  
     </div>
   </nav>
 
 {% endblock conteudo %}
-
-
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-    crossorigin="anonymous"></script>
-{% endblock scripts %}

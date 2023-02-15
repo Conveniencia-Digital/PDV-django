@@ -44,8 +44,8 @@
     <a
            
             class="btn btn-outline-primary"
-            data-toggle="modal"
-            data-target="#staticBackdrop"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
             hx-get="{% url 'criar-produtos' %}"
             hx-target="#adicionar-conteudo"
             hx-swap="innerHTML"> Cadastrar produto</a>
@@ -58,10 +58,6 @@
             <th>Produto</th>
             <th>Preço venda</th>
             <th>Ações</th>
-            <th>Data cadastro</th>
-            <th>Ultima atualização</th>
-            <th>Preço custo</th>
-            <th>Lucro Und.</th>
         </tr>
         </thead>   
         <tbody id="produto-Tbody">
@@ -75,6 +71,7 @@
 {% include "produto/modais-vazios/modal-alerta.html" %}
 {% include "produto/modais-vazios/modal-alerta-apagar.html" %}
 {% include "produto/modais-vazios/modal-alerta-editar.html" %}
+{% include "produto/off-canvas/off-canvas-produtos.html" %}
 
 {% endblock conteudo %}
 

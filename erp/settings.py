@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'fornecedor',
     'comunidade',
     'suporte',
+    'pedido',
 
 ]
 # Application definition

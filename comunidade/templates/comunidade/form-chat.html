@@ -1,13 +1,15 @@
 {% load widget_tweaks %}
-<form class="fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4" hx-post="{% url 'enviar-mensagem' %}"
-  hx-target="#minha-msg" hx-indicator=".htmx-indicator" hx-swap="beforeend">
+
+<form class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" hx-post="{% url 'enviar-mensagem' %}" hx-target="#minha-msg" hx-indicator=".htmx-indicator" hx-swap="beforeend" style="display: flex;">
+             
   {% csrf_token %}
   {% render_field form.usuario class="form-control" %}
-  <div style="display: flex;">
-    {% render_field form.mensagem class="form-control" style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;"%}
-    <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 38px;"><i class="fa fa-send""></i></button>
-  </div>
+  {% render_field form.mensagem class="form-control" style="border: 1px solid rgb(230, 227, 227); margin-bottom:60px;"%}
+  <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 50px;"><i
+      class="fa fa-send"></i></button>
 </form>
+
+
 
 <script>
   function limpar() {

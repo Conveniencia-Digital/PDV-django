@@ -55,6 +55,9 @@ class Pecas(models.Model):
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
+    data_vencimento = models.DateField(null=True, blank=True)
+    qtd_parcela = models.IntegerField(null=True, blank=True)
+    valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
 
@@ -63,6 +66,18 @@ class Pecas(models.Model):
 
     def lucro(self):
          return f'R$ {self.preco_peca - self.preco_de_custo}'
+    
+    def precototal(self):
+        return self.preco_de_custo * self.quantidade
   
+    def lucrototal(self):
+        return (self.preco_peca - self.preco_de_custo) * self.quantidade 
+    
+    def precototal(self):
+        return self.preco_de_custo * self.quantidade
 
-   # Resolve when is how will be utility the field quantity 
+    def vendatotal(self):
+        return self.preco_peca * self.quantidade
+
+    def saldodespesa(self):
+        return (self.preco_de_custo * self.quantidade) - self.valor_entrada

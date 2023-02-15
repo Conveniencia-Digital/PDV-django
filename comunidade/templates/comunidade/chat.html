@@ -29,31 +29,30 @@ Comunidade Tecnica
                     </div>
                 </div>
                
-                <div class="chat-history">                 
-                    <ul id="minha-msg" class="m-b-0" style="margin-bottom:190px ;">
+                <div class="chat-history" style="margin-bottom:190px;">                 
+                    <ul id="minha-msg" class="m-b-0">
                         {% include 'comunidade/conversa.html' %}
                     </ul>
-                </div>
-                
-                
+                </div>              
             </div>
         </div>
     </div>
 </div>
-<nav class="navbar fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4">
-    <div class="container-fluid" id="mensagem">
-            <div class="fixed-bottom bg-body-tertiary col-md-9 ml-sm-auto col-lg-10 px-md-4" style="display: flex;">
-                <div
+<nav class="navbar fixed-bottom bg-body-tertiary">
+    <div id="mensagem">
+            <form  class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" style="display: flex;">
+                <input
                      class="form-control"
                      hx-get="{% url 'enviar-mensagem' %}"
+                     hx-trigger="mouseenter"
                      hx-target="#mensagem"
-                     hx-swap="innerHTML"
+                     
                      hx-indicator=".htmx-indicator"
-                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;">
-                
-                </div>
-                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 38px;"><i class="fa fa-send""></i></button>
-            </div>  
+                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;"
+                     placeholder="Mensagem...">  
+            </input>
+                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 50px;"><i class="fa fa-send"></i></button>
+        </form>  
     </div>
   </nav>
 

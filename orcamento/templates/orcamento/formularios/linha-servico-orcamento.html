@@ -1,5 +1,5 @@
 {% load widget_tweaks %}
-<div id="item-{{ forloop.counter0 }}" class="form-row" style="margin-bottom: 10px;">
+<div id="item-{{ forloop.counter0 }}" class="row g-2" style="margin-bottom: 10px;">
   <style> 
   
     @media (max-width:760px) {
@@ -24,13 +24,13 @@
   </style>
     {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
     {{ items_orcamento_form.id }}
-    <div class="col form-floating">
-        {% render_field items_orcamento_form.servico class="form-control" data-field="servico" %}
+    <div class="col-11 form-floating">
+        {% render_field items_orcamento_form.servico class="form-select" data-field="servico" %}
         <label for="">Selecione o servico</label>
       </div>
     
     {% if items_orcamento_form.id.value %}
-        <div class="col-md-1 mb-1">
+        <div class="col-1">
              <span
                 class="span-is-link no ml-2 remove-row"
                 hx-delete="{% url 'apagar-item-orcamento' items_orcamento_form.id.value %}"
@@ -40,9 +40,9 @@
                  <i class="fa fa-times fa-lg"></i>
              </span>
             {% else %}
-            <span onclick="removeRow()">
-              <button type="submit" class="btn btn-danger btn-sm" id="remove">Remover</button>
-            </span>
+            <div class="col-1" onclick="removeRow()">
+              <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">X</button>
+            </div>
         </div>
     {% endif %}
 </div>

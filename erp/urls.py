@@ -35,5 +35,6 @@ urlpatterns = [
     path('', include('fornecedor.urls')),
     path('', include('comunidade.urls')),
     path('', include('suporte.urls')),
+    path('', include('pedido.urls')),
 
 ]

@@ -1,0 +1,6 @@
+<td>{{ orcamento.cliente }}</td>
+    <td><a href="tel:+55{{ orcamento.cliente.telefone_contato }}" style="text-decoration: none;">{{ orcamento.cliente.telefone_contato }}</a></td>
+    <td>Serviço feito {{orcamento.celular}}</td>
+    <td>R$ {{ orcamento.total }}</td>
+    <td>{{ orcamento.forma_pagamento }}</td>
+    <td>{{ orcamento.data_criacao|date:'d/m/y - h:i' }}</td>

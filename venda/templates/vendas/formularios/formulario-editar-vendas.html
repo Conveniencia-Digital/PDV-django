@@ -2,23 +2,29 @@
 {% load widget_tweaks %}
 <div class="modal-header">
   <h5 class="modal-title" id="staticBackdropLabel">Atualizar venda</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
   </button>
 </div>
+{% if form.errors %}
+
+  <div class="alert alert-danger">
+    <strong>Atenção!</strong> Por favor, corrija os erros abaixo.
+  </div>
+{% endif %}
 <form hx-post="{% url 'editar-vendas' object.pk %}"
       hx-target="#trVenda{{ object.pk }}"
       hx-indicator=".htmx-indicator"
       hx-swap="outerHTML">
   {% csrf_token %}
   <div class="modal-body">
-    <div class="form-row">
+    <div class="row">
       <div class="col form-floating" style="margin-bottom: 10px;">
         {% render_field form.status class='form-control' id="status" %}
         <label>Status </label>
       </div>
     </div>
-    <div class="form-row">
+    <div class="row">
       <div class="col form-floating">
           {% render_field form.usuario class='form-control' %}
           {% render_field form.cliente class='form-control' %}
@@ -30,16 +36,24 @@
       </div>
     </div>
     <hr>
-    <div class="form-row">
+    <div class="row">
       <div class="col-md-6 mb-1 ">
         <h2 class="fw-lighter" style="font-size: 1.5em;">Produtos</h2>
       </div>
     </div>
-
+    {% if formset.errors %}
+    <ul>
+        {% for form in formset %}
+            {% for error in form.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
     {{ formset.management_form }}
     <div id="venda">
       {% for itemsvendaform in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="form-row">
+      <div id="item-{{ forloop.counter0 }}" class="row">
         {% render_field itemsvendaform.vendas data-field='vendas' %}
         {% render_field itemsvendaform.id data-field='id' %}
         <div class="col-md-6 mb-3 form-floating">
@@ -56,18 +70,19 @@
         </div>
       </div>
       {% endfor %}
+
     </div>
 
     <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
       hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add produto
     </button>
     <hr>
-    <div class="form-row">
+    <div class="row">
       <div class="col-md-6 mb-1 ">
         <h2 class="fw-lighter" style="font-size: 1.5em;">Pagamento</h2>
       </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-md-6 mb-3 form-floating">
           {% render_field form.forma_pagamento class="form-control" %}
           <label>Forma de pagamento</label> 
@@ -79,12 +94,12 @@
       <h4 style="margin: 15px auto;">R$ 00.00</h4>
     </div>
     <hr>
-    <div class="form-row">
+    <div class="row">
       <div class="col-md-6 mb-1 ">
         <h2 class="fw-lighter" style="font-size: 1.5em;">Informações adicionais</h2>
       </div>
     </div>
-    <div class="form-row">
+    <div class="row">
       <div class="col form-floating" style="margin-bottom: 10px;">
         {% render_field form.observacao class="form-control" %}
         <label>Observação</label>

@@ -58,6 +58,10 @@ class Orcamento(models.Model):
     tecnico = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
     desconto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
+    data_vencimento = models.DateField(null=True, blank=True)
+    qtd_parcela = models.IntegerField(null=True, blank=True)
+    valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+
 
     
     class Meta:

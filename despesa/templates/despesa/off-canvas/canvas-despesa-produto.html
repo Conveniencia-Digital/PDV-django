@@ -1,0 +1,6 @@
+<td>{{ produto.fornecedor|default:'---' }}</td>
+    <td><a href="tel:+55{{ produto.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ produto.fornecedor.telefone_contato }}</a></td>
+    <td>{{ produto.data_criacao|date:'d/m/y - h:i' }}</td>
+    <td>{{ produto.nome_produto }}</td>
+    <td>R$ {{ produto.saldodespesa }}</td>
+    <td>{{ produto.forma_pagamento }}</td>

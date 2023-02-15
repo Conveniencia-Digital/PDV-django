@@ -36,9 +36,6 @@ def cadastrarvendas(request):
     return render(request, template_name, context)
 
 
-
-
-
 @login_required
 def buscarpreco(request):
     template_name = 'vendas/formularios/preco-produto.html'
@@ -50,6 +47,8 @@ def buscarpreco(request):
     produto_pk = 0
     for i in lista:
         produto_pk = i
+    
+
     produto = Produto.objects.get(pk=produto_pk)
     context = {'produto': produto}
     return render(request, template_name, context)
@@ -66,10 +65,13 @@ def addform(request):
 
 
 @login_required
-def apagaritemvenda(pk):
+def apagaritemvenda(request, pk):
     item_orcamento = ItemsVenda.objects.get(pk=pk)
-    item_orcamento.delete()
-    return None
+    if item_orcamento.usuario == request.user:
+        item_orcamento.delete()
+        return None
+    else:
+        raise PermissionError
 
 
 class DetalheVendas(DetailView):
@@ -87,6 +89,9 @@ def editarvendas(request, pk):
 
     form = VendasForm(request.POST or None, user=request.user, initial={'usuario': request.user}, instance=venda_instance, prefix='main')
     formset = VendasItemsFormset(request.POST or None, form_kwargs={'user': request.user}, instance=venda_instance, prefix='items')
+
+    if venda_instance.usuario != request.user:
+        raise PermissionError
     
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -96,6 +101,9 @@ def editarvendas(request, pk):
             items_venda = formset.save()
             context = {'object': vendas, 'items': items_venda}
             return render(request, template_name, context)
+        else:
+            print(form.errors)
+            print(formset.errors)
    
     context = {'object':venda_instance, 'form': form, 'formset': formset}
     return render(request, template_name, context)

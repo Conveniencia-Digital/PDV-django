@@ -1,0 +1,6 @@
+<td>{{peca.fornecedor|default:'---'}}</td>
+    <td><a href="tel:+55{{ peca.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ peca.fornecedor.telefone_contato }}</a></td>
+    <td>{{ peca.data_criacao|date:'d/m/y - h:i' }}</td>
+    <td>{{ peca.nome_peca }}</td>
+    <td>R$ {{ peca.saldodespesa }}</td>
+    <td>{{peca.forma_pagamento}}</td>

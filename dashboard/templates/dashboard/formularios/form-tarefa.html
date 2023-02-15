@@ -1,0 +1,39 @@
+{% load widget_tweaks %}
+
+<div class="modal-header">
+  <h5 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar tarefa</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form hx-post="{% url 'cadastrar-tarefa' %}" hx-target="#tarefa-Tbody" hx-swap="afterbegin"
+  hx-indicator=".htmx-indicator">
+  <div class="modal-body">
+    {% csrf_token %}
+        <div class="row g-2" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+              {% render_field form.usuario class='form-control' %}
+              {% render_field form.tarefa class='form-control' %}
+                <label for="">O que tem pra fazer ?</label>
+            </div>
+        </div>
+        <div class="row g-2" style="margin-bottom: 10px;">
+          <div class="col form-floating">
+            {% render_field form.colaborador class='form-select' %}
+              <label for="">Quem vai fazer ?</label>
+          </div>
+          <div class="col form-floating">
+            {% render_field form.status class='form-select' %}
+              <label for="">Status</label>
+          </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function () {
+        $('#staticBackdrop').modal('toggle')
+    });
+</script>

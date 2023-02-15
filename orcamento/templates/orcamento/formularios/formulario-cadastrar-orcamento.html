@@ -1,194 +1,237 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel"> Novo orcamento </h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<form hx-post="{% url 'cadastrar-orcamento' %}"
-      hx-target="#orcamento-Tbody"
-      hx-indicator=".htmx-indicator"
-      hx-swap="afterbegin">
-    {% csrf_token %}
+  <h5 class="modal-title" id="staticBackdropLabel"> Novo orcamento </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
    
-    <div class="modal-body">
-        <div class="form-row">
-            <div class="col-md-6 mb-1">
-                <label class="font-weight-lighter" style="font-size:1.2em">Informações do cliente e do celular </label>
-            </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.usuario class='form-control' %}
-            {% render_field form.cliente class='form-control'%}
-            <label>Selecione o cliente </label>
-          </div>
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.celular class='form-control'%}
-            <label >Informe a marca e modelo do celular </label>
-          </div>
-         
-        </div> 
-        <hr>
-    <div class="form-row">
-      <div class="col-md-6 mb-1 ">
+  </button>
+</div>
+<form hx-post="{% url 'cadastrar-orcamento' %}" hx-target="#orcamento-Tbody" hx-indicator=".htmx-indicator"
+  hx-swap="afterbegin">
+  {% csrf_token %}
+
+  <div class="modal-body">
+    <div class="row g-2">
+      <div class="col-6">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações do cliente</h2>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6 form-floating">
+        {% render_field form.usuario class='form-control' %}
+        {% render_field form.cliente class='form-select'%}
+        <label>Selecione o cliente </label>
+      </div>
+      <div class="col-6 form-floating">
+        {% render_field form.celular class='form-control'%}
+        <label>Informe a marca e modelo do celular </label>
+      </div>
+
+    </div>
+    <hr>
+    <div class="row g-2">
+      <div class="col-6 ">
         <h2 class="fw-lighter" style="font-size: 1.5em;">Peças</h2>
       </div>
     </div>
-        {{ formset.management_form }}
-        <div id="orcamento">
-            {% for items_orcamento_form in formset %}
-            <div id="item-{{ forloop.counter0 }}" class="form-row">
-                {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
-                {{ items_orcamento_form.id }}
-                <div class="col-md-6 mb-3 form-floating">
-                    {% render_field items_orcamento_form.peca class='form-control' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
-                    <label>Selecione a peça </label>
-                  </div>
-                <div class="col-md-3 mb-3 form-floating">
-                    {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00" %}
-                    <label>Preço Unitario </label>
-                </div>
-                <div class="col-md-3 mb-3 form-floating">
-                    {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
-                    <label>Quantidade</label>
-                </div>
-                {% endfor %}
-            </div>
+    {{ formset.management_form }}
+    <div id="orcamento">
+      {% for items_orcamento_form in formset %}
+      <div id="item-{{ forloop.counter0 }}" class="row g-2" style="margin-bottom: 10px;">
+        {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
+        {{ items_orcamento_form.id }}
+        <div class="col-6 form-floating">
+          {% render_field items_orcamento_form.peca class='form-select' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
+          <label>Selecione a peça </label>
         </div>
-        <button
-                id="addItem"
-                class="btn btn-primary btn-sm"
-                hx-get="{% url 'adicionar-linhas' %}"
-                hx-target="#orcamento"
-                hx-swap="beforeend settle:1s"
-        >Add peca
-        </button>
-          <hr>
-        <label class="font-weight-lighter" style="font-size:1.2em">Serviço</label> 
-           
-        <div id="servico">  
-          {% for items_orcamento_form in formset %}
-          <div class="form-row" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-             {% render_field items_orcamento_form.servico class="form-control" data-field="servico" %}
-              <label for="">Selecione o servico</label>
-             </div>
-          </div>
-          {% endfor %}
-          
+        <div class="col-3 form-floating">
+          {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00" %}
+          <label>Preço Unitario </label>
         </div>
-        <button id="addItem" class="btn btn-link btn-sm" hx-get="{% url 'adicionar-linha-servico' %}" hx-target="#servico" hx-swap="beforeend settle:1s" style="text-decoration: none;">Add outro serviço</button>
-        <div class="form-row">
-          <div class="col-md-6 mb-1">
-              <label class="font-weight-lighter" style="font-size:1.2em">Informações de pagamento</label>
-          </div>
+        <div class="col-3 form-floating">
+          {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
+          <label>Quantidade</label>
         </div>
-        <div class="form-row">
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.forma_pagamento class='form-control'%}
-            <label>Selecione a forma de pagamento </label>
-          </div>
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.desconto class='form-control' value="0.00" %}
-            <label >Desconto</label>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-6 mb-1">
-              <label class="font-weight-lighter" style="font-size:1.2em">Informações do orçamento </label>
-          </div>
+        {% endfor %}
       </div>
-        <div class="form-row">
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.status class='form-control'%}
-            <label >Informe o status deste orcamento </label>
-          </div>
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.data_entrega class='form-control'%}
-            <label >Informe a data  de entrega </label>
-          </div>
-          <div class="col-md-6 mb-3 form-floating">
-            {% render_field form.tecnico class='form-control'%}
-            <label >Informe tecnico responsavel </label>
-          </div>
-          <div class="col form-floating">
-            {% render_field form.observacao class='form-control'%}
-            <label >Observaçāo </label>
-            <input id="teste" type="text">
-          </div>
-        </div>
-        <div id="total">
-          <!-- aqui e pra vir oo valor total-->
-          {{ total }}
-        </div>
-        
     </div>
+    <button id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'adicionar-linhas' %}" hx-target="#orcamento"
+      hx-swap="beforeend settle:1s" style="font-size: 10px;">Add peca
+    </button>
+    <hr>
+    <h2 class="fw-lighter" style="font-size: 1.5em;">Serviços</h2>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Finalizar</button>
+    <div id="servico">
+      {% for items_orcamento_form in formset %}
+      <div class="row g-2" style="margin-bottom: 10px;">
+        <div class="col form-floating">
+          {% render_field items_orcamento_form.servico class="form-select" data-field="servico" %}
+          <label for="">Selecione o servico</label>
+        </div>
+      </div>
+      {% endfor %}
+
     </div>
+    <button id="addItem" class="btn btn-outline-primary " hx-get="{% url 'adicionar-linha-servico' %}" hx-target="#servico"
+      hx-swap="beforeend settle:1s" style="text-decoration: none; font-size: 10px;">Add outro serviço</button>
+    <div class="row g-2">
+      <div class="col-6">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações de pagamento</h2>
+      </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col-6 form-floating">
+        {% render_field form.forma_pagamento class='form-select'%}
+        <label>Selecione a forma de pagamento </label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.desconto class='form-control' value="0.00" %}
+        <label>Desconto</label>
+      </div>
+      <div  class="col-3 form-floating">
+        <input id="totalValue" type="Number" class="form-control" readonly>
+        <label>Valor total</label>
+      </div>
+    </div>
+    <div class="row g-2" style="color: white;">
+      <div class="col-6 form-floating">
+        {% render_field form.qtd_parcela class="form-control" value="01" %}
+        <label id="label_qtd_parcela">Quantidade de parcelas</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.valor_entrada class="form-control" value="0.00" %}
+        <label id="label_valor_entrada">Valor de entrada</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.data_vencimento class="form-control" %}
+        <label id="label_data_vencimento">Dia vencimento</label>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações do orçamento</h2>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6 form-floating">
+        {% render_field form.status class='form-select'%}
+        <label>Informe o status deste orcamento </label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.data_entrega class='form-control' type="date" %}
+        <label>Informe a data de entrega </label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.tecnico class='form-select'%}
+        <label>Informe tecnico responsavel </label>
+      </div>
+      <div class="col-12 form-floating">
+        {% render_field form.observacao class='form-control' %}
+        <label>Observaçāo </label>   
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
-{% block scripts %}
+
 <script>
-(function() {
-  reorderItems()
-})();
-
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
+  (function () {
     reorderItems()
-  }, 500)
-  
-})
+  })();
 
-function reorderItems() {
-  Array.from(document.querySelectorAll("[id^='item-']"))
-    .forEach((item, i) => {
-      item.setAttribute('id', 'item-' + i)
+  document.querySelector('#addItem').addEventListener('click', function () {
+    setTimeout(() => {
+      reorderItems()
+    }, 100)
 
-      if (!item.querySelector('[data-field="orcamento"]')) {
-        return
-      }
-
-      item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
-      item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
-
-
-      item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
-      item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
-
-      item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
-
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
-
-      item.querySelector('[data-field="servico"]').setAttribute('name', 'items-' + i + '-servico')
-      item.querySelector('[data-field="servico"]').setAttribute('id', 'id_items-' + i + '-servico')
-
-      total += parseFloat(item.querySelector('[data-field="preco_orcamento"]').value) * parseFloat(item.querySelector('[data-field="quantidade"]').value);
-
+  });
+  document.querySelector('#id_items-0-peca').addEventListener("mouseover", function () {
+    reorderItems();
+  })
+  Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+  .forEach((item,i) => {
+    item.addEventListener('click', reorderItems);
+    item.addEventListener('change', reorderItems);
+    item.addEventListener('mouseover', reorderItems);
+    item.addEventListener('mouseout', reorderItems);
+    item.addEventListener('blur', reorderItems);
+    item.addEventListener('keydown', reorderItems);
+    item.addEventListener('keyup', reorderItems);
   })
 
-  Array.from(document.querySelectorAll("#id_id"))
-    .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+  function reorderItems() {
+    var totalValue = 0
+    Array.from(document.querySelectorAll("[id^='item-']"))
+      .forEach((item, i) => {
+        item.setAttribute('id', 'item-' + i)
 
-  let totalItems = $('#orcamento').children().length
-  document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+        if (!item.querySelector('[data-field="orcamento"]')) {
+          return
+        }
 
-  // htmx.org/api/#process
-  htmx.process(document.querySelector("#orcamento"))
-  htmx.process(document.querySelector("#servico"))
- 
-  document.querySelector("#total").innerHTML = total;
-}
-  $('form').on('submit', function() {
+        item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
+        item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
+
+
+        item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
+        item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-' + i + '-preco_orcamento')
+
+        item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
+
+        item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
+        item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+
+        item.querySelector('[data-field="servico"]').setAttribute('name', 'items-' + i + '-servico')
+        item.querySelector('[data-field="servico"]').setAttribute('id', 'id_items-' + i + '-servico')
+
+        let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
+        let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+        totalValue += preco * qtd
+
+      })
+
+    Array.from(document.querySelectorAll("#id_id"))
+      .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+
+    
+    document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+
+    // htmx.org/api/#process
+    htmx.process(document.querySelector("#orcamento"))
+    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
+    
+  }
+  document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
+    var qtd_parcela = document.getElementById('id_main-qtd_parcela');
+    var valor_entrada = document.getElementById('id_main-valor_entrada');
+    var dia_vencimento = document.getElementById('id_main-data_vencimento');
+    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+    var label_data_vencimento = document.getElementById('label_data_vencimento');
+    var label_valor_entrada = document.getElementById('label_valor_entrada');
+
+    if (this.value === 'Fiado a receber') {
+      qtd_parcela.setAttribute('type', 'Number');
+      valor_entrada.setAttribute('type', 'Number');
+      dia_vencimento.setAttribute('type', 'Date');
+      label_valor_entrada.style.color = "rgb(67, 67, 67)";
+      label_data_vencimento.style.color = "rgb(67, 67, 67)";
+      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+    } else {
+      qtd_parcela.setAttribute('type', 'Hidden');
+      valor_entrada.setAttribute('type', 'Hidden');
+      dia_vencimento.setAttribute('type', 'Hidden');
+      label_valor_entrada.style.color = "#FFFFFF";
+      label_data_vencimento.style.color = "#FFFFFF";
+      label_qtd_parcela.style.color = "#FFFFFF";
+
+    }
+  })
+  
+  $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
   });
-
-  
-  
 </script>
-
-{% endblock scripts %}

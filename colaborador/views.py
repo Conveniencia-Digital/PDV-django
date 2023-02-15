@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
-
+from django.views.generic import ListView, DetailView
 from colaborador.models import Colaborador
 from colaborador.forms import ColaboradorForms
 from django.contrib.auth.decorators import login_required
@@ -64,4 +63,8 @@ def apagarcolaborador(request, pk):
     return render(request, template_name)
 
 
+
+class DetalheColaboradorView(DetailView):
+    model = Colaborador
+    template_name = 'colaborador/off-canvas/detalhe-colaborador.html'
 #source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate

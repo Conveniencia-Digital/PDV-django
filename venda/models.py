@@ -30,6 +30,7 @@ class Vendas(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado a receber')
     ]
+    
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
@@ -39,6 +40,9 @@ class Vendas(models.Model):
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=20, default=PIX)
     observacao = models.TextField(null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=20, default=ENTREGUE)
+    data_vencimento = models.DateField(null=True, blank=True)
+    qtd_parcela = models.IntegerField(null=True, blank=True)
+    valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
     class Meta:
         ordering = ('-pk',)

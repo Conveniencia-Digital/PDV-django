@@ -1,36 +1,37 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Cadastrar serviço</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<form
-    hx-post="{% url 'cadastrar-servico' %}"
-    hx-target="#servico-Tbody"
-    hx-swap="afterbegin">
+  <h5 class="modal-title" id="staticBackdropLabel"> Cadastrar servico </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
-    <div class="modal-body">
-    {% csrf_token %}
-    <div class="form-row" style="margin-bottom: 10px;">
-        <div class="col form-floating">
-          {% render_field form.usuario class="form-control" %}
-          {% render_field form.servico class="form-control" %}
-          <label for="">Informe a descricao do serviço (Ex: Troca de tela)</label>
+  </button>
+</div>
+<form hx-post="{% url 'cadastrar-servico' %}" hx-target="#servico-Tbody" hx-indicator=".htmx-indicator"
+  hx-swap="afterbegin">
+
+  <div class="modal-body">
+      {% csrf_token %}
+        <div class="row g-2" style="margin-bottom: 10px;">
+            <div class="col form-floating">
+              {% render_field form.usuario class="form-control" %}
+              {% render_field form.servico class="form-control" %}
+              <label for="">Informe a descricao do serviço (Ex: Troca de tela)</label>
+            </div>
         </div>
-      </div>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-    <button type="submit" class="btn btn-outline-primary">Salvar</button>
-</div>
-</form>
+  </div>
 
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button id="finalizar" type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
+</form>
 <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-        $('#success_tic').modal('toggle')
-        }, "500");
-      });
- </script>
+
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, "500");
+  });
+
+
+</script>

@@ -8,7 +8,7 @@ class ComunidadeForms(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
-            'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem'})
+            'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem...'})
         }
 
 

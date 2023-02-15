@@ -6,6 +6,9 @@ class ContasAReceberForms(forms.ModelForm):
     class Meta:
         model = ContasAReceber
         fields = '__all__'
+        widgets = {
+            'observacao': forms.TextInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ContasAReceberForms, self).__init__(*args, **kwargs)

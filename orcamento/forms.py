@@ -19,6 +19,10 @@ class OrcamentoForms(forms.ModelForm):
         model = Orcamento
         fields = '__all__'
 
+        widgets = {
+            'observacao': forms.TextInput()
+        }
+
            
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('usuario')
@@ -28,6 +32,9 @@ class OrcamentoForms(forms.ModelForm):
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['tecnico'].queryset = Colaborador.objects.filter(usuario=user)
         self.fields['usuario'].widget = forms.HiddenInput()
+        self.fields['data_vencimento'].widget = forms.HiddenInput()
+        self.fields['qtd_parcela'].widget = forms.HiddenInput()
+        self.fields['valor_entrada'].widget = forms.HiddenInput()
     
 
 

@@ -1,0 +1,51 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+  <h5 class="modal-title fs-5" id="staticBackdropLabel">Editar pedido</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form hx-post="{% url 'editar-pedido' object.pk %}" hx-target="#pedidoTr{{ object.pk }}" hx-swap="outerHTML"
+  hx-indicator=".htmx-indicator">
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class='form-control' %}
+        {% render_field form.produto class='form-control' %}
+        <label for="">Informe o produto ou peça</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.valor_produto class='form-control' type="Number" value="00.00" %}
+        <label for="">Informe o preço de venda</label>
+      </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.cliente class='form-select' %}
+        <label for="">Informe o cliente</label>
+      </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.data_entrega class='form-control' type="Date" %}
+        <label for="">Data de entrega</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.valor_pago class='form-control' type="Number" value="00.00" %}
+        <label for="">Valor pago</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function () {
+        $('#staticBackdrop').modal('toggle')
+        setTimeout(() => {
+            $('#success_tic_editar').modal('toggle')
+        }, "500");
+    });
+</script>

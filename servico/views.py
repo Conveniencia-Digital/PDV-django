@@ -21,7 +21,6 @@ def cadastrarservico(request):
         if form.is_valid():
             servico = form.save()
             template_name = 'servico/tabela/linhas-tabela-servico.html'
-
             context = {'object': servico}
             return render(request, template_name, context)
 

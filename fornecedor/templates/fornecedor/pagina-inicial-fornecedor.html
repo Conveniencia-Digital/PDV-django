@@ -5,7 +5,7 @@
 <style>
     tr.htmx-swapping td {
         opacity: 0;
-        transition: opacity 300ms ease-out;
+        transition: opacity 1s ease-out;
     }
 
     .card {
@@ -39,9 +39,9 @@
     </div>
 </div>
 <div style="margin-top: 30px;">
-    <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop"
-        hx-get="{% url 'cadastrar-fornecedor' %}" hx-target="#adicionar-conteudo">Cadastrar fornecedor</a>
-</div>
+    <a  class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+        hx-get="{% url 'cadastrar-fornecedor' %}" hx-target="#adicionar-conteudo" hx-swap="innerHTML">Cadastrar fornecedor</a>
+</div>  
 
 <div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
@@ -49,10 +49,7 @@
             <tr>
                 <th>Fornecedor</th>
                 <th>Telefone</th>
-                <th>Contato</th>
                 <th>Ações</th>
-                <th>Data de cadastro</th>
-                <th>Ultima modifição</th>
             </tr>
         </thead>
 

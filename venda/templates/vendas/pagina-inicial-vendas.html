@@ -31,7 +31,8 @@ Vendas
     }
 </style>
 {% endblock style %}
-{% block conteudo %}<div class="teste">
+{% block conteudo %}
+
     
     <div class="row" id="relatorio-venda">
         <div class="card">
@@ -45,11 +46,11 @@ Vendas
     </div>
     
     <div style="margin-top: 30px;">
-        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
+        <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
             hx-target="#addConteudo" hx-swap="innerHTML">Vender
         </a>
     </div>
-    <div style="padding-top: 18px;">
+    <div class="table-responsive" style="padding-top: 18px;">
         <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
             <thead></thead>
             <tbody id="vendas-Tbody">
@@ -59,5 +60,5 @@ Vendas
     </div>
     {% include 'vendas/modal/modal-venda.html' %}
     {% include 'vendas/modal/modal-alerta.html' %}
-</div>
+
 {% endblock conteudo %}

@@ -39,8 +39,8 @@
 </div>
 
 <div style="margin-top: 30px;">
-    <a id="teste" href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop"
-        hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML" style="font-size: 20px; margin-bottom: 20px;">Cadastrar Peças</a>
+    <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+        hx-get="{% url 'cadastrar-peca' %}" hx-target="#recebe-conteudo-peca" hx-swap="innerHTML" hx-indicator=".htmx-indicator" style="font-size: 20px; margin-bottom: 20px;">Cadastrar Peças</a>
 </div>
 <div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
@@ -50,11 +50,6 @@
                 <th>Peça</th>                
                 <th>Preço venda</th>
                 <th>Ações</th>
-                <th>Data cadastro</th>
-                <th>Ultima atualizaçāo</th>
-                <th>Preço custo</th>
-                <th>Lucro Und.</th>
-                
             </tr>
         </thead>
         <tbody id="peca-Tbody">
@@ -67,6 +62,7 @@
 {% include 'peca/modais-vazios/modal-alerta.html' %}
 {% include 'peca/modais-vazios/modal-alerta-editar.html' %}
 {% include 'peca/modais-vazios/modal-alerta-apagar.html' %}
+{% include 'peca/offcanvas/off-canvas.html' %}
 {% endblock conteudo%}
 {% block scripts %}
 <script>

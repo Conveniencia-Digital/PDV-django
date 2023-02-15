@@ -1,15 +1,16 @@
 {% load widget_tweaks %}
 
-<div id="item-{{ forloop.counter0 }}" class="form-row">
+<div id="item-{{ forloop.counter0 }}" class="row g-2">
   <style> 
   
 
     @media (max-width:760px) {
     #remove {
       width: 80vw;
-      height: 35px; 
+      height: 20px; 
       font-size:15px;
       margin-bottom: 30px;
+      margin-left: 2px;
       
     }
 
@@ -17,43 +18,46 @@
   @media (min-width: 900px){
     #remove {
       width: 60px; 
-      height: 40px; 
+      height: 25px; 
       font-size: 10px; 
       margin-top: 12px;
+      margin-left: 2px;
     }
     
   }
   </style>
     {% render_field itemsvendaform.vendas data-field='vendas' %}
-    {% render_field itemsvendaform.id data-field='id' %}
+    {% render_field itemsvendaform.id data-field='id'  %}
    
-    <div id="mouse" class="col-md-6 mb-3 form-floating">
-        {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-        <label>Informe o produto </label>    
-      </div>
-    <div class="col-md-3 mb-3 form-floating">
-        {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
-        <label>Preço Unitario </label>
-    </div>
-    <div class="col-md-2 mb-2 form-floating">
-        {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-        <label>Quantidade</label>
-    </div>
-    {% if items_venda_form.id.value %}
-        <div class="col-md-1 mb-1">
-             <span
-                class="span-is-link no ml-2 remove-row"
-                hx-delete="{% url 'apagar-item-venda' items_venda_form.id.value %}"
-                hx-confirm="Deseja mesmo deletar o item {{items_venda_form.id.value}}?"
-                hx-target="#item-{{ forloop.counter0 }}"
-                hx-swap="outerHTML">
-                 <i class="fa fa-times fa-lg"></i>
-             </span>
-            {% else %}
-            <span onclick="removeRow()">
-                <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">Remover</button>
-            </span>
+    <div class="row g-2" style="display: flex;">
+      <div id="mouse" class="col-md-6 mb-3 form-floating">
+          {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+          <label>Informe o produto </label>
         </div>
+      <div class="col-md-3 mb-3 form-floating">
+          {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
+          <label>Preço Unitario </label>
+      </div>
+      <div class="col-md-2 mb-2 form-floating">
+          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
+          <label>Quantidade</label>
+      </div>
+      {% if items_venda_form.id.value %}
+          <div class="col-md-1 mb-1">
+               <span
+                  class="span-is-link no ml-2 remove-row"
+                  hx-delete="{% url 'apagar-item-venda' items_venda_form.id.value %}"
+                  hx-confirm="Deseja mesmo deletar o item {{items_venda_form.id.value}}?"
+                  hx-target="#item-{{ forloop.counter0 }}"
+                  hx-swap="outerHTML">
+                   <i class="fa fa-times fa-lg"></i>
+               </span>
+              {% else %}
+              <div class="col-1" onclick="removeRow()">
+                  <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">X</button>
+              </div>
+          </div>
+    </div>
     {% endif %}
 </div>
 <script>
@@ -67,8 +71,17 @@ document.querySelector('#addItem').addEventListener('click', function() {
     reorderItems()
   }, 500)
 })
+Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"], #remove'))
+  .forEach((item,i) => {
+    item.addEventListener('click', reorderItems);
+    item.addEventListener('change', reorderItems);
+    item.addEventListener('mouseover', reorderItems);
+    item.addEventListener('mouseout', reorderItems);
+    item.addEventListener('blur', reorderItems);
+  })
 
 function reorderItems() {
+  var totalValue = 0
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
@@ -90,6 +103,9 @@ function reorderItems() {
 
       item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
       item.querySelector('[data-field="preco"]').setAttribute('id', 'id_items-' + i + '-preco')
+      let preco = parseFloat(item.querySelector('[data-field="preco"]').value);
+      let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+      totalValue += preco * qtd
   })
 
   Array.from(document.querySelectorAll("#id_id"))
@@ -100,6 +116,7 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#venda"))
+  document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
 }
 
 function removeRow() {

@@ -1,8 +1,8 @@
 {% load widget_tweaks %}
 <div class="modal-header">
   <h5 class="modal-title" id="staticBackdropLabel"> Cadastrar contas a receber </h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+   
   </button>
 </div>
 <form hx-post="{% url 'cadastrar-contas-a-receber' %}" hx-target="#financeiro-Tbody" hx-indicator=".htmx-indicator"
@@ -10,15 +10,15 @@
 
   <div class="modal-body">
     {% csrf_token %}
-    <div class="form-row" style="margin-bottom: 10px;">
+    <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.usuario class="form-control" %}
-        {% render_field form.cliente class="form-control" %}
+        {% render_field form.cliente class="form-select" %}
         <label for="">Selecione o cliente</label>
       </div>
     </div>
     <!---->
-    <div class="form-row" style="margin-bottom: 10px;">
+    <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.nome_contas_a_receber class="form-control" %}
         <label for="">Informe a venda ou serviço </label>
@@ -28,7 +28,7 @@
         <label for="">Valor a receber</label>
       </div>
     </div>
-    <div class="form-row" style="margin-bottom: 10px;">
+    <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
           {% render_field form.observacao class="form-control" %}
           <label for="">Observaçāo</label>
@@ -37,7 +37,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
     <button type="submit" class="btn btn-outline-primary">Finalizar</button>
   </div>
 </form>

@@ -24,33 +24,35 @@
   </style>
     {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
     {{ items_orcamento_form.id }}
-    <div class="col-md-6 mb-3 form-floating">
-        {% render_field items_orcamento_form.peca class='form-control' hx-get="/peca/preco/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field='peca' %}
-        <label>Selecione a peça </label>
+    <div class="row g-2">
+      <div class="col-md-6 mb-3 form-floating">
+          {% render_field items_orcamento_form.peca class='form-select' hx-get="/peca/preco/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field='peca' %}
+          <label>Selecione a peça </label>
+      </div>
+      <div class="col-md-3 mb-3 form-floating">
+          {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00"  %}
+          <label>Preço Unitario </label>
+      </div>
+      <div class="col-md-2 mb-2 form-floating">
+          {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
+          <label>Quantidade</label>
+      </div>
+      {% if items_orcamento_form.id.value %}
+          <div class="col-md-1 mb-1">
+               <span
+                  class="span-is-link no ml-2 remove-row"
+                  hx-delete="{% url 'apagar-item-orcamento' items_orcamento_form.id.value %}"
+                  hx-confirm="Deseja mesmo deletar o item {{items_orcamento_form.id.value}}?"
+                  hx-target="#item-{{ forloop.counter0 }}"
+                  hx-swap="outerHTML">
+                   <i class="fa fa-times fa-lg"></i>
+               </span>
+              {% else %}
+              <div class="col-1" onclick="removeRow()">
+                <button type="submit" class="btn btn-outline-danger " id="remove" style="font-size: 10px;">X</button>
+              </div>
+          </div>
     </div>
-    <div class="col-md-3 mb-3 form-floating">
-        {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00"  %}
-        <label>Preço Unitario </label>
-    </div>
-    <div class="col-md-2 mb-2 form-floating">
-        {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
-        <label>Quantidade</label>
-    </div>
-    {% if items_orcamento_form.id.value %}
-        <div class="col-md-1 mb-1">
-             <span
-                class="span-is-link no ml-2 remove-row"
-                hx-delete="{% url 'apagar-item-orcamento' items_orcamento_form.id.value %}"
-                hx-confirm="Deseja mesmo deletar o item {{items_orcamento_form.id.value}}?"
-                hx-target="#item-{{ forloop.counter0 }}"
-                hx-swap="outerHTML">
-                 <i class="fa fa-times fa-lg"></i>
-             </span>
-            {% else %}
-            <span onclick="removeRow()">
-              <button type="submit" class="btn btn-danger btn-sm" id="remove">Remover</button>
-            </span>
-        </div>
     {% endif %}
 </div>
 <script>
@@ -63,8 +65,19 @@ document.querySelector('#addItem').addEventListener('click', function() {
     reorderItems()
   }, 500)
 })
+Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+  .forEach((item,i) => {
+    item.addEventListener('click', reorderItems);
+    item.addEventListener('change', reorderItems);
+    item.addEventListener('mouseover', reorderItems);
+    item.addEventListener('mouseout', reorderItems);
+    item.addEventListener('blur', reorderItems);
+    item.addEventListener('keydown', reorderItems);
+    item.addEventListener('keyup', reorderItems);
+  })
 
 function reorderItems() {
+  var totalValue = 0
   Array.from(document.querySelectorAll("[id^='item-']"))
     .forEach((item, i) => {
       item.setAttribute('id', 'item-' + i)
@@ -84,6 +97,10 @@ function reorderItems() {
 
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
       item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+
+      let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
+      let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+      totalValue += preco * qtd
   })
 
   Array.from(document.querySelectorAll("#id_id"))
@@ -94,6 +111,8 @@ function reorderItems() {
 
   // htmx.org/api/#process
   htmx.process(document.querySelector("#orcamento"))
+  document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
+  
 }
 function removeRow() {
   const span = event.target.parentNode

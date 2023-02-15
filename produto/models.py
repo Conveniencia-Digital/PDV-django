@@ -56,13 +56,29 @@ class Produto(models.Model):
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
     fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
+    data_vencimento = models.DateField(null=True, blank=True)
+    qtd_parcela = models.IntegerField(null=True, blank=True)
+    valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+
 
 
     def __str__(self):
         return self.nome_produto
 
     def lucro(self):
-        return self.preco - self.preco_de_custo 
+        return self.preco - self.preco_de_custo
+
+    def lucrototal(self):
+        return (self.preco - self.preco_de_custo) * self.quantidade 
+    
+    def precototal(self):
+        return self.preco_de_custo * self.quantidade
+
+    def vendatotal(self):
+        return self.preco * self.quantidade
+
+    def saldodespesa(self):
+        return (self.preco_de_custo * self.quantidade) - self.valor_entrada
 
 
     

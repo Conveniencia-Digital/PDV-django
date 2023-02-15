@@ -16,6 +16,10 @@ class VendasForm(forms.ModelForm):
     class Meta:
         model = Vendas
         fields = '__all__'
+        widgets = {
+            'observacao': forms.TextInput()
+
+         }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -23,6 +27,9 @@ class VendasForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
         self.fields['usuario'].widget = forms.HiddenInput()
+        self.fields['data_vencimento'].widget = forms.HiddenInput()
+        self.fields['qtd_parcela'].widget = forms.HiddenInput()
+        self.fields['valor_entrada'].widget = forms.HiddenInput()
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['vendedor'].queryset = Colaborador.objects.filter(usuario=user)
 
@@ -30,7 +37,7 @@ class VendasForm(forms.ModelForm):
 class ItemsVendaForm(forms.ModelForm):
     required_css_class = 'required'
     id = forms.IntegerField()
-    produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
+    #produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
 
     class Meta:
         model = ItemsVenda

@@ -22,7 +22,6 @@
         text-anchor: middle;
         -webkit-user-select: none;
         -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
       }
 
@@ -31,15 +30,55 @@
           font-size: 3.5rem;
         }
       }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
       a:hover {
         font-size: 20px;
         box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
         
       }
-    </style>
+    
+    .fade-me-out.htmx-swapping {
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
 
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    </style>
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
@@ -65,77 +104,77 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Sistema Cell</a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
-            data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" href="{% url 'logout' %}">Sair</a>
-        </li>
-    </ul>
-</nav>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'inicio' %}">Sistema Cell</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+        <div class="navbar-nav">
+          <div class="nav-item text-nowrap">
+            <a class="nav-link px-3" href="{% url 'logout' %}">Sair</a>
+          </div>
+        </div>
+      </header>
+
 
 <div class="container-fluid">
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="sidebar-sticky pt-3">
+            <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column" style="font-size: 16px;">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'inicio' %}">
-                            <span data-feather="home"></span>
-                            Painel de Controle <span class="sr-only">(current)</span>
+                        <a class="nav-link active" aria-current="page" href="{% url 'inicio' %}">
+                            <span data-feather="home" class="align-text-bottom"></span>
+                            Painel de Controle
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'vendas'  %}">
-                            <span data-feather="shopping-bag"></span>
+                            <span data-feather="shopping-bag" class="align-text-bottom"></span>
                             Vendas
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'produtos' %}">
-                            <span data-feather="shopping-cart"></span>
+                            <span data-feather="shopping-cart" class="align-text-bottom"></span>
                             Produtos
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cliente' %}">
-                            <span data-feather="users"></span>
+                            <span data-feather="users" class="align-text-bottom"></span>
                             Clientes
                         </a>
                     </li>  
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="send"></span>
+                        <a class="nav-link" href="{% url 'pedido' %}">
+                            <span data-feather="send" class="align-text-bottom"></span>
                             Pedidos
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'orcamento' %}">
-                            <span data-feather="file"></span>
+                            <span data-feather="file" class="align-text-bottom"></span>
                             Orçamentos
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pecas' %}">
-                            <span data-feather="box"></span>
+                            <span data-feather="box" class="align-text-bottom"></span>
                             Peças
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'servicos' %}">
-                            <span data-feather="tool"></span>
+                            <span data-feather="tool" class="align-text-bottom"></span>
                             Serviços
                         </a>
                     </li>
                     
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'fornecedor' %}">
-                            <span data-feather="truck"></span>
+                            <span data-feather="truck" class="align-text-bottom"></span>
                             Fornecedores
                         </a>
                     </li>
@@ -143,43 +182,43 @@
                       
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'colaborador' %}">
-                            <span data-feather="user-check"></span>
-                            Colaboradores
+                            <span data-feather="user-check" class="align-text-bottom"></span>
+                            Funcionarios
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'relatorio' %}">
-                            <span data-feather="bar-chart-2"></span>
+                            <span data-feather="bar-chart-2" class="align-text-bottom"></span>
                             Relatorios
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'despesa' %}">
-                            <span data-feather="layers"></span>
+                            <span data-feather="layers" class="align-text-bottom"></span>
                             Despesas
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'financeiro' %}">
-                            <span data-feather="activity"></span>
+                            <span data-feather="activity" class="align-text-bottom"></span>
                             Financeiro
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'configuracao' %}">
-                            <span data-feather="settings"></span>
+                            <span data-feather="settings" class="align-text-bottom"></span>
                             Configuração
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'comunidade' %}">
-                            <span data-feather="globe"></span>
+                            <span data-feather="globe" class="align-text-bottom"></span>
                             Comunidade 
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'suporte' %}">
-                            <span data-feather="phone"></span>
+                            <span data-feather="phone" class="align-text-bottom"></span>
                             Suporte 
                         </a>
                     </li>
@@ -188,13 +227,13 @@
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                     <span>ACESSO RAPIDO</span>
                     <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
-                        <span data-feather="plus-circle"></span>
+                        <span data-feather="plus-circle" class="align-text-bottom"></span>
                     </a>
                 </h6>
                 <ul class="nav flex-column mb-2">
                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="file-text" class="align-text-bottom"></span>
                             Consultar preço
                         </a>
                     </li>
@@ -204,7 +243,7 @@
                            hx-get="{% url 'vendas' %}"
                            hx-target="#addConteudo"
                            hx-swap="innerHTML">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="file-text" class="align-text-bottom"></span>
                             Nova venda
                         </a>
 
@@ -216,13 +255,13 @@
                            hx-get="{% url 'cadastrar-orcamento' %}"
                            hx-target="#addConteudo"
                            hx-swap="innerHTML">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="file-text" class="align-text-bottom"></span>
                             Novo orçamento
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="file-text" class="align-text-bottom"></span>
                             Cadastrar cliente
                         </a>
                     </li>
@@ -230,48 +269,74 @@
             </div>
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" >
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">{% block titulo %}Painel de controle{% endblock titulo %}</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
+                    <div class="btn-group me-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <span data-feather="calendar"></span>
+                        <span data-feather="calendar" class="align-text-bottom"></span>
                         This week
                     </button>
                 </div>
             </div>
             
             {% block conteudo %}
+            <a  
+                hx-get="{% url 'cadastrar-tarefa' %}"
+                hx-target="#cadastrar-tarefa"
+                hx-swap="innerHTML"
+                hx-indicator=".htmx-indicator"
+                class="btn btn-outline-primary" 
+                data-bs-toggle="modal" 
+                data-bs-target="#staticBackdrop">
+                Nova tarefa
+            </a>
+            <div style="padding-top:18px">
+                <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+                    <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+                        <tr>
+                            <th>Tarefas</th>
+                            <th>Funcionario</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tarefa-Tbody">
+                        {% include 'dashboard/tabela/tabela-tarefa.html' %}
+                    </tbody>
+                </table>
+            </div>
             
-
-            {% endblock conteudo %}
-            {% include 'vendas/modal/modal-venda.html' %}
-            {% include 'orcamento/modal/modal-orcamento.html' %}
+            {% include 'dashboard/modais/modal-conteudo.html' %}
+            {% endblock conteudo %}      
            
-
         </main>
     </div>
 </div>
+ 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+      
+ 
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+
+
 
 <!-- CDN Data table -->
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>

@@ -5,6 +5,7 @@ from financeiro.models import ContasAReceber
 from financeiro.forms import ContasAReceberForms
 from venda.models import Vendas
 from orcamento.models import Orcamento
+from cliente.models import Cliente
 
 
 
@@ -24,6 +25,7 @@ class ListaContasAReceber(ListView):
 
 def cadastrarcontas_a_receber(request):
     template_name = 'financeiro/formularios/formulario-cadastrar-contas-a-receber.html'
+   
     form = ContasAReceberForms(request.POST or None, initial={'usuario': request.user})
 
     if request.method == 'POST':
@@ -33,7 +35,7 @@ def cadastrarcontas_a_receber(request):
 
             context = {'object': contas_a_receber}
             return render(request, template_name, context)
-
+    contas_a_receber = ContasAReceber.objects.filter(usuario=request.user)
     context = {'form': form}
     return render(request, template_name, context)
 

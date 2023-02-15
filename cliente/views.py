@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from cliente.models import Cliente
 from cliente.forms import ClienteForm
@@ -19,11 +19,9 @@ class ListaCliente(ListView):
 
 @login_required
 def cadastrarcliente(request):
-    template_name = 'cliente/formularios/formulario-cadastrar-cliente.html'
-    
+    template_name = 'cliente/formularios/formulario-cadastrar-cliente.html' 
     form = ClienteForm(request.POST or None, initial={'usuario': request.user})
-   
-    if request.method == 'POST':  
+    if request.method == 'POST':
         if form.is_valid():
             cliente = form.save()
             template_name = 'cliente/tabela/linhas-tabela-cliente.html'
@@ -78,4 +76,7 @@ def total_clientes(request):
     return render(request, template_name, context)
     
 
-#source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate
+class DetalheClienteView(DetailView):
+    model = Cliente
+    template_name = 'cliente/off-canvas/detalhe-cliente.html'
+    

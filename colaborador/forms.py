@@ -10,6 +10,7 @@ class ColaboradorForms(forms.ModelForm):
         widgets = {
             'data_nascimento' :forms.NumberInput(attrs={'type': 'date'}),
             'data_pagamento': forms.NumberInput(attrs={'type': 'date'}),
+            'observacao': forms.TextInput()
             
         }
 

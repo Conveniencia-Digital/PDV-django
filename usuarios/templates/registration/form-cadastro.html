@@ -1,41 +1,162 @@
-
 {% load widget_tweaks %}
-<form hx-post="{% url 'cadastrar' %}" hx-target="body" hx-swap="innerHTML" hx-indicator=".htmx-indicator" class="sign-up-form">
-    {% csrf_token %}
+<form hx-post="{% url 'cadastrar' %}" hx-target="body" hx-swap="innerHTML" hx-indicator=".htmx-indicator"
+  class="sign-up-form">
+  {% csrf_token %}
+
+  <h2 class="title">Cadastrar-se</h2>
+  <div class="input-field">
+    <i class="fas fa-user"></i>
+    {% render_field form.username placeholder="Nome de usuario" %}
+  </div>
+  <div class="input-field">
+    <i class="fas fa-envelope"></i>
+    {% render_field form.email placeholder="Email" type="email" %}
+  </div>
+  <div class="input-field">
+    <i class="fas fa-lock"></i>
+
+    {% render_field form.password1 placeholder="Crie uma senha" type="password" %}
+    {% if form.password1.errors %}
+    <ul class="errorlist">
+      {% for error in form.password1.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente numérica.
+  </p>
+  <div id="error-messages" style="
+    display: none;
+    border: solid 1px #f96571;
+    background-color: #88131d; 
+    color: #fb8b94; 
+    width: 100%; 
+    height: 55px;
+    border-radius: 55px; 
+    text-align: center;
+    line-height: 55px;
+    font-weight: 600;
+    font-size: 1.1rem;">
+
+  </div>
+  <div id="senha2" class="input-field">
+    <i class="fas fa-lock"></i>
+    {% render_field form.password2 placeholder="Confirme a senha" type="password" %}
+    {% if form.password2.errors %}
+    <ul class="errorlist">
+      {% for error in form.password2.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  <button id="finalizar" type="submit" class="btn" value="Cadastrar">Cadastrar</button>
+
+  <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
+  <div class="social-media">
+    <a href="#" class="social-icon">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" class="social-icon">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" class="social-icon">
+      <i class="fab fa-google"></i>
+    </a>
+    <a href="#" class="social-icon">
+      <i class="fab fa-linkedin-in"></i>
+    </a>
+  </div>
+
+</form>
+<script>
+  document.querySelector('#finalizar').addEventListener('click', SenhaIncorreta);
+  
+
+  function SenhaIncorreta() {
+    var senha1 = document.querySelector('#id_password1');
+    var senha2 = document.querySelector('#id_password2');
+    var erro = document.querySelector('#error-messages')
+    let btn = document.querySelector('#finalizar')
+    let errosenha2 = document.querySelector('#senha2');
+    let confirmar1 = senha1.value;
+    let confirmar2 = senha2.value;
+
     
-    <h2 class="title">Cadastrar-se</h2>
-    <div class="input-field">
-      <i class="fas fa-user"></i>
-      {% render_field form.username placeholder="Nome de  usuario" %}
-    </div>
-    <div class="input-field">
-      <i class="fas fa-envelope"></i>
-      {% render_field form.email placeholder="Email" %}
-    </div>
-    <div class="input-field">
-      <i class="fas fa-lock"></i>
-      {% render_field form.password1 placeholder="Crie uma senha" %}
-    </div>
-    <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente numérica.</p>
-    <div class="input-field">
-      <i class="fas fa-lock"></i>
-      {% render_field form.password2 placeholder="Confirme a senha" %}
-    </div>
-    <button type="submit" class="btn" value="Cadastrar">Cadastrar</button>
+    const apenasnumero = /^\d+$/.test(confirmar1);
     
-    <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
-    <div class="social-media">
-      <a href="#" class="social-icon">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="#" class="social-icon">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a href="#" class="social-icon">
-        <i class="fab fa-google"></i>
-      </a>
-      <a href="#" class="social-icon">
-        <i class="fab fa-linkedin-in"></i>
-      </a>
-    </div>
-  </form>
+
+    if (confirmar1 !== confirmar2) {
+      errosenha2.style.border = '1px solid #ff0000';
+      erro.style.display = 'block'
+      erro.innerHTML = "Suas senhas nāo estāo iguais";
+      btn.setAttribute('type', 'button')
+
+    } else if (confirmar1.length < 8 || confirmar2.length < 8) {
+      errosenha2.style.border = '1px solid #ff0000';
+      erro.style.display = 'block'
+      erro.innerHTML = "Sua senha precisa ter 8 digitos";
+      btn.setAttribute('type', 'button')
+    
+    } else if(apenasnumero) {
+      erro.style.border = '1px solid #ff0000';
+      erro.style.display = 'block';
+      erro.innerHTML = "Sua senha precisa ter letras e numeros";
+      btn.setAttribute('type', 'button');
+      document.querySelector('#finalizar').setAttribute('type', 'button')
+    } 
+    else {
+      errosenha2.style.border = ''
+      erro.style.display = 'none'
+      document.querySelector('#finalizar').setAttribute('type', 'submit')
+      btn.setAttribute('type', 'submit')
+    }
+
+  }
+
+
+  const passwordInput = document.getElementById("id_password1");
+
+  passwordInput.addEventListener("blur", function () {
+    const password = passwordInput.value;
+    const isOnlyNumbers = /^\d+$/.test(password);
+    const erro = document.querySelector('#error-messages')
+
+
+    if (isOnlyNumbers) {
+      erro.style.border = '1px solid #ff0000';
+      erro.style.display = 'block'
+      erro.innerHTML = "Sua senha precisa ter letras e numeros";
+      document.querySelector('#finalizar').setAttribute('type', 'button')
+    } else {
+      erro.style.border = '';
+      erro.style.display = 'none'
+      erro.innerHTML = "";
+      btn.setAttribute('type', 'submit')
+    }
+  });
+
+  const senhaInput2 = document.querySelector('#id_password2');
+
+  senhaInput2.addEventListener("blur", function () {
+    const senhainput2 = senhaInput2.value;
+    const somenteNumero = /^\d+$/.test(senhainput2);
+    const erro = document.querySelector('#error-messages');
+    const btn = document.querySelector('#finalizar');
+
+    if (somenteNumero) {
+      erro.style.border = '1px solid #ff0000';
+      erro.style.display = 'block';
+      erro.innerHTML = "Sua senha precisa ter letras e numeros";
+      btn.setAttribute('type', 'button');
+      document.querySelector('#finalizar').setAttribute('type', 'button')
+    } else {
+      erro.style.border = '';
+      erro.style.display = 'none'
+      erro.innerHTML = "";
+      btn.setAttribute('type', 'submit')
+    }
+  })
+</script>
+

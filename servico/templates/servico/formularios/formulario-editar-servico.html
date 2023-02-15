@@ -1,15 +1,15 @@
 {% load widget_tweaks %}
 <div class="modal-header">
   <h5 class="modal-title" id="staticBackdropLabel">Editar {{ object.nome_servico }}</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    
   </button>
 </div>
 <form hx-post="{% url 'editar-servico' object.pk %}" hx-target="#trServico{{ object.pk }}" hx-swap="outerHTML">
 
   <div class="modal-body">
     {% csrf_token %}
-    <div class="form-row" style="margin-bottom: 10px;">
+    <div class="frow g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.usuario class="form-control" %}
         {% render_field form.servico class="form-control" %}
@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
     <button type="submit" class="btn btn-outline-primary">Salvar</button>
   </div>
 </form>
@@ -26,9 +26,8 @@
 <script>
   $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
-    $('#staticBackdrop').modal('toggle')
     setTimeout(() => {
-      $('#success_tic_editar').modal('toggle')
+      $('#success_tic').modal('toggle');    
     }, "500");
   });
 </script>

@@ -1,0 +1,10 @@
+<td>{{ object.quantidade }}</td>
+    <td>{{ object.nome_produto }}</td>
+    <td>R$ {{ object.preco|default:'---' }}</td>
+    <td>{{object.data_criacao|date:"d/m/y - h:i"}}</td>
+    <td>{{object.data_edicao|date:"d/m/y - h:i"}}</td>
+    <td>R$ {{ object.preco_de_custo }}</td>
+    <td>R$ {{ object.lucro }}</td>
+    <td>R$ {{ object.lucrototal }}</td>
+    <td>R$ {{ object.vendatotal }}</td>
+    <td>R$ {{ object.precototal }}</td>

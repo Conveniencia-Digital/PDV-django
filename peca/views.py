@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.db.models.aggregates import Sum
 from peca.models import Pecas
 from peca.forms import PecasForms
@@ -77,3 +77,7 @@ def relatoriopeca(request):
     context = {'preco_venda': preco_venda, 'preco_custo': preco_custo, 'lucro': lucro, 'total': total}
     return render(request, template_name, context)
 
+
+class DetalhePeca(DetailView):
+    model = Pecas
+    template_name = 'peca/offcanvas/detalhe-peca.html'

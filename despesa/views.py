@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
 from despesa.forms import DespesaForms, CategoriaDespesaForms
-from despesa.models import Despesa
+from despesa.models import Despesa, CategoriaDespesa
 from peca.models import Pecas
 from produto.models import Produto
 from django.contrib.auth.decorators import login_required
@@ -41,12 +41,6 @@ def cadastrardespesa(request):
 
 
 
-
-class CategoriaDespesa(CreateView):
-    form_class = CategoriaDespesaForms
-    template_name = 'despesa/formularios/formulario-categoria-despesa.html'
-
-
 @login_required
 def editardespesa(request, pk):
     template_name = 'despesa/formularios/formulario-editar-despesa.html'
@@ -78,5 +72,66 @@ def apagardespesa(request, pk):
     else:
         raise PermissionError
     return render(request, template_name)
+
+
+
+
+@login_required
+def cadastrarcategoriadespesa(request):
+    template_name = 'despesa/formularios/formulario-categoria-despesa.html'
+    form = CategoriaDespesaForms(request.POST or None, initial={'usuario':request.user})
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            template_name = 'despesa/tabela/linha-categoria-despesa.html'
+            categoria_despesa = form.save()
+            context = {'object': categoria_despesa}
+            return render(request, template_name, context)
+    
+    context = {'form': form}
+    return render(request, template_name, context)
+
+
+
+
+@login_required
+def apagarcategoriadespesa(request, pk):
+    template_name = 'despesa/tabela/categoria-despesa.html'
+    obj = CategoriaDespesa.objects.get(pk=pk)
+    if obj.usuario == request.user:
+        obj.delete()
+        return render(request, template_name)
+    else:
+        raise PermissionError
+
+    
+
+class ListaCategoriaDespesa(ListView):
+    model = CategoriaDespesa
+    template_name = 'despesa/tabela/tabela-categoria-despesa.html'
+    context_object_name = 'object'
+
+    def get_queryset(self):
+        return CategoriaDespesa.objects.filter(usuario=self.request.user)
+
+
+
+@login_required
+def editarcatergoriadespesa(request, pk):
+    template_name = 'despesa/formularios/formulario-editar-categoria-despesa.html'
+    instance = CategoriaDespesa.objects.get(pk=pk)
+    form = CategoriaDespesaForms(request.POST or None, initial={'usuario': request.user}, instance=instance)
+    if instance.usuario != request.user:
+        raise PermissionError
+    if request.method == 'POST':
+        if form.is_valid():
+            template_name = 'despesa/tabela/linha-categoria-despesa.html'
+            categoria_despesa = form.save()
+            context = {'object': categoria_despesa}
+            return render(request, template_name, context)
+        
+
+    context = {'form': form, 'object':instance}
+    return render(request, template_name, context)
 
 

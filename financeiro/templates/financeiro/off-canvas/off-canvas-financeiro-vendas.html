@@ -1,0 +1,6 @@
+<td>{{venda.data_criacao|date:'d/m/y - H:i'}}</td>
+<td>{{ venda.cliente }}</td>
+    <td><a href="tel:+55{{ venda.cliente.telefone_contato }}" style="text-decoration: none;">{{ venda.cliente.telefone_contato }}</a></td>
+    <td>Compra de produtos</td>
+    <td>R${{ venda.total }}</td>
+    <td>{{ venda.forma_pagamento}}</td>

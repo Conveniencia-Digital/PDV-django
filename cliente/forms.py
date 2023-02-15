@@ -9,6 +9,7 @@ class ClienteForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_nascimento' :forms.NumberInput(attrs={'type': 'date'}),
+            'observacao': forms.TextInput()
         }
 
     def __init__(self, *args, **kwargs):
@@ -17,4 +18,6 @@ class ClienteForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
         self.fields['usuario'].widget = forms.HiddenInput()
+    
+
 
