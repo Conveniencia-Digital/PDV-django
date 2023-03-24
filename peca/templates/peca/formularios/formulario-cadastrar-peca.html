@@ -30,7 +30,7 @@
       <div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            {% render_field form.codigo_de_barras %}
+            {% render_field form.codigo_de_barras type="text" name="codigo_de_barras" %}
             <label for="floatingSelectGrid">Digite o codigo de barras(opcional)</label>
           </div>
         </div>
@@ -97,7 +97,9 @@
 
 </form>
 
+
 <script>
+  
   document.getElementById('id_forma_pagamento').addEventListener('change', function () {
     var qtd_parcela = document.getElementById('id_qtd_parcela');
     var valor_entrada = document.getElementById('id_valor_entrada');
@@ -129,4 +131,6 @@
       $('#success_tic').modal('toggle')
     }, "500");
   });
+
+
 </script>

@@ -1,0 +1,228 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+  <h5 class="modal-title" id="staticBackdropLabel">Lan house</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form hx-post="{% url 'cadastrar-lanhouse' %}" hx-target="#lanhouse-Tbody" hx-swap="afterbegin" hx-indicator=".htmx-indicator">
+  {% csrf_token %}
+  <div class="modal-body">
+    <div class="row g-2">
+      <div class="col form-floating">
+        
+        {% render_field form.usuario class='form-control'%}
+        {% render_field form.cliente class='form-select'%}
+        <label>Cliente </label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.vendedor class='form-select' %}
+        <label>Vendedor</label>
+      </div>
+    </div>
+    <hr>
+    <div class="row g-2">
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Serviços</h2>
+      </div>
+    </div>
+
+    {{ formset.management_form }}
+    <div id="lanhouse">
+      {% for itemslanhouse in formset %}
+      <div id="item-{{ forloop.counter0 }}" class="row g-2">
+        {% render_field itemslanhouse.lanhouse data-field='lanhouse' %}
+        {% render_field itemslanhouse.id data-field='id' %}
+        <div class="col-6 mb-3 form-floating">
+          {% render_field itemslanhouse.servico value="Selecione" hx-get="/servico/lanhouse/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="servico" class="form-select" %}
+          <label>Informe o serviço </label>
+        </div>
+        <div class=" col mb-3 form-floating">
+          {% render_field itemslanhouse.preco data-field='preco' value="0.00" %}
+          <label>Preço Unitario </label>
+        </div>
+        <div class="col mb-3 form-floating">
+          {% render_field itemslanhouse.quantidade class="form-control" data-field='quantidade' value="01" %}
+          <label>Quantidade</label>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'add-item-lanhouse' %}" hx-target="#lanhouse"
+      hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add serviço
+    </button>
+    <hr>
+    <div class="form-row">
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Pagamento</h2>
+      </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-md-6 mb-3 form-floating">
+          {% render_field form.forma_pagamento class="form-select" %}
+          <label>Forma de pagamento</label> 
+      </div>
+      <div class="col-md-3 mb-3 form-floating">
+        {% render_field form.desconto class="form-control" id="desconto" value="00.00" data-field="desconto"  %}
+        <label>Desconto</label>
+      </div>
+      <div  class="col-md-3 mb-3 form-floating">
+        <input id="totalValue" type="Number" class="form-control" readonly>
+        <label>Valor total</label>
+      </div>     
+    </div>
+    <div class="row g-2" style="color: white;">
+      <div class="col-md-6 mb-3 form-floating">
+        {% render_field form.qtd_parcela class="form-control" value="01" %}
+        <label id="label_qtd_parcela">Quantidade de parcelas</label>
+      </div>
+      <div class="col-md-3 mb-3 form-floating">
+        {% render_field form.valor_entrada class="form-control" value="0.00" %}
+        <label id="label_valor_entrada">Valor de entrada</label>
+      </div>
+      <div class="col-md-3 mb-3 form-floating">
+        {% render_field form.data_vencimento class="form-control" %}
+        <label id="label_data_vencimento">Dia vencimento</label>
+      </div>
+    </div>
+    <hr>
+    <div class="form-row">
+      <div class="col-md-6 mb-1 ">
+        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações adicionais</h2>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col form-floating" style="margin-bottom: 10px;">
+        {% render_field form.observacao id="obs" class="form-control" rows="3"  onclick="MyFunction()" %}
+        <label>Observação</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+      <button type="submit" class="btn btn-outline-primary">Salvar</button>
+    </div>
+
+  </div>
+</form>
+<script>
+  document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
+    var qtd_parcela = document.getElementById('id_main-qtd_parcela');
+    var valor_entrada = document.getElementById('id_main-valor_entrada');
+    var dia_vencimento = document.getElementById('id_main-data_vencimento');
+    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+    var label_data_vencimento = document.getElementById('label_data_vencimento');
+    var label_valor_entrada = document.getElementById('label_valor_entrada');
+
+    if (this.value === 'Fiado a receber') {
+      qtd_parcela.setAttribute('type', 'Number');
+      valor_entrada.setAttribute('type', 'Number');
+      dia_vencimento.setAttribute('type', 'Date');
+      label_valor_entrada.style.color = "rgb(67, 67, 67)";
+      label_data_vencimento.style.color = "rgb(67, 67, 67)";
+      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+    } else {
+      qtd_parcela.setAttribute('type', 'Hidden');
+      valor_entrada.setAttribute('type', 'Hidden');
+      dia_vencimento.setAttribute('type', 'Hidden');
+      label_valor_entrada.style.color = "#FFFFFF";
+      label_data_vencimento.style.color = "#FFFFFF";
+      label_qtd_parcela.style.color = "#FFFFFF";
+
+    }
+  });
+  (function () {
+    reorderItems()
+  })();
+
+  document.querySelector('#addItem').addEventListener('click', function () {
+    setTimeout(() => {
+      reorderItems()
+    }, 500)
+  })
+  Array.from(document.querySelectorAll('[data-field="servico"], [data-field="quantidade"], [data-field="desconto"]'))
+    .forEach((item, i) => {
+      item.addEventListener('change', reorderItems);
+      item.addEventListener('mouseover', reorderItems);
+      item.addEventListener('click', reorderItems);
+      item.addEventListener('mouseout', reorderItems);
+      item.addEventListener('blur', reorderItems);
+      item.addEventListener('keydown', reorderItems);
+    });
+
+  function reorderItems() {
+    var totalValue = 0;
+    
+    Array.from(document.querySelectorAll("[id^='item-']"))
+      .forEach((item, i) => {
+        item.setAttribute('id', 'item-' + i)
+
+        if (!item.querySelector('[data-field="lanhouse"]')) {
+          return
+        }
+
+        item.querySelector('[data-field="lanhouse"]').setAttribute('name', 'items-' + i + '-lanhouse')
+        item.querySelector('[data-field="lanhouse"]').setAttribute('id', 'id_items-' + i + '-lanhouse')
+
+        item.querySelector('[data-field="servico"]').setAttribute('name', 'items-' + i + '-servico')
+        item.querySelector('[data-field="servico"]').setAttribute('hx-target', '#id_items-' + i + '-preco')
+
+
+        item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
+
+        item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
+        item.querySelector('[data-field="preco"]').setAttribute('id', 'id_items-' + i + '-preco')
+
+        let preco = parseFloat(item.querySelector('[data-field="preco"]').value);
+        let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+        
+        
+    
+        totalValue += preco * qtd;
+        
+      })
+
+    Array.from(document.querySelectorAll("#id_id"))
+      .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+
+    let totalItems = $('#lanhouse').children().length
+    document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+
+    // htmx.org/api/#process
+    htmx.process(document.querySelector("#lanhouse"));
+    
+    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
+    
+  }
+ 
+  
+ 
+ 
+  function removeRow() {
+    const span = event.target.parentNode
+    const div = span.parentNode
+    div.parentNode.removeChild(div)
+
+    reorderItems()
+  }
+
+  Array.from(document.querySelectorAll('.remove-row'))
+    .forEach((item, i) => {
+      item.addEventListener('click', function () {
+        document.querySelector('button[type="submit"]').style.display = 'none'
+        document.querySelector('#btn-close').style.display = 'block'
+      })
+    })
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, 500)
+  });
+  function MyFunction(){
+    var desc =  document.querySelector('#desconto').value;
+    var tot = document.querySelector('#totalValue').value;
+    var total = tot - desc;
+    document.querySelector('input[id="totalValue"]').value = total.toFixed(2);
+  }
+
+
+</script>

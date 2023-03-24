@@ -112,7 +112,7 @@
         <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
         <div class="navbar-nav">
           <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="{% url 'logout' %}">Sair</a>
+            <a class="nav-link px-3" href="{% url 'account_logout' %}">Sair</a>
           </div>
         </div>
       </header>
@@ -157,6 +157,12 @@
                         <a class="nav-link" href="{% url 'orcamento' %}">
                             <span data-feather="file" class="align-text-bottom"></span>
                             Orçamentos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'lanhouse' %}" class="nav-link">
+                            <span data-feather="printer" class="align-text-bottom"></span>
+                            Lan House
                         </a>
                     </li>
                     <li class="nav-item">

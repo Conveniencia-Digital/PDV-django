@@ -1,0 +1,24 @@
+
+<div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">Lista Serviço Lanhouse</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+  <div class="modal-body">
+      <div class="table-responsive">
+        <table class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                  <th>Servico</th>
+                  <th>Preco custo</th>
+                  <th>Preco venda</th>
+                  <th>Editar</th>
+                  <th>Apagar</th>
+                </tr>
+            </thead>
+            <tbody id="Tbody-servico-lanhouse">
+                {% include 'lanhouse/tabela/tabela-servico-lanhouse.html' %}
+            </tbody>
+        </table>
+      </div>          
+  </div>
+  

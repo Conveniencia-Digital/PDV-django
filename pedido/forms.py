@@ -16,3 +16,6 @@ class PedidoForms(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
         
         self.fields['usuario'].widget = forms.HiddenInput()
+
+
+        

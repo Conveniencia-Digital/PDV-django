@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('produto.urls')),
@@ -36,5 +37,8 @@ urlpatterns = [
     path('', include('comunidade.urls')),
     path('', include('suporte.urls')),
     path('', include('pedido.urls')),
+    path('', include('lanhouse.urls')),
 
 ]
+
+

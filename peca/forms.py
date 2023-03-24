@@ -9,6 +9,9 @@ class PecasForms(forms.ModelForm):
 
         widgets = {
             'observacao': forms.TextInput(),
+            'preco_peca': forms.NumberInput(attrs={'step': '0.01'}),
+            'preco_de_custo': forms.NumberInput(attrs={'step': '0.01'}),
+            'valor_entrada': forms.NumberInput(attrs={'step': '0.01'}),
             
         }
 

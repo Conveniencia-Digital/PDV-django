@@ -42,16 +42,26 @@ Despesas
         </div>
       </div>
 </div>
-
-<div style="margin-top: 30px;">
-<a data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'cadastrar-despesa' %}"
-    hx-target="#adicionar-conteudo">Cadastrar despesa</a>
-
-<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-link" hx-get="{% url 'categoria-despesa' %}"
-    hx-target="#adicionar-conteudo" style="text-decoration: none;">Nova gategoria despesa</button>
-</div>
-
-<a data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'lista-categoria-despesa' %}" hx-target="#adicionar-conteudo">Categoria</a>
+<nav class="nav nav-pills nav-fill">
+    <ul class="nav nav-pills nav-fill">
+        <li class="nav-item">
+            <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'cadastrar-despesa' %}"
+               hx-target="#adicionar-conteudo">Cadastrar despesa</a>
+        </li>
+        <li class="nav-item">
+            <a  data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'categoria-despesa' %}"
+                hx-target="#adicionar-conteudo" style="text-decoration: none; margin-left: 10px;">Nova gategoria despesa</a>
+        </li>
+        <li class="nav-item">
+            <a  data-bs-toggle="modal" 
+                data-bs-target="#staticBackdrop" 
+                class="btn btn-outline-primary" 
+                hx-get="{% url 'lista-categoria-despesa' %}"
+                hx-target="#adicionar-conteudo"
+                style="margin-left: 10px;">Categoria</a>
+        </li>
+      </ul>
+</nav>
 
 
 <div class="table-responsive" style="padding-top: 18px">

@@ -1,0 +1,42 @@
+{% load widget_tweaks %}
+
+
+<div class="modal-header">
+  <h5 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar servico</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form hx-post="{% url 'cadastrar-servico-lanhouse' %}">
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class='form-control' %}
+        {% render_field form.servico class='form-control' %}
+        <label for="">Informe o servico</label>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col form-floating">
+        {% render_field form.preco_custo class='form-control' %}
+        <label for="">Preco de custo</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.preco_venda class='form-control' %}
+        <label for="">Preco de venda</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle');
+    setTimeout(() => {
+      $('#success_tic').modal('toggle'); 
+    }, "500");
+  });
+</script>

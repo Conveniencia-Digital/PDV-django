@@ -1,18 +1,18 @@
 <style>
-  #success_tic_editar .page-body {
+  #success_tic_delete .page-body {
     max-width: 300px;
     background-color: #FFFFFF;
     margin: 10% auto;
   }
 
-  #success_tic_editar .page-body .head {
+  #success_tic_delete .page-body .head {
     text-align: center;
   }
 
   /* #success_tic .tic{
   font-size:186px;
 } */
-  #success_tic_editar .close {
+  #success_tic_delete .close {
     text-decoration: none;
     opacity: 1;
     position: absolute;
@@ -22,7 +22,7 @@
     margin-bottom: 10px;
   }
 
-  #success_tic_editar .checkmark-circle {
+  #success_tic_delete .checkmark-circle {
     width: 150px;
     height: 150px;
     position: relative;
@@ -30,19 +30,19 @@
     vertical-align: top;
   }
 
-  .checkmark-circle .background {
+  #success_tic_delete .checkmark-circle .background {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: #0dcaf0;
+    background: #f44747;
     position: absolute;
   }
 
-  #success_tic_editar .checkmark-circle .checkmark {
+  #success_tic_delete .checkmark-circle .checkmark {
     border-radius: 5px;
   }
 
-  #success_tic_editar .checkmark-circle .checkmark.draw:after {
+  #success_tic_delete .checkmark-circle .checkmark.draw:after {
     -webkit-animation-delay: 300ms;
     -moz-animation-delay: 300ms;
     animation-delay: 300ms;
@@ -65,7 +65,7 @@
     animation-fill-mode: forwards;
   }
 
-  #success_tic_editar .checkmark-circle .checkmark:after {
+  #success_tic_delete .checkmark-circle .checkmark:after {
     opacity: 1;
     height: 75px;
     width: 37.5px;
@@ -162,7 +162,7 @@
   }
 </style>
 <!-- Modal -->
-<div id="success_tic_editar" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+<div id="success_tic_delete" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -170,8 +170,8 @@
       <a class="close" href="#" data-bs-dismiss="modal">&times;</a>
       <div class="page-body">
         <div class="head">
-          <h3 style="margin-top:5px;">Serviço</h3>
-          <h4>atualizado</h4>
+          <h3 style="margin-top:5px;">Servico</h3>
+          <h4>Excluido</h4>
         </div>
 
         <h1 style="text-align:center;">

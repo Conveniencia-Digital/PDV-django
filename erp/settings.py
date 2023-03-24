@@ -36,6 +36,13 @@ ALLOWED_HOSTS = [
     
 ]
 
+AUTHENTICATION_BACKENDS = [
+    
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -44,7 +51,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.apple',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.instagram',
 
+
+    
     # my apps
     'dashboard',
     'produto',
@@ -64,10 +82,12 @@ INSTALLED_APPS = [
     'comunidade',
     'suporte',
     'pedido',
+    'lanhouse',
 
 ]
 # Application definition
 
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,6 +119,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'erp.wsgi.application'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'suaconvenienciadigital@gmail.com'
+EMAIL_HOST_PASSWORD = 'mancunxwxrjjvtuy'
+
 
 
 # Database
