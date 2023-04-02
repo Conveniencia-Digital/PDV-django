@@ -55,8 +55,9 @@ Financeiro
         <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
             <tr>
                 <th>Conta a receber</th>
-                <th>Preço</th>
+                <th>Preço total</th>
                 <th>Cliente</th>
+                <th>Situacao</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -70,4 +71,5 @@ Financeiro
 {% include 'financeiro/modal/modal-alerta.html' %}
 {% include 'financeiro/modal/modal-alerta-editar.html' %}
 {% include 'financeiro/modal/modal-alerta-apagar.html' %}
+{% include 'financeiro/off-canvas/off-canvas.html' %}
 {% endblock conteudo %}

@@ -13,6 +13,7 @@
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.usuario class="form-control" %}
+        {% render_field form.status class="form-control" %}
         {% render_field form.cliente class="form-select" %}
         <label for="">Selecione o cliente</label>
       </div>
@@ -33,7 +34,21 @@
           {% render_field form.observacao class="form-control" %}
           <label for="">Observaçāo</label>
       </div>
-  </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6  form-floating">
+        {% render_field form.valor_entrada class="form-control" value="0.00" %}
+        <label id="label_valor_entrada">Valor pago</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.qtd_parcela class="form-control" value="01" %}
+        <label id="label_qtd_parcela">Qtd. parcela</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.data_vencimento class="form-control" type="date" %}
+        <label id="label_data_vencimento">Data vencimento</label>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -48,4 +63,10 @@
       $('#success_tic').modal('toggle')
     }, 500)
   });
+
+  
+    document.querySelector('#id_status').setAttribute('hidden', 'hidden')
+
+  
+
 </script>

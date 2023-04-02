@@ -33,6 +33,8 @@ def cadastrarlanhouse(request):
     return render(request, template_name, context)
 
 
+
+@login_required
 def precoservicolanhouse(request):
     template_name = 'lanhouse/formularios/preco-servico-lanhouse.html'
     url = request.get_full_path()
@@ -51,6 +53,7 @@ def precoservicolanhouse(request):
 
 
 
+@login_required
 def cadastrarservicolanhouse(request):
     template_name =  'lanhouse/formularios/formulario-cadastrar-servico-lanhouse.html'
     form = LanhouseServicoForm(request.POST or None, initial={'usuario': request.user})
@@ -66,6 +69,8 @@ def cadastrarservicolanhouse(request):
     return render(request, template_name, context)
 
 
+
+@login_required
 def editarservicolanhouse(request, pk):
     template_name = 'lanhouse/formularios/formulario-editar-servico-lanhouse.html'
     instance =  LanhouseServico.objects.get(pk=pk)
@@ -82,6 +87,7 @@ def editarservicolanhouse(request, pk):
     return render(request, template_name, context)
 
 
+@login_required
 def apagarservicolanhouse(request, pk):
     template_name = 'lanhouse/tabela/tabela-servico-lanhouse.html'
     servico = LanhouseServico.objects.get(pk=pk)
@@ -89,8 +95,7 @@ def apagarservicolanhouse(request, pk):
     return render(request, template_name)
 
 
-
-
+@login_required
 def additemlanhouse(request):
     template_name = 'lanhouse/formularios/add-item-lanhouse.html'
     form = ItemsLanhouseForm(user=request.user)
@@ -98,7 +103,14 @@ def additemlanhouse(request):
     return render(request, template_name, context)
 
 
+
+
 class ListaServicoLanhouse(ListView):
     model = LanhouseServico
     template_name = 'lanhouse/lista-servico-lanhouse.html'
+
+    def get_queryset(self):
+        return LanhouseServico.objects.filter(usuario=self.request.user)
+
+
 

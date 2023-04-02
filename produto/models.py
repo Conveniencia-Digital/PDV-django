@@ -5,18 +5,18 @@ from django.contrib.auth.models import User
 
 
 class Produto(models.Model):
-    FONES = 'FN'
-    CAPAS = 'CP'
-    PELICULAS = 'PL'
-    ADAPTADORES = 'AD'
-    CABOS = 'CB'
-    CELULARES = 'CL'
-    IPHONES = 'IP'
-    CARREGADORES = 'CR'
-    FONTES = 'FT'
-    DIVERSOS = 'DV'
-    INFORMATICA = 'IN'
-    CAIXA_SOM = 'CS'
+    FONES = 'Fones'
+    CAPAS = 'Capas'
+    PELICULAS = 'Peliculas'
+    ADAPTADORES = 'Adaptadores'
+    CABOS = 'Cabos'
+    CELULARES = 'Celulares'
+    IPHONES = 'iPhones'
+    CARREGADORES = 'Carregadores'
+    FONTES = 'Fontes'
+    DIVERSOS = 'Diversos'
+    INFORMATICA = 'Informatica'
+    CAIXA_SOM = 'Caixa de som'
     CATEGORIAS_PRODUTOS = [
         (FONES, 'Fones'),
         (CABOS, 'Cabos'),
@@ -48,7 +48,7 @@ class Produto(models.Model):
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
     nome_produto = models.CharField(max_length=99)
-    categoria_produtos = models.CharField(max_length=2, choices=CATEGORIAS_PRODUTOS, null=True, blank=True)
+    categoria_produtos = models.CharField(max_length=20, choices=CATEGORIAS_PRODUTOS, null=True, blank=True)
     quantidade = models.IntegerField()
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)

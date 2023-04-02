@@ -2,7 +2,7 @@ from django.shortcuts import render
 from pedido.models import Pedido
 from pedido.forms import PedidoForms
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 
 class ListaPedido(ListView):
@@ -15,7 +15,7 @@ class ListaPedido(ListView):
 @login_required
 def cadastrarpedido(request):
     template_name = 'pedido/formularios/form-cadastrar-pedido.html'
-    form = PedidoForms(request.POST or None, initial={'usuario': request.user})
+    form = PedidoForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == "POST":
         if form.is_valid():          
@@ -32,7 +32,7 @@ def cadastrarpedido(request):
 def editarpedido(request, pk):
     template_name = 'pedido/formularios/form-editar-pedido.html'
     instance = Pedido.objects.get(pk=pk)
-    form = PedidoForms(request.POST or None, instance=instance, initial={'usuario': request.user})
+    form = PedidoForms(request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user)
 
     if instance.usuario != request.user:
         raise PermissionError
@@ -59,4 +59,9 @@ def apagarpedido(request, pk):
        return render(request, template_name)
     else:
         raise PermissionError
+
+
+class DetalhePedido(DetailView):
+    model = Pedido
+    template_name = 'pedido/off-canvas/detalhe-pedido.html'
 

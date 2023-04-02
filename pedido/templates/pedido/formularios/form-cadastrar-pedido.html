@@ -13,6 +13,7 @@
       <div class="col form-floating">
         {% render_field form.usuario class='form-control' %}
         {% render_field form.produto class='form-control' %}
+        {% render_field form.status class='form-control' %}
         <label for="">Informe o produto ou peça</label>
       </div>
       <div class="col form-floating">
@@ -35,6 +36,12 @@
         {% render_field form.valor_pago class='form-control' type="Number" value="00.00" %}
         <label for="">Valor pago</label>
       </div>
+      <div class="row g-2" style="margin-bottom: 10px;">
+        <div class="col form-floating">
+          {% render_field form.observacao class="form-control" %}
+          <label for="">Observaçāo</label>
+        </div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">
@@ -50,4 +57,6 @@
       $('#success_tic').modal('toggle');    
     }, "500");
   });
+
+  document.querySelector('#id_status').setAttribute('hidden', 'hidden')
 </script>

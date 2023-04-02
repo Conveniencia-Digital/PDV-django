@@ -1,0 +1,47 @@
+<div style="padding: 20px;">
+    <h5>Informações do Fornecedor </h5>
+    <hr>
+    <h5>Fornecedor</h5>
+    <h6>{{ object.nome_fornecedor }}</h6>
+    
+    {%  if object.cnpj == None %}
+        <h6></h6>
+    {% else %}
+        <h5>CNPJ</h5>
+        <h6>{{ object.cnpj }}</h6>
+    {% endif %}
+    <h5>Telefone de contato</h5>
+    <h6>{{ object.telefone_contato }}</h6>
+    
+    {% if object.telefone_contato2 == None %}
+        <h6></h6>
+    {% else %}
+        <h5>Telefone de contato</h5>
+    <h6>{{ object.telefone_contato2 }}</h6>
+    {% endif %}
+
+    {% if object.rua == None %}
+        <h6></h6>
+    {% else %}
+        <h5>Rua</h5>
+        <h6>{{ object.rua }}</h6>
+    {% endif %}
+
+    {% if object.bairro == None  %}
+        <h6></h6>
+    {% else %}
+        <h5>Bairro</h5>
+        <h6>{{ object.bairro }}</h6>
+    {% endif %}
+    
+    {% if object.observacao == None %}
+        <h6></h6>
+    {% else %}
+        <h5>Observacao</h5>
+        <h6>{{ object.observacao }}</h6>
+    {% endif %}
+    <h5>Data de cadastro</h5>
+    <h6>{{ object.data_criacao|date:'d/m/y - h:i:s A' }}</h6>
+    <h5>Ultima edicao </h5>
+    <h6>{{ object.data_edicao|date:'d/m/y - h:i:s A' }}</h6>
+</div>

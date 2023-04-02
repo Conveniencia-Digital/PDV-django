@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from produto.forms import ProdutoForms
 from produto.models import Produto
 from django.contrib.auth.decorators import login_required
+from fornecedor.models import Fornecedores
 
 class ListaProduto(ListView):
     model = Produto
@@ -16,7 +17,8 @@ class ListaProduto(ListView):
 @login_required
 def criarprodutos(request):
     template_name = 'produto/formularios/formulario-cadastrar-produto.html'
-    form = ProdutoForms(request.POST or None, initial={'usuario': request.user})
+    form = ProdutoForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
+    
 
     if request.method == 'POST':
         if form.is_valid():
@@ -34,7 +36,7 @@ def criarprodutos(request):
 def editarprodutos(request, pk):
     template_name = 'produto/formularios/formulario-editar-produto.html'
     instance = Produto.objects.get(pk=pk)
-    form = ProdutoForms(request.POST or None, instance=instance, initial={'usuario':request.user})
+    form = ProdutoForms(request.POST or None, instance=instance, initial={'usuario':request.user}, user=request.user)
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -58,3 +60,8 @@ def apagarprodutos(request, pk):
     else:
         raise PermissionError
     return render(request, template_name)
+
+
+class DetalheProduto(DetailView):
+    model = Produto
+    template_name = 'produto/off-canvas/detalhe-produtos.html'

@@ -2,6 +2,7 @@
     <td>{{ object.nome_contas_a_receber }}</td>
     <td>{{ object.preco_contas_a_receber }}</td>
     <td>{{ object.cliente }}</td>
+    <td>{{ object.status }}</td>
     <td>
         <span
             data-bs-toggle="modal"
@@ -20,7 +21,8 @@
             hx-swap="outerHTML swap:300ms">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <span><i class="fa fa-eye"></i></span>
+        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-financeiro' object.pk %}"
+              hx-target="#detalhe-financeiro" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
     </td>
     
 </tr>

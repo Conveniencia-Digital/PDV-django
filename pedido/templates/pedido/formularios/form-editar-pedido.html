@@ -8,8 +8,19 @@
   <div class="modal-body">
     {% csrf_token %}
     <div class="row g-2" style="margin-bottom: 10px;">
+      {% render_field form.usuario class='form-control' %}
       <div class="col form-floating">
-        {% render_field form.usuario class='form-control' %}
+        {% render_field form.cliente class='form-select' %}
+        <label for="">Informe o cliente</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.status class='form-select' %}
+        <label for="">Informe a situacao</label>
+      </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        
         {% render_field form.produto class='form-control' %}
         <label for="">Informe o produto ou peça</label>
       </div>
@@ -18,12 +29,7 @@
         <label for="">Informe o preço de venda</label>
       </div>
     </div>
-    <div class="row g-2" style="margin-bottom: 10px;">
-      <div class="col form-floating">
-        {% render_field form.cliente class='form-select' %}
-        <label for="">Informe o cliente</label>
-      </div>
-    </div>
+    
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.data_entrega class='form-control' type="Date" %}
@@ -32,6 +38,12 @@
       <div class="col form-floating">
         {% render_field form.valor_pago class='form-control' type="Number" value="00.00" %}
         <label for="">Valor pago</label>
+      </div>
+      <div class="row g-2" style="margin-bottom: 10px;">
+        <div class="col form-floating">
+          {% render_field form.observacao class="form-control" %}
+          <label for="">Observaçāo</label>
+        </div>
       </div>
     </div>
   </div>

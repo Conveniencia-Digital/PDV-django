@@ -1,7 +1,13 @@
 <tr id="trPeca{{ object.pk }}">
+    {% if object.quantidade == 0 %}
+    <td style="color: gray; text-decoration:line-through">{{ object.quantidade }}</td>
+    <td style="color: gray; text-decoration:line-through">{{ object.nome_peca }}</td>
+    <td style="color: gray; text-decoration:line-through">R$ {{ object.preco_peca}}</td>
+    {% else %}
     <td>{{ object.quantidade }}</td>
-    <td> {{ object.nome_peca }} </td>
-    <td>R$ {{ object.preco_peca }}</td> 
+    <td>{{ object.nome_peca }}</td>
+    <td>R$ {{ object.preco_peca}}</td>
+    {% endif %}
     <td>
         <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
               hx-get="{% url 'editar-peca' object.pk %}"

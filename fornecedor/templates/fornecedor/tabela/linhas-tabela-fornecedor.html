@@ -20,7 +20,8 @@
 
                 <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <span><i class="fa fa-eye"></i></span>
+        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-fornecedor' object.pk %}"
+        hx-target="#detalhe-fornecedor" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
     </td>
     
 </tr>

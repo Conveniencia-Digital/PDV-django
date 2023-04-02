@@ -13,10 +13,9 @@ Pedidos e encomendas
         <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
             <tr>
                 <th>Produto</th>
-                <th>Preço </th>
                 <th>Cliente</th>
                 <th>Data entrega</th>
-                <th>Valor entrada</th>
+                <th>Situacao</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -29,4 +28,5 @@ Pedidos e encomendas
 {% include 'pedido/modais/modal-alerta.html' %}
 {% include 'pedido/modais/modal-alerta-editar.html' %}
 {% include 'pedido/modais/modal-alerta-apagar.html' %}
+{% include "pedido/off-canvas/off-canvas-pedido.html" %}
 {% endblock conteudo %}

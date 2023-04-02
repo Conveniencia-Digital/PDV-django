@@ -2,7 +2,6 @@
 <div class="modal-header">
   <h5 class="modal-title" id="exampleModalToggle"> Cadastrar despesa </h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-
   </button>
 </div>
 <form hx-post="{% url 'cadastrar-despesa' %}" hx-target="#despesa-Tbody" hx-indicator=".htmx-indicator"
@@ -43,17 +42,17 @@
         <label for="">Informe observação se houver</label>
       </div>
     </div>
-    <div class="row g-2">
+    <div class="row g-2" style="color: #FFFFFF;">
       <div class="col-6  form-floating">
-        {% render_field form.valor_entrada class="form-control" value="0.00" type="Number" %}
+        {% render_field form.valor_entrada class="form-control" value="0.00" type="hidden" %}
         <label id="label_valor_entrada">Valor de entrada</label>
       </div>
       <div class="col-3 form-floating">
-        {% render_field form.qtd_parcela class="form-control" value="01" type="Number" %}
+        {% render_field form.qtd_parcela class="form-control" value="01" type="hidden" %}
         <label id="label_qtd_parcela">Qtd. parcela</label>
       </div>
       <div class="col-3 form-floating">
-        {% render_field form.data_vencimento class="form-control" type="Date" %}
+        {% render_field form.data_vencimento class="form-control" type="hidden" %}
         <label id="label_data_vencimento">Data vencimento</label>
       </div>
     </div>
@@ -67,12 +66,7 @@
 </form>
 
 <script>
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, 500)
-  });
+ 
   document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
     var valor_entrada = document.querySelector('#id_valor_entrada');
     var data_vencimento = document.querySelector('#id_data_vencimento');
@@ -99,7 +93,12 @@
       label_data_vencimento.style.color = "#FFFFFF";
       label_qtd_parcela.style.color = "#FFFFFF";
     }
+  });
 
-
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, 500)
   });
 </script>

@@ -1,8 +1,8 @@
 
 <tr id="tr-ServicoLanhouse{{ object.pk }}">
     <td>{{ object.servico }}</td>
-    <td>{{ object.preco_custo }}</td>
-    <td>{{ object.preco_venda }}</td>
+    <td><sup>R$</sup> {{ object.preco_custo }}</td>
+    <td><sup>R$</sup> {{ object.preco }}</td>
     <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop2" hx-get="{% url 'editar-servico-lanhouse' object.pk %}" hx-target="#addConteudo2"><i class="fa fa-edit"></span></td>
     <td><span hx-get="{% url 'apagar-servico-lanhouse' object.pk %}" hx-target="closest tr" hx-swap="outerHTML swap:1s"><i class="fa fa-trash"></span></td>
 </tr>

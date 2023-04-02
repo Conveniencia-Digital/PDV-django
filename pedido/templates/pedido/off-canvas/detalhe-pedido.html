@@ -1,0 +1,26 @@
+<h3>Situacao</h3>
+<h5>{{ object.status }}</h5>
+<h3>Produto</h3>
+<h5>{{ object.produto }}</h5>
+<h3>Cliente</h3>
+<h5>{{ object.cliente }}</h5>
+
+<h3>Valor de venda </h3>
+<h5><sup>R$ </sup>{{ object.valor_produto }}</h5>
+<h3>Valor pago</h3>
+<h5><sup>R$ </sup>{{ object.valor_pago }}</h5>
+<h3>Obeservacao</h3>
+<h5>{{ object.observacao }}</h5>
+
+<h3>Data de entrega</h3>
+<h5>{{ object.data_entrega|date:'d/m/y' }}</h5>
+
+<h3>Valor restante a receber</h3>
+<h5><sup>R$ </sup>{{ object.valor_a_receber }}</h5>
+
+<h3>Data do pedido</h3>
+<h5>{{ object.data_criacao|date:'d/m/y h:i' }}</h5>
+<h3>Ultima edicao</h3>
+<h5>{{ object.data_edicao|date:'d/m/y h:i' }}</h5>
+        
+    

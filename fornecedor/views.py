@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from fornecedor.models import Fornecedores
 from fornecedor.forms import FornecedorForm
@@ -75,3 +75,9 @@ def total_fornecedor(request):
     context = {'total_fornecedor': total_fornecedor}
     return render(request, template_name, context)
     
+
+
+
+class DetalheFornecedorView(DetailView):
+    model = Fornecedores
+    template_name = 'fornecedor/off-canvas/detalhe-fornecedor.html'

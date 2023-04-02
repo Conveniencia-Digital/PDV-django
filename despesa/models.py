@@ -21,7 +21,7 @@ class Despesa(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado')
+        (FIADO, 'Fiado a pagar')
     ]
     
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -35,5 +35,10 @@ class Despesa(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+
+
+
+    def saldodespesa(self):
+        return self.preco_despesa - self.valor_entrada
     
    

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 
 
+
 class Vendas(models.Model):
     ENTREGUE = 'Entregue'
     CANCELADA = 'Cancelada'
@@ -56,6 +57,16 @@ class Vendas(models.Model):
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc
+    
+    
+
+    def valor_a_receber(self):
+        qs = self.vendas_items.filter(vendas=self.pk).values_list(
+            'preco', 'quantidade') or 0
+        t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
+        desc = t - self.desconto
+        return desc - self.valor_entrada
+
 
 
 class ItemsVenda(models.Model):

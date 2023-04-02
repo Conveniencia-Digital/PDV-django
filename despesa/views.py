@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from despesa.forms import DespesaForms, CategoriaDespesaForms
 from despesa.models import Despesa, CategoriaDespesa
 from peca.models import Pecas
@@ -26,7 +26,7 @@ class ListaDespesa(ListView):
 @login_required   
 def cadastrardespesa(request):
     template_name = 'despesa/formularios/formulario-cadastrar-despesa.html'
-    form = DespesaForms(request.POST or None, initial={'usuario': request.user})
+    form = DespesaForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -45,7 +45,7 @@ def cadastrardespesa(request):
 def editardespesa(request, pk):
     template_name = 'despesa/formularios/formulario-editar-despesa.html'
     instance = Despesa.objects.get(pk=pk)
-    form = DespesaForms(request.POST or None, instance=instance, initial={'usuario': request.user})
+    form = DespesaForms(request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user)
     
     if instance.usuario != request.user:
         raise PermissionError
@@ -134,4 +134,20 @@ def editarcatergoriadespesa(request, pk):
     context = {'form': form, 'object':instance}
     return render(request, template_name, context)
 
+
+class DetalheDespesaProduto(DetailView):
+    model = Produto
+    template_name = 'despesa/off-canvas/canvas-despesa-produto.html'
+
+
+
+class DetalheDespesaPeca(DetailView):
+    model = Pecas
+    template_name = 'despesa/off-canvas/canvas-despesa-peca.html'
+
+
+
+class DetalheDespesa(DetailView):
+    model = Despesa
+    template_name = 'despesa/off-canvas/canvas-despesa.html'
 

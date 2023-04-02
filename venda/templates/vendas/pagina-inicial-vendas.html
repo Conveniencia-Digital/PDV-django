@@ -1,4 +1,5 @@
 {% extends 'dashboard/pagina-inicial.html' %}
+{% load relatoriovenda %}
 
 {% block titulo %}
 Vendas
@@ -37,13 +38,12 @@ Vendas
     <div class="row" id="relatorio-venda">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Suas vendas <b></b></h5>
-                <h2 class="card-text">Seu Lucro R$</h2>
-                <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-                <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
+                <h5 class="card-title">Voce fez <b>{% qtd_vendas request %}</b> este mes </h5>
+                <h2 class="card-text"><sup>R$</sup> {% total_vendas request %}</h2>
             </div>
         </div>
     </div>
+    
     
     <div style="margin-top: 30px;">
         <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"

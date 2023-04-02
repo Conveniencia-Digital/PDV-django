@@ -1,7 +1,13 @@
 <tr id="trProduto{{ object.pk }}">
+    {% if object.quantidade == 0 %}
+    <td style="color: gray; text-decoration:line-through">{{ object.quantidade }}</td>
+    <td style="color: gray; text-decoration:line-through">{{ object.nome_produto }}</td>
+    <td style="color: gray; text-decoration:line-through">R$ {{ object.preco|default:'---' }}</td>
+    {% else %}
     <td>{{ object.quantidade }}</td>
     <td>{{ object.nome_produto }}</td>
     <td>R$ {{ object.preco|default:'---' }}</td>
+    {% endif %}
     <td>
         <span data-bs-toggle="modal" data-bs-target="#staticBackdrop"
             hx-get="{% url 'editar-produtos' object.pk %}" 
@@ -13,7 +19,8 @@
             hx-target="closest tr" hx-swap="outerHTML swap:300ms">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+              hx-get="{% url 'detalhe-produto' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML">
             <i class="fa-regular fa-eye" style="color: rgb(40, 18, 237);"></i>
         </span>
     </td>

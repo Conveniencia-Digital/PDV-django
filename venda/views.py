@@ -6,6 +6,7 @@ from venda.models import Vendas, ItemsVenda
 from django.contrib.auth.decorators import login_required
 
 
+
 class ListaVendas(ListView):
     template_name = 'vendas/pagina-inicial-vendas.html'
     model = Vendas
@@ -106,4 +107,13 @@ def editarvendas(request, pk):
             print(formset.errors)
    
     context = {'object':venda_instance, 'form': form, 'formset': formset}
+    return render(request, template_name, context)
+
+
+
+def valor_total_vendas(request):
+    template_name = 'vendas/relatorios/relatorio-venda.html'
+    vendas = Vendas.objects.filter(usuario=request.user).count()
+    valor_total = sum(venda.total() for venda in Vendas.objects.filter(usuario=request.user))
+    context = {'vendas': vendas, 'valor_total': valor_total}
     return render(request, template_name, context)

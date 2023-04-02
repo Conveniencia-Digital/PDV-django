@@ -33,13 +33,11 @@
 
 {% block conteudo%}
 
-<div class="row" id="relatorio-venda">
+<div class="row" id="relatorio-orcamento">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Suas orcamentos <b></b></h5>
-            <h2 class="card-text">Seu Lucro R$</h2>
-            <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
+            <h5 class="card-title">Voce fez <b>{% qtd_orcamento request %}</b> orcamentos este mes <b></b></h5>
+            <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>           
         </div>
     </div>
 </div>

@@ -32,21 +32,11 @@ Despesas
 {% endblock style %}
 
 {% block conteudo %}
-<div class="row" id="relatorio-peca">
-    <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Suas peças cadastradas <b></b></h5>     
-          <h2 class="card-text">Seu Lucro R$</h2>       
-          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
-        </div>
-      </div>
-</div>
-<nav class="nav nav-pills nav-fill">
-    <ul class="nav nav-pills nav-fill">
+<nav class="navbar justify-content-center">
+    <ul class="nav justify-content-center">
         <li class="nav-item">
             <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'cadastrar-despesa' %}"
-               hx-target="#adicionar-conteudo">Cadastrar despesa</a>
+            hx-target="#adicionar-conteudo">Cadastrar despesa</a>
         </li>
         <li class="nav-item">
             <a  data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'categoria-despesa' %}"
@@ -54,14 +44,17 @@ Despesas
         </li>
         <li class="nav-item">
             <a  data-bs-toggle="modal" 
-                data-bs-target="#staticBackdrop" 
-                class="btn btn-outline-primary" 
-                hx-get="{% url 'lista-categoria-despesa' %}"
-                hx-target="#adicionar-conteudo"
-                style="margin-left: 10px;">Categoria</a>
+            data-bs-target="#staticBackdrop" 
+            class="btn btn-outline-primary" 
+            hx-get="{% url 'lista-categoria-despesa' %}"
+            hx-target="#adicionar-conteudo"
+            style="margin-left: 10px;">Categorias</a>
+    </li>
         </li>
       </ul>
 </nav>
+
+
 
 
 <div class="table-responsive" style="padding-top: 18px">
@@ -86,5 +79,6 @@ Despesas
 {% include 'despesa/modal/modal-alerta.html' %}
 {% include 'despesa/modal/modal-alerta-editar.html' %}
 {% include 'despesa/modal/modal-alerta-apagar.html' %}
+{% include 'despesa/off-canvas/off-canvas.html' %}
 
 {% endblock conteudo %}

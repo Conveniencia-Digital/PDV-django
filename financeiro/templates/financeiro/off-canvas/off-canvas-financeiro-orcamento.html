@@ -1,6 +1,26 @@
-<td>{{ orcamento.cliente }}</td>
-    <td><a href="tel:+55{{ orcamento.cliente.telefone_contato }}" style="text-decoration: none;">{{ orcamento.cliente.telefone_contato }}</a></td>
-    <td>Serviço feito {{orcamento.celular}}</td>
-    <td>R$ {{ orcamento.total }}</td>
-    <td>{{ orcamento.forma_pagamento }}</td>
-    <td>{{ orcamento.data_criacao|date:'d/m/y - h:i' }}</td>
+<h3>Situacao</h3>
+<h4>{{ object.forma_pagamento}}</h4>
+<h3>Data do orcamento</h3>
+<h4>{{object.data_criacao|date:'d/m/y - H:i'}}</h4>
+<h3>Nome do cliente</h3>
+<h4>{{ object.cliente }}</h4>
+<h3>Telefone para contato</h3>
+<h4><a href="tel:+55{{ object.cliente.telefone_contato }}" style="text-decoration: none;">{{ object.cliente.telefone_contato }}</a></h4>
+
+<h3>Valor do orcamento</h3>
+<h4>R${{ object.total }}</h4>
+
+<h3>Pecas ultilizadas</h3>
+{% for peca in peca %}
+<h4>{{  peca.quantidade }} {{  peca.peca }} {{peca.preco}}</h4><br>
+{% endfor %}
+<h3>Servicos realizados</h3>
+
+<h3>Valor pago</h3>
+<h4>{{ object.valor_entrada }}</h4>
+
+<h3>Valor a receber</h3>
+<h4>{{ object.valor_a_receber }}</h4>
+
+<h3>Data de vencimento</h3>
+<h4>{{ object.data_vencimento|date:'d/m/y' }}</h4>

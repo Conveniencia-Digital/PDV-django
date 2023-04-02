@@ -16,7 +16,7 @@ class Peca(ListView):
 @login_required
 def cadastrarpeca(request):
     template_name = 'peca/formularios/formulario-cadastrar-peca.html'
-    form = PecasForms(request.POST or None, initial={'usuario': request.user})
+    form = PecasForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -34,7 +34,7 @@ def cadastrarpeca(request):
 def editarpeca(request, pk):
     template_name = 'peca/formularios/formulario-editar-peca.html'
     instance = Pecas.objects.get(pk=pk)
-    form = PecasForms(request.POST or None, instance=instance, initial={'usuario': request.user})
+    form = PecasForms(request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user)
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -81,3 +81,7 @@ def relatoriopeca(request):
 class DetalhePeca(DetailView):
     model = Pecas
     template_name = 'peca/offcanvas/detalhe-peca.html'
+
+    def get_queryset(self):
+        return Pecas.objects.filter(usuario=self.request.user)
+    

@@ -1,6 +1,25 @@
-<td>{{venda.data_criacao|date:'d/m/y - H:i'}}</td>
-<td>{{ venda.cliente }}</td>
-    <td><a href="tel:+55{{ venda.cliente.telefone_contato }}" style="text-decoration: none;">{{ venda.cliente.telefone_contato }}</a></td>
-    <td>Compra de produtos</td>
-    <td>R${{ venda.total }}</td>
-    <td>{{ venda.forma_pagamento}}</td>
+<h3>Situacao</h3>
+<h4>{{ object.forma_pagamento}}</h4>
+<h3>Data da venda</h3>
+<h4>{{object.data_criacao|date:'d/m/y - H:i'}}</h4>
+<h3>Nome do cliente</h3>
+<h4>{{ object.cliente }}</h4>
+<h3>Telefone para contato</h3>
+<h4><a href="tel:+55{{ object.cliente.telefone_contato }}" style="text-decoration: none;">{{ object.cliente.telefone_contato }}</a></h4>
+
+<h3>Valor da venda</h3>
+<h4>R${{ object.total }}</h4>
+
+<h3>Items vendidos</h3>
+{% for produto in produto %}
+<h4>{{  produto.quantidade }} {{  produto.produto }} {{produto.preco}}</h4><br>
+{% endfor %}
+
+<h3>Valor pago</h3>
+<h4>{{ object.valor_entrada }}</h4>
+
+<h3>Valor a receber</h3>
+<h4>{{ object.valor_a_receber }}</h4>
+
+<h3>Data de vencimento</h3>
+<h4>{{ object.data_vencimento|date:'d/m/y' }}</h4>

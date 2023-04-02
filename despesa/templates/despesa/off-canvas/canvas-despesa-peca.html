@@ -1,6 +1,18 @@
-<td>{{peca.fornecedor|default:'---'}}</td>
-    <td><a href="tel:+55{{ peca.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ peca.fornecedor.telefone_contato }}</a></td>
-    <td>{{ peca.data_criacao|date:'d/m/y - h:i' }}</td>
-    <td>{{ peca.nome_peca }}</td>
-    <td>R$ {{ peca.saldodespesa }}</td>
-    <td>{{peca.forma_pagamento}}</td>
+<h5>Fornecedor</h5>
+<h6>{{ object.fornecedor|default:'---' }}</h6>
+
+<h5>Telefone de contato</h5>
+<h6><a href="tel:+55{{ object.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ object.fornecedor.telefone_contato }}</a></h6>
+
+<h5>Data da compra</h5>
+<h6>{{ object.data_criacao|date:'d/m/y - h:i' }}</h6>
+
+<h5>Peca e quantidade</h5>
+<h6>{{ object.quantidade }} unidades {{ object.nome_peca }}</h6>
+
+<h5>Valor a pagar</h5>
+<h6>R$ {{ object.saldodespesa }}</h6>
+
+<h5>Data de vencimento</h5>
+<h6>{{ object.data_vencimento|date:'d/m/y' }}</h6>
+

@@ -60,7 +60,7 @@ class ItemsVendaForm(forms.ModelForm):
         self.fields['vendas'].widget = forms.HiddenInput()
         self.fields['preco'].widget.attrs['step'] = 0.01
 
-        self.fields['produto'].queryset = Produto.objects.filter(usuario=user)
+        self.fields['produto'].queryset = Produto.objects.filter(quantidade__gt=0, usuario=user)
 
 
 VendasItemsFormset = inlineformset_factory(

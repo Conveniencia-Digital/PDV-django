@@ -6,9 +6,14 @@ register = template.Library()
 
 
 @register.simple_tag
-def faturamento():
-    s = Orcamento.objects.all().aggregate(som=Count('id'))
-    s1 = ItemsOrcamento.objects.all().filter('quantidade')
-    for i in s.values():
-        s = i
-    return s1
+def valor_total(request):
+    total_orcamento = sum(valor.total() for valor in Orcamento.objects.filter(usuario=request.user))
+    return total_orcamento
+
+
+
+@register.simple_tag
+def qtd_orcamento(request):
+    qtd = Orcamento.objects.filter(usuario=request.user).count()
+    return qtd
+    

@@ -32,9 +32,7 @@ class OrcamentoForms(forms.ModelForm):
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['tecnico'].queryset = Colaborador.objects.filter(usuario=user)
         self.fields['usuario'].widget = forms.HiddenInput()
-        self.fields['data_vencimento'].widget = forms.HiddenInput()
-        self.fields['qtd_parcela'].widget = forms.HiddenInput()
-        self.fields['valor_entrada'].widget = forms.HiddenInput()
+        
     
 
 
@@ -66,7 +64,7 @@ class ItemsOrcamentoForms(forms.ModelForm):
 
         self.fields['id'].label = ''
         self.fields['id'].widget = forms.HiddenInput()
-        self.fields['peca'].queryset = Pecas.objects.filter(usuario=user)
+        self.fields['peca'].queryset = Pecas.objects.filter(quantidade__gt=0, usuario=user)
         self.fields['servico'].queryset = Servico.objects.filter(usuario=user)
        
        

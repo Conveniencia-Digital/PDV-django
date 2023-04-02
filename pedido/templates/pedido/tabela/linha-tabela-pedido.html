@@ -1,9 +1,9 @@
 <tr id="pedidoTr{{ object.pk }}">
     <td>{{ object.produto }}</td>
-    <td>{{ object.valor_produto }}</td>
+    
     <td>{{ object.cliente }}</td>
     <td>{{ object.data_entrega|date:"d/m/Y" }}</td>
-    <td>{{ object.valor_pago }}</td>
+    <td>{{ object.status }}</td>
     <td>
         <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-pedido' object.pk %}"
             hx-target="#adicionar-pedido">
@@ -15,6 +15,7 @@
             hx-swap="outerHTML swap:1s">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <span><i class="fa fa-eye"></i></span>
+        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+        hx-get="{% url 'detalhe-pedido' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
     </td>
 </tr>

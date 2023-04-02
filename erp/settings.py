@@ -89,6 +89,17 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+       
+        'APP': {
+            'client_id': '614591685918-oq7tr0k0htn000e6kvo01shjhkphahrg.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

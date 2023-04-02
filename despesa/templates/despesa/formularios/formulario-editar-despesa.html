@@ -45,15 +45,15 @@
         </div>
         <div class="row g-2">
             <div class="col-6  form-floating">
-                {% render_field form.valor_entrada class="form-control" value="0.00" type="Number" %}
+                {% render_field form.valor_entrada class="form-control" value="0.00"  %}
                 <label id="label_valor_entrada">Valor de entrada</label>
             </div>
             <div class="col-3 form-floating">
-                {% render_field form.qtd_parcela class="form-control" value="01" type="Number" %}
+                {% render_field form.qtd_parcela class="form-control" value="01" %}
                 <label id="label_qtd_parcela">Qtd. parcela</label>
             </div>
             <div class="col-3 form-floating">
-                {% render_field form.data_vencimento class="form-control" type="Date" %}
+                {% render_field form.data_vencimento class="form-control" %}
                 <label id="label_data_vencimento">Data vencimento</label>
             </div>
         </div>

@@ -50,7 +50,7 @@ class Orcamento(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     celular = models.CharField(max_length=90)
-    data_entrega = models.DateTimeField(null=True, blank=True)
+    data_entrega = models.DateField(null=True, blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS, max_length=21)
@@ -76,6 +76,15 @@ class Orcamento(models.Model):
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto 
         return desc
+    
+
+
+    def valor_a_receber(self):
+        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
+            'preco_orcamento', 'quantidade') or 0
+        t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
+        desc = t - self.desconto
+        return desc - self.valor_entrada
 
 
 class ItemsOrcamento(models.Model):

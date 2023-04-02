@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from financeiro.models import ContasAReceber
 from financeiro.forms import ContasAReceberForms
-from venda.models import Vendas
-from orcamento.models import Orcamento
+from venda.models import Vendas, ItemsVenda
+from orcamento.models import Orcamento, ItemsOrcamento
 from cliente.models import Cliente
 
 
@@ -26,7 +26,7 @@ class ListaContasAReceber(ListView):
 def cadastrarcontas_a_receber(request):
     template_name = 'financeiro/formularios/formulario-cadastrar-contas-a-receber.html'
    
-    form = ContasAReceberForms(request.POST or None, initial={'usuario': request.user})
+    form = ContasAReceberForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -43,7 +43,7 @@ def cadastrarcontas_a_receber(request):
 def editarcontas_a_receber(request, pk):
     template_name = 'financeiro/formularios/formulario-editar-contas-a-receber.html'
     instance = ContasAReceber.objects.get(pk=pk)
-    form = ContasAReceberForms(request.POST or None, instance=instance, initial={'usuario': request.user})
+    form = ContasAReceberForms(request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user)
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -67,3 +67,28 @@ def apagarcontas_a_receber(request, pk):
     else:
         raise PermissionError
     return render(request, template_name)
+
+
+class DetalheFinanceiro(DetailView):
+    model = ContasAReceber
+    template_name = 'financeiro/off-canvas/off-canvas-financeiro.html'
+
+
+class DetalheFinanceiroVenda(DetailView):
+    model = Vendas
+    template_name = 'financeiro/off-canvas/off-canvas-financeiro-vendas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetalheFinanceiroVenda, self).get_context_data(**kwargs)
+        context['produto'] = ItemsVenda.objects.all()   
+        return context
+
+
+class DetalheFinanceiroOrcamento(DetailView):
+    model = Orcamento
+    template_name = 'financeiro/off-canvas/off-canvas-financeiro-orcamento.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetalheFinanceiroOrcamento, self).get_context_data(**kwargs)
+        context['peca'] = ItemsOrcamento.objects.all()   
+        return context
