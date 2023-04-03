@@ -10,7 +10,7 @@
     <td><a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
     <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
     <td>{{object.data_criacao|date:'d/m/y - h:i'}}</td>
-    <td><a data-toggle="modal" data-target="#staticBackdrop"
+    <td><a data-bs-toggle="modal" data-bs-target="#staticBackdrop"
         hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">
         <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
     </a>
