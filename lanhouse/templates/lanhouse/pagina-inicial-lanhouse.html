@@ -1,4 +1,5 @@
 {% extends 'dashboard/pagina-inicial.html' %}
+{% load lanhouse %}
 
 {% block titulo %}
 Lan House
@@ -21,6 +22,14 @@ Lan House
 {% endblock style %}
 
 {% block conteudo %}
+<div class="row" id="relatorio-lanhouse">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Voce fez <b>{% qtd_lanhouse request %}</b> servicos de lanhouse este mes <b></b></h5>
+            <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>           
+        </div>
+    </div>
+</div>
 
 <nav class="navbar justify-content-center">
     <ul class="nav justify-content-center">
@@ -65,6 +74,7 @@ Lan House
 </div>
 
 {% include 'lanhouse/modais/modal-base-lanhouse.html' %}
+{% include 'lanhouse/modais/modal-alerta.html' %}
 
 
 {% endblock conteudo%}

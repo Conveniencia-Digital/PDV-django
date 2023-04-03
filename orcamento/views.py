@@ -108,3 +108,11 @@ class DetalheOrcamento(DetailView):
     def get_queryset(self):
         return Orcamento.objects.filter(usuario=self.request.user)
     
+
+
+def total_orcamento(request):
+    template_name = 'orcamento/relatorios/relatorio-orcamento.html'
+    total = sum(tot.total() for tot in Orcamento.objects.filter(usuario=request.user, status='Finalizado e entregue'))
+    qtd_orcamento = Orcamento.objects.filter(usuario=request.user).count()
+    context = {'total_orcamento': total, 'qtd_orcamento': qtd_orcamento}
+    return render(request, template_name, context)

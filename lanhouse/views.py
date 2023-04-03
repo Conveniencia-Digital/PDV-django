@@ -113,4 +113,9 @@ class ListaServicoLanhouse(ListView):
         return LanhouseServico.objects.filter(usuario=self.request.user)
 
 
-
+def relatorio_lanhouse(request):
+    template_name = 'lanhouse/relatorios/relatorio-lanhouse.html'
+    qtd_lanhouse = LanhouseModel.objects.filter(usuario=request.user).count()
+    valor_total = sum(qtd.total() for qtd in LanhouseModel.objects.filter(usuario=request.user))
+    context = {'qtd_lanhouse': qtd_lanhouse, 'valor_total': valor_total}
+    return render(request, template_name, context)

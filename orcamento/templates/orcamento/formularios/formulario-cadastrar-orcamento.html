@@ -239,5 +239,8 @@
     })
   $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, 500)
   });
 </script>

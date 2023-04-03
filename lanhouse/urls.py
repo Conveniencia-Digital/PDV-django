@@ -1,6 +1,7 @@
 from django.urls import path 
 from django.contrib.auth.decorators import login_required
-from lanhouse.views import ListaLanhouse, cadastrarlanhouse, cadastrarservicolanhouse, additemlanhouse, ListaServicoLanhouse, apagarservicolanhouse, editarservicolanhouse, precoservicolanhouse
+from lanhouse.views import ListaLanhouse, cadastrarlanhouse, cadastrarservicolanhouse, additemlanhouse,\
+      ListaServicoLanhouse, apagarservicolanhouse, editarservicolanhouse, precoservicolanhouse, relatorio_lanhouse
 
 urlpatterns =  [ 
     path('lanhouse/', login_required(ListaLanhouse.as_view()), name='lanhouse'),
@@ -11,5 +12,6 @@ urlpatterns =  [
     path('apagarservicolanhouse/<int:pk>/', login_required(apagarservicolanhouse), name='apagar-servico-lanhouse'),
     path('editarservicolanhouse/<int:pk>/', login_required(editarservicolanhouse), name='editar-servico-lanhouse'),
     path('servico/lanhouse/preco/', login_required(precoservicolanhouse), name='preco-produto'),
+    path('relatoriolanhouse/', relatorio_lanhouse, name='relatorio-lanhouse'),
     ]
     
