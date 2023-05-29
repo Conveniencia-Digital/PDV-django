@@ -19,6 +19,8 @@ ALLOWED_HOSTS = [
     '*',
     '0.0.0.0',
     'web-production-8a75.up.railway.app',
+    'https://web-production-8a75.up.railway.app',
+    
     '127.0.0.1'
     
 ]
