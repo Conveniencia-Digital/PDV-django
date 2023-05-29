@@ -1,11 +1,9 @@
 from django import forms
 from django.forms import inlineformset_factory, NumberInput
 
-from orcamento.models import ItemsOrcamento, Orcamento
+from orcamento.models import ItemsOrcamento, Orcamento, Servico
 from peca.models import Pecas
 from cliente.models import Cliente
-from servico.models import Servico
-from servico.forms import ServicoForms
 from colaborador.models import Colaborador
 
 
@@ -33,7 +31,22 @@ class OrcamentoForms(forms.ModelForm):
         self.fields['tecnico'].queryset = Colaborador.objects.filter(usuario=user)
         self.fields['usuario'].widget = forms.HiddenInput()
         
-    
+
+
+class ServicoForms(forms.ModelForm):
+    class Meta:
+        model = Servico
+        fields = '__all__'
+
+
+    def __init__(self, *args, **kwargs):
+        super(ServicoForms, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():   
+            field.widget.attrs['class'] = 'form-control'
+        
+        self.fields['usuario'].widget = forms.HiddenInput()
+
+
 
 
 class ItemsOrcamentoForms(forms.ModelForm):

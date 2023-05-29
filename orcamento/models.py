@@ -1,8 +1,6 @@
 from django.db import models
-from django.db.models.aggregates import Count
 from peca.models import Pecas
 from cliente.models import Cliente
-from servico.models import Servico
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
 
@@ -85,6 +83,16 @@ class Orcamento(models.Model):
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc - self.valor_entrada
+
+
+class Servico(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
+    servico = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.servico
+
+
 
 
 class ItemsOrcamento(models.Model):

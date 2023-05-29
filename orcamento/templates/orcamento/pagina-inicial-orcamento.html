@@ -43,11 +43,42 @@
 </div>
 
 <hr>
-<a class="btn btn-outline-primary"
-   data-bs-toggle="modal"
-   data-bs-target="#staticBackdrop"
-   hx-get="{% url 'cadastrar-orcamento' %}"
-   hx-target="#adicionar-conteudo">Novo orçamento</a>
+
+<nav class="navbar justify-content-center">
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <a  class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                hx-get="{% url 'cadastrar-orcamento' %}"
+                hx-target="#adicionar-conteudo">Novo orçamento
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                hx-get="{% url 'cadastrar-servico' %}"
+                hx-target="#adicionar-conteudo"
+                style="margin-left: 10px;">
+                Cadastrar Serviço 
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                hx-get="{% url 'servico' %}"
+                hx-target="#adicionar-conteudo"
+                style="margin-left: 10px;">
+                Lista de serviços
+            </a>
+        </li>    
+      </ul>
+</nav>
+
 
 <div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">

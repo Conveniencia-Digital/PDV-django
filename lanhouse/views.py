@@ -13,7 +13,7 @@ class ListaLanhouse(ListView):
     def get_queryset(self):
         return LanhouseModel.objects.filter(usuario=self.request.user)
 
-
+  
 @login_required
 def cadastrarlanhouse(request):
     template_name = 'lanhouse/formularios/formulario-cadastrar-lanhouse.html'

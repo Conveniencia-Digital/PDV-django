@@ -56,6 +56,7 @@ def apagarpeca(request, pk):
     if objeto.usuario == request.user:
         objeto.delete()
     else:
+       
         raise PermissionError
     return render(request, template_name)
 

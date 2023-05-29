@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
-from orcamento.models import Orcamento, ItemsOrcamento
-from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset
+from orcamento.models import Orcamento, ItemsOrcamento, Servico
+from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset, ServicoForms
 from peca.models import Pecas
 from django.contrib.auth.decorators import login_required
 
@@ -116,3 +116,26 @@ def total_orcamento(request):
     qtd_orcamento = Orcamento.objects.filter(usuario=request.user).count()
     context = {'total_orcamento': total, 'qtd_orcamento': qtd_orcamento}
     return render(request, template_name, context)
+
+
+
+@login_required
+def cadastrarservico(request):
+    template_name = 'orcamento/formularios/formulario-cadastrar-servico.html'
+    form = ServicoForms(request.POST or None, initial={'usuario': request.user})
+
+    if request.method == 'POST':
+        if form.is_valid():
+            template_name = 'orcamento/tabela/linhas-tabela-servico.html'
+            servico = form.save()
+            context = {'object': servico}
+            return render(request, template_name, context)
+    
+    context = {'form': form}
+    return render(request, template_name, context)
+    
+
+
+class ListaServicos(ListView):
+    model = Servico
+    template_name = 'orcamento/tabela/tabela-servico.html'

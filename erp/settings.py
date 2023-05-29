@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'dashboard',
     'produto',
     'venda',
-    'servico',
     'peca',
     'cliente',
     'colaborador',

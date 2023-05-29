@@ -85,7 +85,7 @@
       </div>
       <div class="col-3 form-floating">
         {% render_field form.desconto class='form-control' value="0.00" %}
-        <label>Desconto</label>
+        <label id="label_desconto">Desconto</label>
       </div>
       <div  class="col-md-3 mb-3 form-floating">
         <input id="totalValue" type="Number" class="form-control" readonly>
@@ -139,6 +139,46 @@
 </form>
 
 <script>
+  document.getElementById('id_main-desconto').addEventListener('click', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('change', Desconto) 
+  
+  Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+    .forEach((item, i) => {
+      item.addEventListener('change', Desconto);
+      item.addEventListener('focus', Desconto);
+      item.addEventListener('mouseover', Desconto);
+      item.addEventListener('click', Desconto);
+      item.addEventListener('mouseout', Desconto);
+      item.addEventListener('blur', Desconto);
+      item.addEventListener('keyup', Desconto);
+      item.addEventListener('keydown', Desconto);
+    });
+  
+  function Desconto () {
+    var desconto = parseFloat(document.querySelector('#id_main-desconto').value);
+    var total = parseFloat(document.querySelector('#totalValue').value);
+    let label_desconto = document.querySelector('#label_desconto')
+    let campo_desconto = document.querySelector('#id_main-desconto')
+
+    if(desconto > total) {
+      label_desconto.innerHTML = 'Desconto maior que o valor do orcamento <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+      label_desconto.style.color = ' #ff0000';
+      campo_desconto.style.border =  '3px solid #ff0000';
+      campo_desconto.style.color =  '#ff0000';
+    }else {
+      label_desconto.innerHTML = 'Desconto';
+      label_desconto.style.color = '';
+      campo_desconto.style.border = '';
+      campo_desconto.style.color = '';
+
+    }
+
+  };
+ 
+
+
   document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
     var qtd_parcela = document.getElementById('id_main-qtd_parcela');
     var valor_entrada = document.getElementById('id_main-valor_entrada');

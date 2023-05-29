@@ -5,7 +5,7 @@
 }
 </style>
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Categoria despesa</h5>
+    <h5 class="modal-title" id="staticBackdropLabel">Serviço</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
     
     </button>
@@ -15,13 +15,15 @@
         <table class="table table-borderless table-hover">
             <thead>
                 <tr>
-                    <th>Categoria despesa</th>
+                    <th>Serviço</th>
                     <th>Editar</th>
                     <th>Apagar</th>
                 </tr>
             </thead>
-            <tbody id="Tbody-categoria-despesa">
-                {% include 'despesa/tabela/categoria-despesa.html' %}
+            <tbody id="servico">
+                {% for object in object_list %}
+                {% include 'orcamento/tabela/linhas-tabela-servico.html' %}
+                {% endfor %}
             </tbody>
         </table>
     </div>
