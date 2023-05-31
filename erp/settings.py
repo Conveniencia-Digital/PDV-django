@@ -1,18 +1,6 @@
 
 import os
-import psycopg2
 from pathlib import Path
-
-
-connection = psycopg2.connect(
-    host="containers-us-west-20.railway.app",
-    port="5528",
-    database="railway",
-    user="postgres",
-    password="0V1X7WEjQBsI1ODHgWaN"
-)
-# Cria um cursor
-cursor = connection.cursor()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
