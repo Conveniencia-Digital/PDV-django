@@ -5,7 +5,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+DATABASE_URL = 'PGPASSWORD=0V1X7WEjQBsI1ODHgWaN psql -h containers-us-west-20.railway.app -U postgres -p 5528 -d railway'
+ 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -18,8 +19,6 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
     '0.0.0.0',
-    'http://web-production-8a75.up.railway.app/accounts/google/login/callback/',
-    'https://web-production-8a75.up.railway.app/accounts/google/login/callback/',
     'web-production-8a75.up.railway.app',
     'https://web-production-8a75.up.railway.app',
     'http://web-production-8a75.up.railway.app',
@@ -90,7 +89,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-8a75.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://web-production-8a75.up.railway.app']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
