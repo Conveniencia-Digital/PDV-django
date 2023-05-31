@@ -11,6 +11,9 @@ connection = psycopg2.connect(
     user="postgres",
     password="0V1X7WEjQBsI1ODHgWaN"
 )
+# Cria um cursor
+cursor = connection.cursor()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
