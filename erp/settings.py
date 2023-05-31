@@ -1,11 +1,12 @@
 
 import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_URL = 'PGPASSWORD=0V1X7WEjQBsI1ODHgWaN psql -h containers-us-west-20.railway.app -U postgres -p 5528 -d railway'
+DATABASE_URL = 'postgresql://postgres:0V1X7WEjQBsI1ODHgWaN@containers-us-west-20.railway.app:5528/railway'
  
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -138,8 +139,12 @@ EMAIL_HOST_PASSWORD = 'mancunxwxrjjvtuy'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '0V1X7WEjQBsI1ODHgWaN',
+        'HOST': 'containers-us-west-20.railway.app',
+        'PORT': '5528',
     }
 }
 
