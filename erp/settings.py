@@ -91,7 +91,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = ['http://web-production-8a75.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://web-production-8a75.up.railway.app']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
