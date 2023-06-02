@@ -51,10 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.instagram',
-
-
-    
+       
     # my apps
     'dashboard',
     'produto',
