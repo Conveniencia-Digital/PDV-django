@@ -7,7 +7,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_URL = 'postgresql://postgres:0V1X7WEjQBsI1ODHgWaN@containers-us-west-20.railway.app:5528/railway'
+#DATABASE_URL = 'postgresql://postgres:0V1X7WEjQBsI1ODHgWaN@containers-us-west-20.railway.app:5528/railway'
  
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -21,10 +21,11 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
     '0.0.0.0',
-    'web-production-8a75.up.railway.app',
-    'https://web-production-8a75.up.railway.app',
-    'http://web-production-8a75.up.railway.app',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost'
+    #'web-production-8a75.up.railway.app',
+    #'https://web-production-8a75.up.railway.app',
+    #'http://web-production-8a75.up.railway.app',
     
 ]
 
@@ -88,7 +89,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-8a75.up.railway.app']
+#CSRF_TRUSTED_ORIGINS = ['https://web-production-8a75.up.railway.app']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,12 +138,14 @@ EMAIL_HOST_PASSWORD = 'mancunxwxrjjvtuy'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '0V1X7WEjQBsI1ODHgWaN',
-        'HOST': 'containers-us-west-20.railway.app',
-        'PORT': '5528',
+        'ENGINE': 'django.db.backends.sqlite3',  # Banco SQLite
+        'NAME': BASE_DIR / 'db.sqlite3', 
+        #'ENGINE': 'django.db.backends.postgresql',
+        #'NAME': 'railway',
+        #'USER': 'postgres',
+        #'PASSWORD': '0V1X7WEjQBsI1ODHgWaN',
+        #'HOST': 'containers-us-west-20.railway.app',
+        #'PORT': '5528',
     }
 }
 
@@ -169,7 +172,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
