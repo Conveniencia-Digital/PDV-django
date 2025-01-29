@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: pdv_db
+    image: postgres:16.5
+    restart: always
+    user: postgres  # importante definir o usuário
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_PASSWORD=postgres  # senha padrão
+      - POSTGRES_USER=postgres  # usuário padrão
+      - POSTGRES_DB=pdv_db  # necessário porque foi configurado assim no settings
+    ports:
+      - 5439:5432  # repare na porta externa 5439
+    networks:
+      - pdv-network
+
+  pgadmin:
+    container_name: pdv_pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5051:80
+    networks:
+      - pdv-network
+
+volumes:
+  pgdata:
+  pgadmin:
+
+networks:
+  pdv-network:

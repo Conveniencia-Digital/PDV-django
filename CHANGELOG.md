@@ -5,3 +5,4 @@
 * Adiciona README. #6
 * Adiciona .gitignore e arquivos auxiliares. #7
 * Isola dados sensíveis em variáveis de ambiente. #8
+* Adiciona Dockerfile e docker-compose. #11
