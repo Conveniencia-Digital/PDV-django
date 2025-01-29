@@ -1,99 +1,99 @@
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel"> Detalhe </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-</div>
-<div class="modal-body">
+  <h5 class="modal-title" id="staticBackdropLabel"> Detalhe </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+  </div>
+  <div class="modal-body">
     <div class="contentPrint">
-        <style>
-            .header {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: solid black;
-    }
-    .logo {
-        font-size: 1.75em;
-        align-self: center;
-    }
-    .content {
-        margin-top: 30px;
-    }
-    .description {
-        font-size: 0.75em;
-    }
-        </style>
-        <div class="header">
-            <div class="logo">Conveniência Digital</div>
-            <div class="information">
-                <p class="description">Centro de reparo <br>
-                    CNPJ: 29.216.862/0001-38 <br>
-                    Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
-                    Telefone: 67 9 9664 -9605
-                </p>
-            </div>
+      <style>
+        .header {
+          display: flex;
+          justify-content: space-between;
+          border-bottom: solid black;
+        }
+        .logo {
+          font-size: 1.75em;
+          align-self: center;
+        }
+        .content {
+          margin-top: 30px;
+        }
+        .description {
+          font-size: 0.75em;
+        }
+      </style>
+      <div class="header">
+        <div class="logo">Conveniência Digital</div>
+        <div class="information">
+          <p class="description">Centro de reparo <br>
+            CNPJ: 29.216.862/0001-38 <br>
+            Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
+            Telefone: 67 9 9664 -9605
+          </p>
         </div>
-        <div class="content">
-            <p>Prezado(a), {{ object.cliente }}</p>
-            <p>Conforme solicitado segue orçamento disponibilizado pela area tecnica.</p>
-            <p>Ordem de servico: {{ object.id }} <br></p>
-            {% for items in object.orcamento_items.all %}
-            <p>Servico realizado: {{ items.servico }} <br></p>
-            {% endfor %}
-            <p>Tecnico responsavel: {{ object.tecnico }} <br></p>
-            <p>Data e hora da compra: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
-            <p>Status: {{ object.status }} <br></p>
-            
-            <table class="table">
-                <thead></thead>
-                <tbody>
-                    <tr class="bg-light">
-                        <th>Pecas</th>
-                        <th>Quantidade</th>
-                        <th>Preço</th>
-                        <th>Sub Total</th>
-                    </tr>
-                    {% for items in object.orcamento_items.all %}
-                    <tr>
-                        <td>{{ items.peca }}</td>
-                        <td>{{ items.quantidade }}</td>
-                        <td>{{ items.preco_orcamento }}</td>
-                        <td>{{ items.subtotal }}</td>
-                       
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Desconto</td>
-                        <td>{{ object.desconto }}</td>
-                    </tr>
-                    <tr class="bg-default table-borderless">
-                        <td></td>
-                        <td></td>
-                        <th>Total</th>
-                        <th>{{ object.total }}</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Forma de pagamento</td>
-                        <td>{{ object.forma_pagamento }}</td>
-                    </tr>
-                
-                </tbody>
-            </table>           
+      </div>
+      <div class="content">
+        <p>Prezado(a), {{ object.cliente }}</p>
+        <p>Conforme solicitado segue orçamento disponibilizado pela area tecnica.</p>
+        <p>Ordem de servico: {{ object.id }} <br></p>
+        {% for items in object.orcamento_items.all %}
+          <p>Servico realizado: {{ items.servico }} <br></p>
+        {% endfor %}
+        <p>Tecnico responsavel: {{ object.tecnico }} <br></p>
+        <p>Data e hora da compra: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
+        <p>Status: {{ object.status }} <br></p>
 
-        </div>
+        <table class="table">
+          <thead></thead>
+          <tbody>
+            <tr class="bg-light">
+              <th>Pecas</th>
+              <th>Quantidade</th>
+              <th>Preço</th>
+              <th>Sub Total</th>
+            </tr>
+            {% for items in object.orcamento_items.all %}
+              <tr>
+                <td>{{ items.peca }}</td>
+                <td>{{ items.quantidade }}</td>
+                <td>{{ items.preco_orcamento }}</td>
+                <td>{{ items.subtotal }}</td>
+
+              </tr>
+            {% endfor %}
+            <tr>
+              <td></td>
+              <td></td>
+              <td>Desconto</td>
+              <td>{{ object.desconto }}</td>
+            </tr>
+            <tr class="bg-default table-borderless">
+              <td></td>
+              <td></td>
+              <th>Total</th>
+              <th>{{ object.total }}</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>Forma de pagamento</td>
+              <td>{{ object.forma_pagamento }}</td>
+            </tr>
+
+          </tbody>
+        </table>
+
+      </div>
     </div>
-</div>
-<div class="modal-footer">
+  </div>
+  <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
     <button id="myBtn" onclick="imprimir('.contentPrint')" type="button" class="btn btn-primary">Imprimir</button>
-</div>
+  </div>
 
 
-{% block scripts %}
-<script>
-    function imprimir(divName) {
+  {% block scripts %}
+    <script>
+      function imprimir(divName) {
         content = document.querySelector('.contentPrint').innerHTML;
         originalContents = document.body.innerHTML;
         document.body.innerHTML = content;
@@ -101,9 +101,9 @@
         window.print();
         document.body.innerHTML = originalContents;
         setTimeout(function() {
-            window.location.reload();
+          window.location.reload();
         }, 500)
-    }
-</script>
+      }
+    </script>
 
-{% endblock scripts %}
+  {% endblock scripts %}

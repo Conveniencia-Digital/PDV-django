@@ -1,77 +1,77 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_despesa}}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+  <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_despesa}}</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
-    </button>
+  </button>
 </div>
 <form hx-post="{% url 'editar-despesa' object.pk %}" hx-target="#despesaTr{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+      hx-indicator=".htmx-indicator" hx-swap="outerHTML">
 
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.usuario class="form-control" %}
-                {% render_field form.nome_despesa class="form-control" %}
-                <label for="">Descrição da despesa </label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.categoria_despesa class="form-select" %}
-                <label for="">Informe a categoria desta despesa (opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col-3 form-floating">
-                {% render_field form.preco_despesa class="form-control" value="0.00" %}
-                <label for="">Informe o preco da despesa</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.forma_pagamento class="form-select" %}
-                <label for="">Forma de pagamento</label>
-              </div>
-            <div class="col-6 form-floating">
-                {% render_field form.fornecedor class="form-select" %}
-                <label for="">Informe o fornecedor se houver(opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.observacao class="form-control" %}
-                <label for="">Informe observação se houver</label>
-            </div>
-        </div>
-        <div class="row g-2">
-            <div class="col-6  form-floating">
-                {% render_field form.valor_entrada class="form-control" value="0.00"  %}
-                <label id="label_valor_entrada">Valor de entrada</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.qtd_parcela class="form-control" value="01" %}
-                <label id="label_qtd_parcela">Qtd. parcela</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.data_vencimento class="form-control" %}
-                <label id="label_data_vencimento">Data vencimento</label>
-            </div>
-        </div>
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class="form-control" %}
+        {% render_field form.nome_despesa class="form-control" %}
+        <label for="">Descrição da despesa </label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.categoria_despesa class="form-select" %}
+        <label for="">Informe a categoria desta despesa (opcional)</label>
+      </div>
     </div>
+        <!---->
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col-3 form-floating">
+        {% render_field form.preco_despesa class="form-control" value="0.00" %}
+        <label for="">Informe o preco da despesa</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.forma_pagamento class="form-select" %}
+        <label for="">Forma de pagamento</label>
+      </div>
+      <div class="col-6 form-floating">
+        {% render_field form.fornecedor class="form-select" %}
+        <label for="">Informe o fornecedor se houver(opcional)</label>
+      </div>
+    </div>
+        <!---->
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.observacao class="form-control" %}
+        <label for="">Informe observação se houver</label>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6  form-floating">
+        {% render_field form.valor_entrada class="form-control" value="0.00"  %}
+        <label id="label_valor_entrada">Valor de entrada</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.qtd_parcela class="form-control" value="01" %}
+        <label id="label_qtd_parcela">Qtd. parcela</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.data_vencimento class="form-control" %}
+        <label id="label_data_vencimento">Data vencimento</label>
+      </div>
+    </div>
+  </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
 <script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-            $('#success_tic_editar').modal('toggle')
-        }, 500)
-    });
-    document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic_editar').modal('toggle')
+    }, 500)
+  });
+  document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
     var valor_entrada = document.querySelector('#id_valor_entrada');
     var data_vencimento = document.querySelector('#id_data_vencimento');
     var qtd_parcela = document.querySelector('#id_qtd_parcela');

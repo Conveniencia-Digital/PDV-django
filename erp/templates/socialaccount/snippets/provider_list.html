@@ -4,42 +4,42 @@
 {% get_providers as socialaccount_providers %}
 
 {% for provider in socialaccount_providers %}
-{% if provider.id == "openid" %}
-{% for brand in provider.get_brands %}
+  {% if provider.id == "openid" %}
+    {% for brand in provider.get_brands %}
 
 
-  <a title="{{brand.name}}" 
-     class="socialaccount_provider {{provider.id}} {{brand.id}}" 
-     href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"
-     >{{brand.name}}</a>
+      <a title="{{brand.name}}"
+         class="socialaccount_provider {{provider.id}} {{brand.id}}"
+         href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"
+      >{{brand.name}}</a>
 
-{% endfor %}
-{% endif %}
-{% if provider.name == 'Google' %}
-<div class="media-options">
-  <a title="{{provider.name}}" class="field google {{provider.id}}" 
-     href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}"
-     style="text-decoration: none;">
-     <img src="{% static 'img/google.png' %}" alt="" class="google-img">
-          <span>Acessar com {{provider.name}}</span>
-     </a>
-</div>
-{% elif provider.name == 'Apple' %}
-<div class="media-options">
-  <a title="{{provider.name}}" class="field google {{provider.id}}" 
-     href="{% provider_login_url provider.id process=process 
-      scope=scope auth_params=auth_params %}"
-      style="color: black; text-decoration: none;">
-      <img src="{% static 'img/apple.png' %}" alt="" class="google-img">
-          <span>Acessar com Apple</span>
-     </a>
-</div>
-{% else %}
-<div class="media-options">
-  <a title="{{provider.name}}" class="field facebook {{provider.id}}" 
-     href="{% provider_login_url provider.id process=process 
-      scope=scope auth_params=auth_params %}">
-      <i class='bx bxl-facebook facebook-icon'></i>{{provider.name}}</a>
-</div>
-{% endif %}
+    {% endfor %}
+  {% endif %}
+  {% if provider.name == 'Google' %}
+    <div class="media-options">
+      <a title="{{provider.name}}" class="field google {{provider.id}}"
+         href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}"
+         style="text-decoration: none;">
+        <img src="{% static 'img/google.png' %}" alt="" class="google-img">
+        <span>Acessar com {{provider.name}}</span>
+      </a>
+    </div>
+  {% elif provider.name == 'Apple' %}
+    <div class="media-options">
+      <a title="{{provider.name}}" class="field google {{provider.id}}"
+         href="{% provider_login_url provider.id process=process
+               scope=scope auth_params=auth_params %}"
+         style="color: black; text-decoration: none;">
+        <img src="{% static 'img/apple.png' %}" alt="" class="google-img">
+        <span>Acessar com Apple</span>
+      </a>
+    </div>
+  {% else %}
+    <div class="media-options">
+      <a title="{{provider.name}}" class="field facebook {{provider.id}}"
+         href="{% provider_login_url provider.id process=process
+               scope=scope auth_params=auth_params %}">
+        <i class='bx bxl-facebook facebook-icon'></i>{{provider.name}}</a>
+    </div>
+  {% endif %}
 {% endfor %}

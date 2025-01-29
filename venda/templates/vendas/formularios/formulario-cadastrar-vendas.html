@@ -4,7 +4,7 @@
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form hx-post="{% url 'cadastrar-vendas' %}" hx-target="#vendas-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+      hx-swap="afterbegin">
   {% csrf_token %}
   <div class="modal-body">
     <div class="row g-2">
@@ -29,27 +29,27 @@
     {{ formset.management_form }}
     <div id="venda">
       {% for itemsvendaform in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="row g-2">
-        {% render_field itemsvendaform.vendas data-field='vendas' %}
-        {% render_field itemsvendaform.id data-field='id' %}
-        <div class="col-6 mb-3 form-floating">
-          {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-          <label>Informe o produto </label>
+        <div id="item-{{ forloop.counter0 }}" class="row g-2">
+          {% render_field itemsvendaform.vendas data-field='vendas' %}
+          {% render_field itemsvendaform.id data-field='id' %}
+          <div class="col-6 mb-3 form-floating">
+            {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
+            <label>Informe o produto </label>
+          </div>
+          <div class=" col mb-3 form-floating">
+            {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
+            <label>Preço Unitario </label>
+          </div>
+          <div class="col mb-3 form-floating">
+            {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
+            <label>Quantidade</label>
+          </div>
         </div>
-        <div class=" col mb-3 form-floating">
-          {% render_field itemsvendaform.preco data-field='preco' value="0.00" %}
-          <label>Preço Unitario </label>
-        </div>
-        <div class="col mb-3 form-floating">
-          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-        </div>
-      </div>
       {% endfor %}
     </div>
 
     <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'addform' %}" hx-target="#venda"
-      hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add produto
+            hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add produto
     </button>
     <hr>
     <div class="form-row">
@@ -58,11 +58,11 @@
       </div>
     </div>
     <div class="row g-2">
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.forma_pagamento class="form-select" %}
-          <label>Forma de pagamento</label> 
+      <div class="col-md-6 mb-3 form-floating">
+        {% render_field form.forma_pagamento class="form-select" %}
+        <label>Forma de pagamento</label>
       </div>
-    
+
       <div class="col-md-3 mb-3 form-floating">
         {% render_field form.desconto class="form-control" value="00.00" %}
         <label id="label_desconto">Desconto</label>
@@ -70,7 +70,7 @@
       <div  class="col-md-3 mb-3 form-floating">
         <input id="totalValue" type="Number" class="form-control" readonly>
         <label>Valor total</label>
-      </div>     
+      </div>
     </div>
     <div class="row g-2" style="color: white;">
       <div class="col-md-6 mb-3 form-floating">
@@ -106,13 +106,13 @@
   </div>
 </form>
 <script>
-  
 
-  document.getElementById('id_main-desconto').addEventListener('click', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('change', Desconto) 
-  
+
+  document.getElementById('id_main-desconto').addEventListener('click', Desconto)
+  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto)
+  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto)
+  document.getElementById('id_main-desconto').addEventListener('change', Desconto)
+
   Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"]'))
     .forEach((item, i) => {
       item.addEventListener('change', Desconto);
@@ -124,7 +124,7 @@
       item.addEventListener('keyup', Desconto);
       item.addEventListener('keydown', Desconto);
     });
-  
+
   function Desconto () {
     var desconto = parseFloat(document.querySelector('#id_main-desconto').value);
     var total = parseFloat(document.querySelector('#totalValue').value);
@@ -145,7 +145,7 @@
     }
 
   };
- 
+
 
   document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
     var qtd_parcela = document.getElementById('id_main-qtd_parcela');
@@ -192,7 +192,7 @@
 
   function reorderItems() {
     var totalValue = 0;
-   
+
     Array.from(document.querySelectorAll("[id^='item-']"))
       .forEach((item, i) => {
         item.setAttribute('id', 'item-' + i)
@@ -208,8 +208,8 @@
         item.querySelector('[data-field="produto"]').setAttribute('id', 'id_items-' + i + '-produto')
         item.querySelector('[data-field="produto"]').setAttribute('hx-target', '#id_items-' + i + '-preco')
 
-       
-      
+
+
         item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
 
         item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
@@ -239,7 +239,7 @@
     reorderItems()
   }
 
-  
+
 
   Array.from(document.querySelectorAll('.remove-row'))
     .forEach((item, i) => {
@@ -260,6 +260,6 @@
     document.querySelector('#status').setAttribute('hidden', 'hidden')
 
   }
-  setTimeout( MyFunction, -1000) 
+  setTimeout( MyFunction, -1000)
 
 </script>

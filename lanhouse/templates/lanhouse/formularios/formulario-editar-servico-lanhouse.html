@@ -5,12 +5,12 @@
   <h5 class="modal-title fs-5" id="staticBackdropLabel">Editar servico Lan House</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form   hx-post="{% url 'editar-servico-lanhouse' object.pk %}" 
-        hx-target="#tr-ServicoLanhouse{{ object.pk }}"  
-        hx-swap = "outerHTML"
-        hx-indicator=".htmx-indicator">
-  
-    <div class="modal-body">
+<form   hx-post="{% url 'editar-servico-lanhouse' object.pk %}"
+      hx-target="#tr-ServicoLanhouse{{ object.pk }}"
+      hx-swap = "outerHTML"
+      hx-indicator=".htmx-indicator">
+
+  <div class="modal-body">
     {% csrf_token %}
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
@@ -40,7 +40,7 @@
   $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle');
     setTimeout(() => {
-      $('#success_tic').modal('toggle'); 
+      $('#success_tic').modal('toggle');
     }, "500");
   });
 </script>

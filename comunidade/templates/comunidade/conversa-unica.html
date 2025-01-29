@@ -1,21 +1,21 @@
 {% if object.usuario == request.user %}
-<li class="clearfix">
+  <li class="clearfix">
     <div class="message-data" style="display: flex; justify-content: flex-end;">
-        <span>Voce</span>
-        <span class="message-data-time">{{ object.data_criacao|date:"d/m/y, H:i"}}</span>  
-        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">                                  
+      <span>Voce</span>
+      <span class="message-data-time">{{ object.data_criacao|date:"d/m/y, H:i"}}</span>
+      <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
     </div>
     <div class="message other-message float-right">{{ object.mensagem }}.</div>
-</li>
-    
-</li>
+  </li>
+
+  </li>
 {% else %}
-<li class="clearfix">
-    <div class="message-data"> 
-        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-        {{ object.usuario }}
-        <span class="message-data-time">{{ object.data_criacao|date:"d/m/y, H:i"}}</span>                              
+  <li class="clearfix">
+    <div class="message-data">
+      <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+      {{ object.usuario }}
+      <span class="message-data-time">{{ object.data_criacao|date:"d/m/y, H:i"}}</span>
     </div>
     <div class="message my-message">{{ object.mensagem }}.</div>
-</li>
+  </li>
 {% endif %}

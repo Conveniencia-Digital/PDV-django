@@ -1,97 +1,97 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_fornecedor}}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_fornecedor}}</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+  </button>
 </div>
 <form hx-post="{% url 'editar-fornecedor' object.pk %}" hx-target="#trFornecedor{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+      hx-indicator=".htmx-indicator" hx-swap="outerHTML">
 
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.usuario class="form-control" %}
-                {% render_field form.nome_fornecedor class="form-control" %}
-                <label for="">Escreva o nome do fornecedor</label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.cnpj class="form-control" id="cnpj" %}
-                <label for="" id="error-cnpj">Informe o CNPJ (opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.telefone_contato class="form-control" id="telefone" %}
-                <label for="" id="error-message">Telefone para contato</label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
-                <label for="" id="error-message2">Outro telefone de contato (opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.rua class="form-control" %}
-                <label for="">Endereço (opcional)</label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.bairro class="form-control" %}
-                <label for="">Bairro (opcional</label>
-            </div>
-        </div>
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.observacao class="form-control" %}
-                <label for="">Observaçāo</label>
-            </div>
-        </div>
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class="form-control" %}
+        {% render_field form.nome_fornecedor class="form-control" %}
+        <label for="">Escreva o nome do fornecedor</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.cnpj class="form-control" id="cnpj" %}
+        <label for="" id="error-cnpj">Informe o CNPJ (opcional)</label>
+      </div>
     </div>
+        <!---->
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.telefone_contato class="form-control" id="telefone" %}
+        <label for="" id="error-message">Telefone para contato</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
+        <label for="" id="error-message2">Outro telefone de contato (opcional)</label>
+      </div>
+    </div>
+        <!---->
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.rua class="form-control" %}
+        <label for="">Endereço (opcional)</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.bairro class="form-control" %}
+        <label for="">Bairro (opcional</label>
+      </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.observacao class="form-control" %}
+        <label for="">Observaçāo</label>
+      </div>
+    </div>
+  </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button id="finalizar" type="submit" class="btn btn-outline-primary">Finalizar</button>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button id="finalizar" type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
 <script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-            $('#success_tic_editar').modal('toggle')
-        }, "500");
-    });
-    $(document).ready(function () {
-        $('#cnpj').mask('00.000.000/0000-00', { reverse: false });
-        $('#telefone').mask('(00) 00000-0000');
-        $('#telefone2').mask('(00) 00000-0000');
-    })
-    document.querySelector('#telefone').addEventListener('change', erroformulario); 
-  document.querySelector('#telefone').addEventListener('mouseout', erroformulario); 
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic_editar').modal('toggle')
+    }, "500");
+  });
+  $(document).ready(function () {
+    $('#cnpj').mask('00.000.000/0000-00', { reverse: false });
+    $('#telefone').mask('(00) 00000-0000');
+    $('#telefone2').mask('(00) 00000-0000');
+  })
+  document.querySelector('#telefone').addEventListener('change', erroformulario);
+  document.querySelector('#telefone').addEventListener('mouseout', erroformulario);
   document.querySelector('#telefone').addEventListener('click', erroformulario);
-  
-  
-  document.querySelector('#telefone2').addEventListener('change', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('mouseout', erroformulario2); 
+
+
+  document.querySelector('#telefone2').addEventListener('change', erroformulario2);
+  document.querySelector('#telefone2').addEventListener('mouseout', erroformulario2);
   document.querySelector('#telefone2').addEventListener('click', erroformulario2);
-  
-  
-  
+
+
+
   function erroformulario () {
     let telefone = document.querySelector('#telefone');
     let error_tel =  document.querySelector('#error-message');
     let qtd = telefone.value;
     if(qtd.length >= 1 && qtd.length < 15){
       telefone.style.border = '1px solid #ff0000';
-      error_tel.style.display = 'block' ; 
+      error_tel.style.display = 'block' ;
       error_tel.style.color = '#ff0000';
       error_tel.innerHTML = 'Numero invalido';
       document.querySelector('button[type=submit]').setAttribute('type', 'button')
     }else {
       telefone.style.border = '';
-      error_tel.style.display = 'block' ; 
+      error_tel.style.display = 'block' ;
       error_tel.style.color = '';
       error_tel.innerHTML = 'Telefone para contato';
       document.querySelector('#finalizar').setAttribute('type', 'submit')
@@ -104,13 +104,13 @@
     let qtd = telefone2.value;
     if(qtd.length >= 1 && qtd.length < 15){
       telefone2.style.border = '1px solid #ff0000';
-      error_tel2.style.display = 'block' ; 
+      error_tel2.style.display = 'block' ;
       error_tel2.style.color = '#ff0000';
       error_tel2.innerHTML = 'Numero invalido';
       document.querySelector('button[type=submit]').setAttribute('type', 'button')
     }else {
       telefone2.style.border = '';
-      error_tel2.style.display = 'block' ; 
+      error_tel2.style.display = 'block' ;
       error_tel2.style.color = '';
       error_tel2.innerHTML = 'Outro telefone de contato (opcional)';
       document.querySelector('#finalizar').setAttribute('type', 'submit')
@@ -118,8 +118,8 @@
 
   };
 
-  document.querySelector('#cnpj').addEventListener('change', errocnpj); 
-  document.querySelector('#cnpj').addEventListener('mouseout', errocnpj); 
+  document.querySelector('#cnpj').addEventListener('change', errocnpj);
+  document.querySelector('#cnpj').addEventListener('mouseout', errocnpj);
   document.querySelector('#cnpj').addEventListener('click', errocnpj);
 
   function errocnpj () {
@@ -128,19 +128,19 @@
     let qtd = cnpj.value;
     if(qtd.length >= 1 && qtd.length < 12){
       cnpj.style.border = '1px solid #ff0000';
-      error_cnpj.style.display = 'block' ; 
+      error_cnpj.style.display = 'block' ;
       error_cnpj.style.color = '#ff0000';
       error_cnpj.innerHTML = 'CNPJ invalido';
       document.querySelector('button[type=submit]').setAttribute('type', 'button')
     }else {
       cpf.style.border = '';
-      error_cnpj.style.display = 'block' ; 
+      error_cnpj.style.display = 'block' ;
       error_cnpj.style.color = '';
       error_cnpj.innerHTML = 'Informe o CNPJ (opcional)';
       document.querySelector('#finalizar').setAttribute('type', 'submit')
-      
+
     }
 
   };
-  
+
 </script>

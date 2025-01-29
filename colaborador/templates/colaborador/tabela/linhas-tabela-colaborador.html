@@ -1,18 +1,18 @@
 <tr id="colaboradorTr{{ object.pk }}">
-    <td>{{ object.nome_colaborador }}</td>
-    <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a></td>
-    
-    <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-colaborador' object.pk %}"
-            hx-target="#adicionar-conteudo">
-            <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-colaborador' object.pk %}"
-            hx-confirm="Deseja mesmo apagar {{ object.nome_colaborador }}" hx-target="closest tr"
-            hx-swap="outerHTML swap:1s">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-colaborador' object.pk %}"
-        hx-target="#detalhe-colaborador" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
-    </td>
+  <td>{{ object.nome_colaborador }}</td>
+  <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a></td>
+
+  <td>
+    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-colaborador' object.pk %}"
+          hx-target="#adicionar-conteudo">
+      <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    </span>
+    <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-colaborador' object.pk %}"
+          hx-confirm="Deseja mesmo apagar {{ object.nome_colaborador }}" hx-target="closest tr"
+          hx-swap="outerHTML swap:1s">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-colaborador' object.pk %}"
+          hx-target="#detalhe-colaborador" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
+  </td>
 </tr>

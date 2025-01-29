@@ -7,41 +7,41 @@
 
 {% block content %}
 
-<div class="form login">
-  <div class="form-content">
+  <div class="form login">
+    <div class="form-content">
       <header>Cadastrar-se</header>
-          <form class="login" id="signup_form" method="post" action="{% url 'account_signup' %}">
-            {% csrf_token %}
-            <div class="field input-field">
-              {% render_field form.username type="text" placeholder="Nome de usuario" %}
-              </div>
-            <div class="field input-field">
-            {% render_field form.email type="email" placeholder="E-mail" %}
-            </div>
-            <div class="field input-field">
-            {% render_field form.password1 type="password" placeholder="Criar senha" %}
-            <i class='bx bx-hide eye-icon'></i>  
-            </div>
-            <div class="field input-field">
-            {% render_field form.password2 type="password" placeholder="Confirmar senha" %}
-            <i class='bx bx-hide eye-icon'></i>  
-          </div>
-           
-            {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
-            <div class="field button-field">
-            <button type="submit">{% trans "Cadastrar" %}</button>
-            </div>
-          </form>
-          <div class="form-link">
-            <span>{% blocktrans %}Ja tem uma conta? <a href="{{ login_url }}">Acessar</a>{% endblocktrans %}</span>
-          </div>
-          <div class="line"></div>
-         
-          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  
+      <form class="login" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        <div class="field input-field">
+          {% render_field form.username type="text" placeholder="Nome de usuario" %}
+        </div>
+        <div class="field input-field">
+          {% render_field form.email type="email" placeholder="E-mail" %}
+        </div>
+        <div class="field input-field">
+          {% render_field form.password1 type="password" placeholder="Criar senha" %}
+          <i class='bx bx-hide eye-icon'></i>
+        </div>
+        <div class="field input-field">
+          {% render_field form.password2 type="password" placeholder="Confirmar senha" %}
+          <i class='bx bx-hide eye-icon'></i>
+        </div>
+
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="field button-field">
+          <button type="submit">{% trans "Cadastrar" %}</button>
+        </div>
+      </form>
+      <div class="form-link">
+        <span>{% blocktrans %}Ja tem uma conta? <a href="{{ login_url }}">Acessar</a>{% endblocktrans %}</span>
+      </div>
+      <div class="line"></div>
+
+      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+
+    </div>
   </div>
-</div>
 
 {% endblock %}

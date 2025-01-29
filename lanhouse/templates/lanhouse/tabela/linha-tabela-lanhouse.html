@@ -1,54 +1,54 @@
 <tr id="trLanhouse{{ object.pk }}" style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
-    <th>Cliente</th>
-    <th>Data da venda</th>
-    <th></th>
-    <th>Ações</th>
+  <th>Cliente</th>
+  <th>Data da venda</th>
+  <th></th>
+  <th>Ações</th>
 </tr>
 <tr>
-    <td>{{object.cliente.nome_cliente}}<br> <a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
-    <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
-    {% if object.status == 'Entregue' %}
+  <td>{{object.cliente.nome_cliente}}<br> <a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
+  <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
+  {% if object.status == 'Entregue' %}
     <th style="color: rgb(23, 99, 23);">{{ object.status }}</th>
-    {% else %}
+  {% else %}
     <th>{{ object.status }}</th>
-    {% endif %}
-    <td>
-        <a style="text-decoration: none;" hx-get="{ url 'detalhe-lanhouse' object.pk %}" data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop" hx-target="#addConteudo">
-            <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
-        </a>
-        <a href="#" hx-get="{ url 'editar-lanhouse' object.pk %}" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop" hx-target="#addConteudo">
-            <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
-        </a>
-    </td>
-   
+  {% endif %}
+  <td>
+    <a style="text-decoration: none;" hx-get="{ url 'detalhe-lanhouse' object.pk %}" data-bs-toggle="modal"
+       data-bs-target="#staticBackdrop" hx-target="#addConteudo">
+      <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
+    </a>
+    <a href="#" hx-get="{ url 'editar-lanhouse' object.pk %}" data-bs-toggle="modal"
+       data-bs-target="#staticBackdrop" hx-target="#addConteudo">
+      <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
+    </a>
+  </td>
+
 </tr>
 
 <tr>
-    <th>Serviços</th>
-    <th>Quantidade</th>
-    <th>Preço Unidade</th>
-    <th>Sub Total</th>
+  <th>Serviços</th>
+  <th>Quantidade</th>
+  <th>Preço Unidade</th>
+  <th>Sub Total</th>
 </tr>
 {% for items in object.lanhouse_items.all %}
-<tr>
+  <tr>
     <td>{{ items.servico }}</td>
     <td>{{ items.quantidade }}</td>
     <td>{{ items.preco }}</td>
     <td>{{ items.subtotal }}</td>
-</tr>
+  </tr>
 {% endfor %}
 <tr style="color: red;">
-    <td></td>
-    <td></td>
-    <th>Desconto</th>
-    <th>{{ object.desconto }}</th>
+  <td></td>
+  <td></td>
+  <th>Desconto</th>
+  <th>{{ object.desconto }}</th>
 </tr>
 <tr style="color: green;">
-    <th>Forma de pagamento</th>
-    <th>{{object.forma_pagamento}}</th>
-    <th>Total</th>
-    <th>{{ object.total }}</th>
+  <th>Forma de pagamento</th>
+  <th>{{object.forma_pagamento}}</th>
+  <th>Total</th>
+  <th>{{ object.total }}</th>
 
 </tr>

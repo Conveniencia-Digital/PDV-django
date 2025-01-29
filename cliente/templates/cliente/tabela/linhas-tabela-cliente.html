@@ -1,23 +1,22 @@
 <tr id="trCliente{{ object.pk }}">
-    <td>{{ object.nome_cliente }}</td>
-    <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a>
-    </td>
-    <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-cliente' object.pk %}"
+  <td>{{ object.nome_cliente }}</td>
+  <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a>
+  </td>
+  <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-cliente' object.pk %}"
             hx-target="#adicionar-conteudo">
-            <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
-        <span hx-get="{% url 'apagar-cliente' object.pk %}" hx-confirm="Deseja mesmo apagar {{ object.nome_cliente }} ?"  hx-target="closest tr"
-            hx-swap="outerHTML swap:1s" style="margin-left: 10px; margin-right: 10px;">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-cliente' object.pk %}"
-            hx-target="#detalhe-cliente" hx-swap="innerHTML">
-            <i class="fa fa-eye"></i>
-        </span>
+    <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+  </span>
+    <span hx-get="{% url 'apagar-cliente' object.pk %}" hx-confirm="Deseja mesmo apagar {{ object.nome_cliente }} ?"  hx-target="closest tr"
+          hx-swap="outerHTML swap:1s" style="margin-left: 10px; margin-right: 10px;">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-cliente' object.pk %}"
+          hx-target="#detalhe-cliente" hx-swap="innerHTML">
+      <i class="fa fa-eye"></i>
+    </span>
 
-    </td>
+  </td>
 
 </tr>
 
 
- 

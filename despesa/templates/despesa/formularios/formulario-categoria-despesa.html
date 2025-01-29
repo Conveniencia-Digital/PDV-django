@@ -1,28 +1,28 @@
 
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalToggle"> Cadastrar Categoria </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        
-    </button>
+  <h5 class="modal-title" id="exampleModalToggle"> Cadastrar Categoria </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+  </button>
 </div>
 <form
-        hx-post="{% url 'categoria-despesa' %}"
-        hx-indicator=".htmx-indicator">
-        
-    <div class="modal-body">
-        {% csrf_token %}
-        {{ form }}
-    </div>
+  hx-post="{% url 'categoria-despesa' %}"
+  hx-indicator=".htmx-indicator">
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
-    </div>
+  <div class="modal-body">
+    {% csrf_token %}
+    {{ form }}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
 
 
-    <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-      });
-    </script>
+<script>
+  $('form').on('submit', function() {
+    $('#staticBackdrop').modal('toggle')
+  });
+</script>

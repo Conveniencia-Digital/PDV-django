@@ -2,7 +2,7 @@
 <div class="modal-header">
   <h5 class="modal-title" id="staticBackdropLabel"> Editar orcamento </h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-   
+
   </button>
 </div>
 <form hx-post="{% url 'editar-orcamento' object.pk %}"
@@ -38,209 +38,209 @@
     {{ formset.management_form }}
     <div id="orcamento">
       {% for items_orcamento_form in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="row g-2" style="margin-bottom: 10px;">
-        {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
-        {{ items_orcamento_form.id }}
-        <div class="col-6 form-floating">
-          {% render_field items_orcamento_form.peca class='form-select' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
-          <label>Selecione a peça </label>
-        </div>
-        <div class="col-3 form-floating">
-          {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00" %}
-          <label>Preço Unitario </label>
-        </div>
-        <div class="col-3 form-floating">
-          {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-        </div>
-        {% endfor %}
-      </div>
+        <div id="item-{{ forloop.counter0 }}" class="row g-2" style="margin-bottom: 10px;">
+          {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
+          {{ items_orcamento_form.id }}
+          <div class="col-6 form-floating">
+            {% render_field items_orcamento_form.peca class='form-select' hx-get='/peca/preco/' hx-target='#id_preco_orcamento' hx-swap="outerHTML" data-field='peca' %}
+            <label>Selecione a peça </label>
+          </div>
+          <div class="col-3 form-floating">
+            {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00" %}
+            <label>Preço Unitario </label>
+          </div>
+          <div class="col-3 form-floating">
+            {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
+            <label>Quantidade</label>
+          </div>
+      {% endfor %}
     </div>
-    <button id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'adicionar-linhas' %}" hx-target="#orcamento"
-      hx-swap="beforeend settle:1s" style="font-size: 10px;">Add peca
-    </button>
-    <hr>
-    <h2 class="fw-lighter" style="font-size: 1.5em;">Serviços</h2>
+  </div>
+  <button id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'adicionar-linhas' %}" hx-target="#orcamento"
+          hx-swap="beforeend settle:1s" style="font-size: 10px;">Add peca
+  </button>
+  <hr>
+  <h2 class="fw-lighter" style="font-size: 1.5em;">Serviços</h2>
 
-    <div id="servico">
-      {% for items_orcamento_form in formset %}
+  <div id="servico">
+    {% for items_orcamento_form in formset %}
       <div class="row g-2" style="margin-bottom: 10px;">
         <div class="col form-floating">
           {% render_field items_orcamento_form.servico class="form-select" data-field="servico" %}
           <label for="">Selecione o servico</label>
         </div>
       </div>
-      {% endfor %}
+    {% endfor %}
 
+  </div>
+  <button id="addItem" class="btn btn-outline-primary " hx-get="{% url 'adicionar-linha-servico' %}" hx-target="#servico"
+          hx-swap="beforeend settle:1s" style="text-decoration: none; font-size: 10px;">Add outro serviço</button>
+  <div class="row g-2">
+    <div class="col-6">
+      <h2 class="fw-lighter" style="font-size: 1.5em;">Informações de pagamento</h2>
     </div>
-    <button id="addItem" class="btn btn-outline-primary " hx-get="{% url 'adicionar-linha-servico' %}" hx-target="#servico"
-      hx-swap="beforeend settle:1s" style="text-decoration: none; font-size: 10px;">Add outro serviço</button>
-    <div class="row g-2">
-      <div class="col-6">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações de pagamento</h2>
-      </div>
+  </div>
+  <div class="row g-2" style="margin-bottom: 10px;">
+    <div class="col-6 form-floating">
+      {% render_field form.forma_pagamento class='form-select'%}
+      <label>Selecione a forma de pagamento </label>
     </div>
-    <div class="row g-2" style="margin-bottom: 10px;">
-      <div class="col-6 form-floating">
-        {% render_field form.forma_pagamento class='form-select'%}
-        <label>Selecione a forma de pagamento </label>
-      </div>
-      <div class="col-3 form-floating">
-        {% render_field form.desconto class='form-control' value="0.00" %}
-        <label>Desconto</label>
-      </div>
-      <div  class="col-md-3 mb-3 form-floating">
-        <input id="totalValue" type="Number" class="form-control" readonly>
-        <label>Valor total</label>
-      </div> 
+    <div class="col-3 form-floating">
+      {% render_field form.desconto class='form-control' value="0.00" %}
+      <label>Desconto</label>
     </div>
-    <div class="row g-2" style="color: #FFFFFF">
-      <div class="col-6 form-floating">
-        {% render_field form.qtd_parcela class="form-control" value="01" type="hidden" %}
-        <label id="label_qtd_parcela">Quantidade de parcelas</label>
-      </div>
-      <div class="col-3 form-floating">
-        {% render_field form.valor_entrada class="form-control" value="0.00" type="hidden" %}
-        <label id="label_valor_entrada">Valor de entrada</label>
-      </div>
-      <div class="col-3 form-floating">
-        {% render_field form.data_vencimento class="form-control" type="hidden" %}
-        <label id="label_data_vencimento">Dia vencimento</label>
-      </div>
+    <div  class="col-md-3 mb-3 form-floating">
+      <input id="totalValue" type="Number" class="form-control" readonly>
+      <label>Valor total</label>
     </div>
-    <div class="row g-2">
-      <div class="col-6">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações do orçamento</h2>
-      </div>
+  </div>
+  <div class="row g-2" style="color: #FFFFFF">
+    <div class="col-6 form-floating">
+      {% render_field form.qtd_parcela class="form-control" value="01" type="hidden" %}
+      <label id="label_qtd_parcela">Quantidade de parcelas</label>
     </div>
-    <div class="row g-2">
-      <div class="col-6 form-floating">
-        {% render_field form.status class='form-select'%}
-        <label>Informe o status deste orcamento </label>
-      </div>
-      <div class="col-3 form-floating">
-        {% render_field form.data_entrega class='form-control' type="date" %}
-        <label>Informe a data de entrega </label>
-      </div>
-      <div class="col-3 form-floating">
-        {% render_field form.tecnico class='form-select'%}
-        <label>Informe tecnico responsavel </label>
-      </div>
-      <div class="col-12 form-floating">
-        {% render_field form.observacao class='form-control' %}
-        <label>Observaçāo </label>   
-      </div>
+    <div class="col-3 form-floating">
+      {% render_field form.valor_entrada class="form-control" value="0.00" type="hidden" %}
+      <label id="label_valor_entrada">Valor de entrada</label>
     </div>
-    
+    <div class="col-3 form-floating">
+      {% render_field form.data_vencimento class="form-control" type="hidden" %}
+      <label id="label_data_vencimento">Dia vencimento</label>
+    </div>
+  </div>
+  <div class="row g-2">
+    <div class="col-6">
+      <h2 class="fw-lighter" style="font-size: 1.5em;">Informações do orçamento</h2>
+    </div>
+  </div>
+  <div class="row g-2">
+    <div class="col-6 form-floating">
+      {% render_field form.status class='form-select'%}
+      <label>Informe o status deste orcamento </label>
+    </div>
+    <div class="col-3 form-floating">
+      {% render_field form.data_entrega class='form-control' type="date" %}
+      <label>Informe a data de entrega </label>
+    </div>
+    <div class="col-3 form-floating">
+      {% render_field form.tecnico class='form-select'%}
+      <label>Informe tecnico responsavel </label>
+    </div>
+    <div class="col-12 form-floating">
+      {% render_field form.observacao class='form-control' %}
+      <label>Observaçāo </label>
+    </div>
   </div>
 
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
-  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+  <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+</div>
 </form>
 
 <script>
   $('form').on('submit', function () {
     $('#staticBackdrop').modal('toggle')
-    
-});
-document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
-  var qtd_parcela = document.getElementById('id_main-qtd_parcela');
-  var valor_entrada = document.getElementById('id_main-valor_entrada');
-  var dia_vencimento = document.getElementById('id_main-data_vencimento');
-  var label_qtd_parcela = document.getElementById('label_qtd_parcela');
-  var label_data_vencimento = document.getElementById('label_data_vencimento');
-  var label_valor_entrada = document.getElementById('label_valor_entrada');
 
-  if (this.value === 'Fiado a receber') {
-    qtd_parcela.setAttribute('type', 'Number');
-    valor_entrada.setAttribute('type', 'Number');
-    dia_vencimento.setAttribute('type', 'Date');
-    label_valor_entrada.style.color = "rgb(67, 67, 67)";
-    label_data_vencimento.style.color = "rgb(67, 67, 67)";
-    label_qtd_parcela.style.color = "rgb(67, 67, 67)"
-  } else {
-    qtd_parcela.setAttribute('type', 'Hidden');
-    valor_entrada.setAttribute('type', 'Hidden');
-    dia_vencimento.setAttribute('type', 'Hidden');
-    label_valor_entrada.style.color = "#FFFFFF";
-    label_data_vencimento.style.color = "#FFFFFF";
-    label_qtd_parcela.style.color = "#FFFFFF";
+  });
+  document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
+    var qtd_parcela = document.getElementById('id_main-qtd_parcela');
+    var valor_entrada = document.getElementById('id_main-valor_entrada');
+    var dia_vencimento = document.getElementById('id_main-data_vencimento');
+    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+    var label_data_vencimento = document.getElementById('label_data_vencimento');
+    var label_valor_entrada = document.getElementById('label_valor_entrada');
 
-  }
-});
-(function() {
-  reorderItems()
-})();
+    if (this.value === 'Fiado a receber') {
+      qtd_parcela.setAttribute('type', 'Number');
+      valor_entrada.setAttribute('type', 'Number');
+      dia_vencimento.setAttribute('type', 'Date');
+      label_valor_entrada.style.color = "rgb(67, 67, 67)";
+      label_data_vencimento.style.color = "rgb(67, 67, 67)";
+      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+    } else {
+      qtd_parcela.setAttribute('type', 'Hidden');
+      valor_entrada.setAttribute('type', 'Hidden');
+      dia_vencimento.setAttribute('type', 'Hidden');
+      label_valor_entrada.style.color = "#FFFFFF";
+      label_data_vencimento.style.color = "#FFFFFF";
+      label_qtd_parcela.style.color = "#FFFFFF";
 
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
+    }
+  });
+  (function() {
     reorderItems()
-  }, 500)
-})
-Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
-  .forEach((item,i) => {
-    item.addEventListener('click', reorderItems);
-    item.addEventListener('change', reorderItems);
-    item.addEventListener('mouseover', reorderItems);
-    item.addEventListener('mouseout', reorderItems);
-    item.addEventListener('blur', reorderItems);
-    item.addEventListener('keydown', reorderItems);
-    item.addEventListener('keyup', reorderItems);
+  })();
+
+  document.querySelector('#addItem').addEventListener('click', function() {
+    setTimeout(() => {
+      reorderItems()
+    }, 500)
   })
+  Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+    .forEach((item,i) => {
+      item.addEventListener('click', reorderItems);
+      item.addEventListener('change', reorderItems);
+      item.addEventListener('mouseover', reorderItems);
+      item.addEventListener('mouseout', reorderItems);
+      item.addEventListener('blur', reorderItems);
+      item.addEventListener('keydown', reorderItems);
+      item.addEventListener('keyup', reorderItems);
+    })
 
-function reorderItems() {
-  var totalValue = 0
-  Array.from(document.querySelectorAll("[id^='item-']"))
-    .forEach((item, i) => {
-      item.setAttribute('id', 'item-' + i)
+  function reorderItems() {
+    var totalValue = 0
+    Array.from(document.querySelectorAll("[id^='item-']"))
+      .forEach((item, i) => {
+        item.setAttribute('id', 'item-' + i)
 
-      if (!item.querySelector('[data-field="orcamento"]')) {
-        return
-      }
+        if (!item.querySelector('[data-field="orcamento"]')) {
+          return
+        }
 
-      item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
-      item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
+        item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
+        item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
 
-      item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
-      item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
+        item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
+        item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
 
 
-      item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
+        item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
 
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+        item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
+        item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
 
-      let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
-      let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
-      totalValue += preco * qtd
-  })
+        let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
+        let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+        totalValue += preco * qtd
+      })
 
-  Array.from(document.querySelectorAll("#id_id"))
-    .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+    Array.from(document.querySelectorAll("#id_id"))
+      .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
 
-  let totalItems = $('#orcamento').children().length
-  document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+    let totalItems = $('#orcamento').children().length
+    document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
 
   // htmx.org/api/#process
-  htmx.process(document.querySelector("#orcamento"))
-  document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
-  
-}
-function removeRow() {
-  const span = event.target.parentNode
-  const div = span.parentNode
-  div.parentNode.removeChild(div)
+    htmx.process(document.querySelector("#orcamento"))
+    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
 
-  reorderItems()
-}
+  }
+  function removeRow() {
+    const span = event.target.parentNode
+    const div = span.parentNode
+    div.parentNode.removeChild(div)
 
-Array.from(document.querySelectorAll('.remove-row'))
-  .forEach((item, i) => {
-    item.addEventListener('click', function() {
-      document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block'
+    reorderItems()
+  }
+
+  Array.from(document.querySelectorAll('.remove-row'))
+    .forEach((item, i) => {
+      item.addEventListener('click', function() {
+        document.querySelector('button[type="submit"]').style.display = 'none'
+        document.querySelector('#btn-close').style.display = 'block'
+      })
     })
-  })
 </script>

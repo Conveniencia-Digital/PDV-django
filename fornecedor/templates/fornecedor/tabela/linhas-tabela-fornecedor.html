@@ -1,27 +1,27 @@
 <tr id="trFornecedor{{ object.pk }}">
-    <td> {{ object.nome_fornecedor }} </td>
-    <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a></td>
-    <td><span
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-            hx-get="{% url 'editar-fornecedor' object.pk %}"
-            hx-target="#adicionar-conteudo">
+  <td> {{ object.nome_fornecedor }} </td>
+  <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a></td>
+  <td><span
+    data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop"
+    hx-get="{% url 'editar-fornecedor' object.pk %}"
+    hx-target="#adicionar-conteudo">
 
 
-        <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+  </span>
+    <span
+      data-bs-toggle="modal"
+      data-bs-target="#success_tic_delete"
+      hx-get="{% url 'apagar-fornecedor' object.pk %}"
+      hx-confirm="Deseja mesmo Apagar {{ object.nome_fornecedor }} ?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:1s">
+
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
     </span>
-        <span
-            data-bs-toggle="modal"
-            data-bs-target="#success_tic_delete"
-            hx-get="{% url 'apagar-fornecedor' object.pk %}"
-            hx-confirm="Deseja mesmo Apagar {{ object.nome_fornecedor }} ?"
-            hx-target="closest tr"
-            hx-swap="outerHTML swap:1s">
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-fornecedor' object.pk %}"
+          hx-target="#detalhe-fornecedor" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
+  </td>
 
-                <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-fornecedor' object.pk %}"
-        hx-target="#detalhe-fornecedor" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
-    </td>
-    
 </tr>

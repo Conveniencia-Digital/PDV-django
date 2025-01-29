@@ -2,57 +2,57 @@
 {% load static %}
 
 {% block style %}
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
 {% endblock style %}
 
 {% block titulo %}
-Comunidade Tecnica
+  Comunidade Tecnica
 {% endblock titulo %}
 
 {% block conteudo %}
 
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="chat">
-                <div class="chat-header clearfix">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                            </a>
-                            <div class="chat-about">
-                                <h6 class="m-b-0">Grupo privado</h6>
-                                <small>Perguntas e respostas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-                <div class="chat-history" style="margin-bottom:190px;">                 
-                    <ul id="minha-msg" class="m-b-0">
-                        {% include 'comunidade/conversa.html' %}
-                    </ul>
-                </div>              
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="chat">
+        <div class="chat-header clearfix">
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+              </a>
+              <div class="chat-about">
+                <h6 class="m-b-0">Grupo privado</h6>
+                <small>Perguntas e respostas</small>
+              </div>
             </div>
+          </div>
         </div>
+
+        <div class="chat-history" style="margin-bottom:190px;">
+          <ul id="minha-msg" class="m-b-0">
+            {% include 'comunidade/conversa.html' %}
+          </ul>
+        </div>
+      </div>
     </div>
-</div>
-<nav class="navbar fixed-bottom bg-body-tertiary">
+  </div>
+  </div>
+  <nav class="navbar fixed-bottom bg-body-tertiary">
     <div id="mensagem">
-            <form  class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" style="display: flex;">
-                <input
-                     class="form-control"
-                     hx-get="{% url 'enviar-mensagem' %}"
-                     hx-trigger="mouseenter"
-                     hx-target="#mensagem"
-                     
-                     hx-indicator=".htmx-indicator"
-                     style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;"
-                     placeholder="Mensagem...">  
-            </input>
-                <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 50px;"><i class="fa fa-send"></i></button>
-        </form>  
+      <form  class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" style="display: flex;">
+        <input
+          class="form-control"
+          hx-get="{% url 'enviar-mensagem' %}"
+          hx-trigger="mouseenter"
+          hx-target="#mensagem"
+
+          hx-indicator=".htmx-indicator"
+          style="border: 1px solid rgb(230, 227, 227); margin-bottom: 60px;"
+          placeholder="Mensagem...">
+        </input>
+        <button class="btn btn-primary" type="submit" onclick="limpar()" style="height: 50px;"><i class="fa fa-send"></i></button>
+      </form>
     </div>
   </nav>
 

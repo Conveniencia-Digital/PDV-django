@@ -18,13 +18,13 @@
 <h5><sup>R$</sup> {{ object.lucrototal }}</h5>
 <h3>Fornecedor</h3>
 {% if object.fornecedor == None %}
-<h5>Nao informado</h5>
+  <h5>Nao informado</h5>
 {% else %}
-<h5>{{ object.fornecedor }}</h5>
+  <h5>{{ object.fornecedor }}</h5>
 {% endif %}
 <h3>Data de cadastro</h3>
 <h5>{{ object.data_criacao|date:'d/m/y h:i' }}</h5>
 <h3>Ultima edicao</h3>
 <h5>{{ object.data_edicao|date:'d/m/y h:i' }}</h5>
-        
-    
+
+

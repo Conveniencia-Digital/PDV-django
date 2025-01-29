@@ -1,7 +1,7 @@
 {% load static %}
 <!doctype html>
 <html lang="pt-br">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -70,13 +70,13 @@
       a:hover {
         font-size: 20px;
         box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        
+
       }
-    
-    .fade-me-out.htmx-swapping {
+
+      .fade-me-out.htmx-swapping {
         opacity: 0;
         transition: opacity 1s ease-in-out;
-    }
+      }
 
     </style>
 
@@ -84,7 +84,7 @@
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
 
     <!-- CDN Data table -->
-   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
 
 
 
@@ -98,252 +98,252 @@
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-   
+
 
     {% block style %}{% endblock style %}
-</head>
-<body>
+  </head>
+  <body>
 
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'inicio' %}">Sistema Cell</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
-        <div class="navbar-nav">
-          <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="{% url 'account_logout' %}">Sair</a>
-          </div>
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'inicio' %}">Sistema Cell</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="{% url 'account_logout' %}">Sair</a>
         </div>
-      </header>
+      </div>
+    </header>
 
 
-<div class="container-fluid">
-    <div class="row">
+    <div class="container-fluid">
+      <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="position-sticky pt-3 sidebar-sticky">
-                <ul class="nav flex-column" style="font-size: 16px;">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'inicio' %}">
-                            <span data-feather="home" class="align-text-bottom"></span>
-                            Painel de Controle
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'vendas'  %}">
-                            <span data-feather="shopping-bag" class="align-text-bottom"></span>
-                            Vendas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'produtos' %}">
-                            <span data-feather="shopping-cart" class="align-text-bottom"></span>
-                            Produtos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'cliente' %}">
-                            <span data-feather="users" class="align-text-bottom"></span>
-                            Clientes
-                        </a>
-                    </li>  
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pedido' %}">
-                            <span data-feather="send" class="align-text-bottom"></span>
-                            Pedidos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'orcamento' %}">
-                            <span data-feather="file" class="align-text-bottom"></span>
-                            Orçamentos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'lanhouse' %}" class="nav-link">
-                            <span data-feather="printer" class="align-text-bottom"></span>
-                            Lan House
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pecas' %}">
-                            <span data-feather="box" class="align-text-bottom"></span>
-                            Peças
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fornecedor' %}">
-                            <span data-feather="truck" class="align-text-bottom"></span>
-                            Fornecedores
-                        </a>
-                    </li>
-                    
-                      
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'colaborador' %}">
-                            <span data-feather="user-check" class="align-text-bottom"></span>
-                            Funcionarios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'relatorio' %}">
-                            <span data-feather="bar-chart-2" class="align-text-bottom"></span>
-                            Relatorios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'despesa' %}">
-                            <span data-feather="layers" class="align-text-bottom"></span>
-                            Despesas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'financeiro' %}">
-                            <span data-feather="activity" class="align-text-bottom"></span>
-                            Financeiro
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'configuracao' %}">
-                            <span data-feather="settings" class="align-text-bottom"></span>
-                            Configuração
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'comunidade' %}">
-                            <span data-feather="globe" class="align-text-bottom"></span>
-                            Comunidade 
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'suporte' %}">
-                            <span data-feather="phone" class="align-text-bottom"></span>
-                            Suporte 
-                        </a>
-                    </li>
-                </ul>
+          <div class="position-sticky pt-3 sidebar-sticky">
+            <ul class="nav flex-column" style="font-size: 16px;">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'inicio' %}">
+                  <span data-feather="home" class="align-text-bottom"></span>
+                  Painel de Controle
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'vendas'  %}">
+                  <span data-feather="shopping-bag" class="align-text-bottom"></span>
+                  Vendas
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'produtos' %}">
+                  <span data-feather="shopping-cart" class="align-text-bottom"></span>
+                  Produtos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'cliente' %}">
+                  <span data-feather="users" class="align-text-bottom"></span>
+                  Clientes
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'pedido' %}">
+                  <span data-feather="send" class="align-text-bottom"></span>
+                  Pedidos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'orcamento' %}">
+                  <span data-feather="file" class="align-text-bottom"></span>
+                  Orçamentos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'lanhouse' %}" class="nav-link">
+                  <span data-feather="printer" class="align-text-bottom"></span>
+                  Lan House
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'pecas' %}">
+                  <span data-feather="box" class="align-text-bottom"></span>
+                  Peças
+                </a>
+              </li>
 
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span>ACESSO RAPIDO</span>
-                    <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
-                        <span data-feather="plus-circle" class="align-text-bottom"></span>
-                    </a>
-                </h6>
-                <ul class="nav flex-column mb-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text" class="align-text-bottom"></span>
-                            Consultar preço
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="modal"
-                           data-target="#staticBackdrop"
-                           hx-get="{% url 'vendas' %}"
-                           hx-target="#addConteudo"
-                           hx-swap="innerHTML">
-                            <span data-feather="file-text" class="align-text-bottom"></span>
-                            Nova venda
-                        </a>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'fornecedor' %}">
+                  <span data-feather="truck" class="align-text-bottom"></span>
+                  Fornecedores
+                </a>
+              </li>
 
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           data-toggle="modal"
-                           data-target="#staticBackdrop"
-                           hx-get="{% url 'cadastrar-orcamento' %}"
-                           hx-target="#addConteudo"
-                           hx-swap="innerHTML">
-                            <span data-feather="file-text" class="align-text-bottom"></span>
-                            Novo orçamento
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text" class="align-text-bottom"></span>
-                            Cadastrar cliente
-                        </a>
-                    </li>
-                </ul>
-            </div>
+
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'colaborador' %}">
+                  <span data-feather="user-check" class="align-text-bottom"></span>
+                  Funcionarios
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'relatorio' %}">
+                  <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+                  Relatorios
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'despesa' %}">
+                  <span data-feather="layers" class="align-text-bottom"></span>
+                  Despesas
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'financeiro' %}">
+                  <span data-feather="activity" class="align-text-bottom"></span>
+                  Financeiro
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'configuracao' %}">
+                  <span data-feather="settings" class="align-text-bottom"></span>
+                  Configuração
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'comunidade' %}">
+                  <span data-feather="globe" class="align-text-bottom"></span>
+                  Comunidade
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'suporte' %}">
+                  <span data-feather="phone" class="align-text-bottom"></span>
+                  Suporte
+                </a>
+              </li>
+            </ul>
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>ACESSO RAPIDO</span>
+              <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
+                <span data-feather="plus-circle" class="align-text-bottom"></span>
+              </a>
+            </h6>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  Consultar preço
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="modal"
+                   data-target="#staticBackdrop"
+                   hx-get="{% url 'vendas' %}"
+                   hx-target="#addConteudo"
+                   hx-swap="innerHTML">
+                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  Nova venda
+                </a>
+
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   data-toggle="modal"
+                   data-target="#staticBackdrop"
+                   hx-get="{% url 'cadastrar-orcamento' %}"
+                   hx-target="#addConteudo"
+                   hx-swap="innerHTML">
+                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  Novo orçamento
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  Cadastrar cliente
+                </a>
+              </li>
+            </ul>
+          </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">{% block titulo %}Painel de controle{% endblock titulo %}</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <span data-feather="calendar" class="align-text-bottom"></span>
-                        This week
-                    </button>
-                </div>
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">{% block titulo %}Painel de controle{% endblock titulo %}</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                <span data-feather="calendar" class="align-text-bottom"></span>
+                This week
+              </button>
             </div>
-            
-            {% block conteudo %}
-            <a  
-                hx-get="{% url 'cadastrar-tarefa' %}"
-                hx-target="#cadastrar-tarefa"
-                hx-swap="innerHTML"
-                hx-indicator=".htmx-indicator"
-                class="btn btn-outline-primary" 
-                data-bs-toggle="modal" 
-                data-bs-target="#staticBackdrop">
-                Nova tarefa
+          </div>
+
+          {% block conteudo %}
+            <a
+              hx-get="{% url 'cadastrar-tarefa' %}"
+              hx-target="#cadastrar-tarefa"
+              hx-swap="innerHTML"
+              hx-indicator=".htmx-indicator"
+              class="btn btn-outline-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop">
+              Nova tarefa
             </a>
             <div style="padding-top:18px">
-                <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-                    <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
-                        <tr>
-                            <th>Tarefas</th>
-                            <th>Funcionario</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tarefa-Tbody">
-                        {% include 'dashboard/tabela/tabela-tarefa.html' %}
-                    </tbody>
-                </table>
+              <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+                <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+                  <tr>
+                    <th>Tarefas</th>
+                    <th>Funcionario</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tarefa-Tbody">
+                  {% include 'dashboard/tabela/tabela-tarefa.html' %}
+                </tbody>
+              </table>
             </div>
-            
+
             {% include 'dashboard/modais/modal-conteudo.html' %}
-            {% endblock conteudo %}      
-           
+          {% endblock conteudo %}
+
         </main>
+      </div>
     </div>
-</div>
- 
-
-      
- 
-
-<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
-<script src="{% static 'js/dashboard.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
 
 
 
 <!-- CDN Data table -->
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 
 
 
 
-<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
-{% block scripts %}
+    {% block scripts %}
 
-{% endblock scripts %}
+    {% endblock scripts %}
 
-</body>
+  </body>
 </html>

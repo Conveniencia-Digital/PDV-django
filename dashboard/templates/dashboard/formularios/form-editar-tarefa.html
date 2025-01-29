@@ -5,26 +5,26 @@
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form hx-post="{% url 'editar-tarefa' object.pk %}" hx-target="#tarefaTr{{ object.pk }}" hx-swap="outerHTML"
-  hx-indicator=".htmx-indicator">
+      hx-indicator=".htmx-indicator">
   <div class="modal-body">
     {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-              {% render_field form.usuario class='form-control' %}
-              {% render_field form.tarefa class='form-control' %}
-                <label for="">O que tem pra fazer ?</label>
-            </div>
-        </div>
-        <div class="row g-2" style="margin-bottom: 10px;">
-          <div class="col form-floating">
-            {% render_field form.colaborador class='form-select' %}
-              <label for="">Quem vai fazer ?</label>
-          </div>
-          <div class="col form-floating">
-            {% render_field form.status class='form-select' %}
-              <label for="">Status</label>
-          </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class='form-control' %}
+        {% render_field form.tarefa class='form-control' %}
+        <label for="">O que tem pra fazer ?</label>
       </div>
+    </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.colaborador class='form-select' %}
+        <label for="">Quem vai fazer ?</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.status class='form-select' %}
+        <label for="">Status</label>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -34,6 +34,6 @@
 
 <script>
   $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-    });
+    $('#staticBackdrop').modal('toggle')
+  });
 </script>

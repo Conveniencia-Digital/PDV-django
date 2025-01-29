@@ -2,79 +2,79 @@
 {% load lanhouse %}
 
 {% block titulo %}
-Lan House
+  Lan House
 {% endblock titulo %}
 {% block style %}
-<style>
-   
-        tr.htmx-swapping td {
+  <style>
+
+    tr.htmx-swapping td {
       opacity: 0;
       transition: opacity 1s ease-out;
-      }
-      
+    }
+
     .btn {
-        font-size: 18px;
+      font-size: 18px;
     }
     .table {
-        font-size: 15px;
+      font-size: 15px;
     }
-</style>
+  </style>
 {% endblock style %}
 
 {% block conteudo %}
-<div class="row" id="relatorio-lanhouse">
+  <div class="row" id="relatorio-lanhouse">
     <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Voce fez <b>{% qtd_lanhouse request %}</b> servicos de lanhouse este mes <b></b></h5>
-            <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>           
-        </div>
+      <div class="card-body">
+        <h5 class="card-title">Voce fez <b>{% qtd_lanhouse request %}</b> servicos de lanhouse este mes <b></b></h5>
+        <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>
+      </div>
     </div>
-</div>
+  </div>
 
-<nav class="navbar justify-content-center">
+  <nav class="navbar justify-content-center">
     <ul class="nav justify-content-center">
-        <li class="nav-item">
-            <a
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-            hx-get="{% url 'cadastrar-lanhouse' %}"
-            hx-target="#addConteudo"
-            hx-swap="innerHTML"
-            >Lan house</a>
-        </li>
-        <li class="nav-item">
-            <a
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-            hx-get="{% url 'cadastrar-servico-lanhouse' %}"
-            hx-target="#addConteudo"
-            style="margin-left: 10px;"
-            >Cadastrar Serviço </a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-outline-primary"
-             data-bs-toggle="modal"
-             data-bs-target="#staticBackdrop" 
-             hx-get="{% url 'lista-servico-lanhouse' %}"
-             hx-target="#addConteudo"
-             style="margin-left: 10px;">
-             Lista de serviços</a>
-        </li>
-      </ul>
-</nav>
-<div class="table-responsive" style="padding-top: 18px;">
+      <li class="nav-item">
+        <a
+          class="btn btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          hx-get="{% url 'cadastrar-lanhouse' %}"
+          hx-target="#addConteudo"
+          hx-swap="innerHTML"
+        >Lan house</a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="btn btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          hx-get="{% url 'cadastrar-servico-lanhouse' %}"
+          hx-target="#addConteudo"
+          style="margin-left: 10px;"
+        >Cadastrar Serviço </a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-outline-primary"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-get="{% url 'lista-servico-lanhouse' %}"
+           hx-target="#addConteudo"
+           style="margin-left: 10px;">
+          Lista de serviços</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="table-responsive" style="padding-top: 18px;">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead></thead>
-        <tbody id="lanhouse-Tbody">
-            {% include 'lanhouse/tabela/tabela-lanhouse.html' %}
-        </tbody>
+      <thead></thead>
+      <tbody id="lanhouse-Tbody">
+        {% include 'lanhouse/tabela/tabela-lanhouse.html' %}
+      </tbody>
     </table>
-</div>
+  </div>
 
-{% include 'lanhouse/modais/modal-base-lanhouse.html' %}
-{% include 'lanhouse/modais/modal-alerta.html' %}
+  {% include 'lanhouse/modais/modal-base-lanhouse.html' %}
+  {% include 'lanhouse/modais/modal-alerta.html' %}
 
 
 {% endblock conteudo%}

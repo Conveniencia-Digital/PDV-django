@@ -1,185 +1,185 @@
 {% load widget_tweaks %}
 <div id="item-{{ forloop.counter0 }}" class="form-row">
-  <style> 
-  
+  <style>
+
     @media (max-width:760px) {
-    #remove {
-      width: 80vw;
-      height: 35px; 
-      font-size:15px;
-      margin-bottom: 30px;
-      
-    }
+      #remove {
+        width: 80vw;
+        height: 35px;
+        font-size:15px;
+        margin-bottom: 30px;
 
-  }
-  @media (min-width: 900px){
-    #remove {
-      width: 60px; 
-      height: 40px; 
-      font-size: 10px; 
-      margin-top: 12px;
-    }
-    
-  }
-  </style>
-    {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
-    {{ items_orcamento_form.id }}
-    <div class="row g-2">
-      <div class="col-md-6 mb-3 form-floating">
-          {% render_field items_orcamento_form.peca class='form-select' hx-get="/peca/preco/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field='peca' %}
-          <label>Selecione a peça </label>
-      </div>
-      <div class="col-md-3 mb-3 form-floating">
-          {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00"  %}
-          <label>Preço Unitario </label>
-      </div>
-      <div class="col-md-2 mb-2 form-floating">
-          {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-      </div>
-      {% if items_orcamento_form.id.value %}
-          <div class="col-md-1 mb-1">
-               <span
-                  class="span-is-link no ml-2 remove-row"
-                  hx-delete="{% url 'apagar-item-orcamento' items_orcamento_form.id.value %}"
-                  hx-confirm="Deseja mesmo deletar o item {{items_orcamento_form.id.value}}?"
-                  hx-target="#item-{{ forloop.counter0 }}"
-                  hx-swap="outerHTML">
-                   <i class="fa fa-times fa-lg"></i>
-               </span>
-              {% else %}
-              <div class="col-1" onclick="removeRow()">
-                <button type="submit" class="btn btn-outline-danger " id="remove" style="font-size: 10px;">X</button>
-              </div>
-          </div>
-    </div>
-    {% endif %}
-</div>
-<script>
-  document.getElementById('id_main-desconto').addEventListener('click', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto) 
-  document.getElementById('id_main-desconto').addEventListener('change', Desconto) 
-  
-  Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
-    .forEach((item, i) => {
-      item.addEventListener('change', Desconto);
-      item.addEventListener('focus', Desconto);
-      item.addEventListener('mouseover', Desconto);
-      item.addEventListener('click', Desconto);
-      item.addEventListener('mouseout', Desconto);
-      item.addEventListener('blur', Desconto);
-      item.addEventListener('keyup', Desconto);
-      item.addEventListener('keydown', Desconto);
-    });
-  
-  function Desconto () {
-    var desconto = parseFloat(document.querySelector('#id_main-desconto').value);
-    var total = parseFloat(document.querySelector('#totalValue').value);
-    let label_desconto = document.querySelector('#label_desconto')
-    let campo_desconto = document.querySelector('#id_main-desconto')
-
-    if(desconto > total) {
-      label_desconto.innerHTML = 'Desconto maior que o valor da venda <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-      label_desconto.style.color = ' #ff0000';
-      campo_desconto.style.border =  '3px solid #ff0000';
-      campo_desconto.style.color =  '#ff0000';
-    }else {
-      label_desconto.innerHTML = 'Desconto';
-      label_desconto.style.color = '';
-      campo_desconto.style.border = '';
-      campo_desconto.style.color = '';
-
-    }
-
-  };
- 
-
-
-
-
-
-
-
-(function() {
-  reorderItems()
-})();
-
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
-    reorderItems()
-  }, 500)
-})
-Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
-  .forEach((item,i) => {
-    item.addEventListener('click', reorderItems);
-    item.addEventListener('change', reorderItems);
-    item.addEventListener('mouseover', reorderItems);
-    item.addEventListener('mouseout', reorderItems);
-    item.addEventListener('blur', reorderItems);
-    item.addEventListener('keydown', reorderItems);
-    item.addEventListener('keyup', reorderItems);
-  })
-
-function reorderItems() {
-  var totalValue = 0
-  Array.from(document.querySelectorAll("[id^='item-']"))
-    .forEach((item, i) => {
-      item.setAttribute('id', 'item-' + i)
-
-      if (!item.querySelector('[data-field="orcamento"]')) {
-        return
       }
 
-      item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
-      item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
+    }
+    @media (min-width: 900px){
+      #remove {
+        width: 60px;
+        height: 40px;
+        font-size: 10px;
+        margin-top: 12px;
+      }
 
-      item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
-      item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
+    }
+  </style>
+  {% render_field items_orcamento_form.orcamento class='form-control' data-field='orcamento' %}
+  {{ items_orcamento_form.id }}
+  <div class="row g-2">
+    <div class="col-md-6 mb-3 form-floating">
+      {% render_field items_orcamento_form.peca class='form-select' hx-get="/peca/preco/" hx-target="#id_preco_orcamento" hx-swap="outerHTML" data-field='peca' %}
+      <label>Selecione a peça </label>
+    </div>
+    <div class="col-md-3 mb-3 form-floating">
+      {% render_field items_orcamento_form.preco_orcamento class='form-control' data-field='preco_orcamento' value="0.00"  %}
+      <label>Preço Unitario </label>
+    </div>
+    <div class="col-md-2 mb-2 form-floating">
+      {% render_field items_orcamento_form.quantidade class='form-control' data-field='quantidade' value="01" %}
+      <label>Quantidade</label>
+    </div>
+    {% if items_orcamento_form.id.value %}
+      <div class="col-md-1 mb-1">
+        <span
+          class="span-is-link no ml-2 remove-row"
+          hx-delete="{% url 'apagar-item-orcamento' items_orcamento_form.id.value %}"
+          hx-confirm="Deseja mesmo deletar o item {{items_orcamento_form.id.value}}?"
+          hx-target="#item-{{ forloop.counter0 }}"
+          hx-swap="outerHTML">
+          <i class="fa fa-times fa-lg"></i>
+        </span>
+    {% else %}
+      <div class="col-1" onclick="removeRow()">
+        <button type="submit" class="btn btn-outline-danger " id="remove" style="font-size: 10px;">X</button>
+      </div>
+      </div>
+      </div>
+    {% endif %}
+  </div>
+  <script>
+    document.getElementById('id_main-desconto').addEventListener('click', Desconto)
+    document.getElementById('id_main-desconto').addEventListener('keydown', Desconto)
+    document.getElementById('id_main-desconto').addEventListener('keyup', Desconto)
+    document.getElementById('id_main-desconto').addEventListener('change', Desconto)
+
+    Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+      .forEach((item, i) => {
+        item.addEventListener('change', Desconto);
+        item.addEventListener('focus', Desconto);
+        item.addEventListener('mouseover', Desconto);
+        item.addEventListener('click', Desconto);
+        item.addEventListener('mouseout', Desconto);
+        item.addEventListener('blur', Desconto);
+        item.addEventListener('keyup', Desconto);
+        item.addEventListener('keydown', Desconto);
+      });
+
+    function Desconto () {
+      var desconto = parseFloat(document.querySelector('#id_main-desconto').value);
+      var total = parseFloat(document.querySelector('#totalValue').value);
+      let label_desconto = document.querySelector('#label_desconto')
+      let campo_desconto = document.querySelector('#id_main-desconto')
+
+      if(desconto > total) {
+        label_desconto.innerHTML = 'Desconto maior que o valor da venda <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+        label_desconto.style.color = ' #ff0000';
+        campo_desconto.style.border =  '3px solid #ff0000';
+        campo_desconto.style.color =  '#ff0000';
+      }else {
+        label_desconto.innerHTML = 'Desconto';
+        label_desconto.style.color = '';
+        campo_desconto.style.border = '';
+        campo_desconto.style.color = '';
+
+      }
+
+    };
 
 
-      item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
 
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
-      item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
 
-      let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
-      let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
-      totalValue += preco * qtd
-  })
 
-  Array.from(document.querySelectorAll("#id_id"))
-    .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
 
-  let totalItems = $('#orcamento').children().length
-  document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
+
+
+    (function() {
+      reorderItems()
+    })();
+
+    document.querySelector('#addItem').addEventListener('click', function() {
+      setTimeout(() => {
+        reorderItems()
+      }, 500)
+    })
+    Array.from(document.querySelectorAll('[data-field="peca"], [data-field="quantidade"]'))
+      .forEach((item,i) => {
+        item.addEventListener('click', reorderItems);
+        item.addEventListener('change', reorderItems);
+        item.addEventListener('mouseover', reorderItems);
+        item.addEventListener('mouseout', reorderItems);
+        item.addEventListener('blur', reorderItems);
+        item.addEventListener('keydown', reorderItems);
+        item.addEventListener('keyup', reorderItems);
+      })
+
+    function reorderItems() {
+      var totalValue = 0
+      Array.from(document.querySelectorAll("[id^='item-']"))
+        .forEach((item, i) => {
+          item.setAttribute('id', 'item-' + i)
+
+          if (!item.querySelector('[data-field="orcamento"]')) {
+            return
+          }
+
+          item.querySelector('[data-field="orcamento"]').setAttribute('name', 'items-' + i + '-orcamento')
+          item.querySelector('[data-field="orcamento"]').setAttribute('id', 'id_items-' + i + '-orcamento')
+
+          item.querySelector('[data-field="peca"]').setAttribute('name', 'items-' + i + '-peca')
+          item.querySelector('[data-field="peca"]').setAttribute('hx-target', '#id_items-'+ i +'-preco_orcamento')
+
+
+          item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
+
+          item.querySelector('[data-field="preco_orcamento"]').setAttribute('name', 'items-' + i + '-preco_orcamento')
+          item.querySelector('[data-field="preco_orcamento"]').setAttribute('id', 'id_items-' + i + '-preco_orcamento')
+
+          let preco = parseFloat(item.querySelector('[data-field="preco_orcamento"]').value);
+          let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
+          totalValue += preco * qtd
+        })
+
+      Array.from(document.querySelectorAll("#id_id"))
+        .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
+
+      let totalItems = $('#orcamento').children().length
+      document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
 
   // htmx.org/api/#process
-  htmx.process(document.querySelector("#orcamento"))
-  document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
-  
-}
-function removeRow() {
-  const span = event.target.parentNode
-  const div = span.parentNode
-  div.parentNode.removeChild(div)
+      htmx.process(document.querySelector("#orcamento"))
+      document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
 
-  reorderItems()
-}
+    }
+    function removeRow() {
+      const span = event.target.parentNode
+      const div = span.parentNode
+      div.parentNode.removeChild(div)
 
-Array.from(document.querySelectorAll('.remove-row'))
-  .forEach((item, i) => {
-    item.addEventListener('click', function() {
-      document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block'
-    })
-  })
+      reorderItems()
+    }
 
-  $('form').on('submit', function() {
-    $('#staticBackdrop').modal('toggle')
-  });
-</script>
-<script>
+    Array.from(document.querySelectorAll('.remove-row'))
+      .forEach((item, i) => {
+        item.addEventListener('click', function() {
+          document.querySelector('button[type="submit"]').style.display = 'none'
+          document.querySelector('#btn-close').style.display = 'block'
+        })
+      })
+
+    $('form').on('submit', function() {
+      $('#staticBackdrop').modal('toggle')
+    });
+  </script>
+  <script>
 
     document.body.addEventListener('htmx:configRequest', (event) => {
       event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';

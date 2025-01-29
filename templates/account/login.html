@@ -13,38 +13,38 @@
   {% get_providers as socialaccount_providers %}
 
   <div class="form login">
-        <div class="form-content">
-              <header>Acessar</header>
-                  <form class="login" method="POST" action="{% url 'account_login' %}">
-                    {% csrf_token %}
-                    <div class="field input-field">
-                      {% render_field form.login type="text" class="input" placeholder="Nome de usuario"  %}
-                      
-                    </div>
-                    <div class="field input-field">
-                      {% render_field form.password type="password" class="password" placeholder="Senha"  %}
-                      <i class='bx bx-hide eye-icon'></i>
-                    </div>
-                    
-                    {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                    {% endif %}
-                    <div class="form-link">
-                      <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Esqueceu Senha?" %}</a>
-                    </div>
-                      <div class="field button-field">
-                      <button class="primaryAction" type="submit">{% trans "Entrar" %}</button>
-                    </div>
-                  </form>
-                  <div class="form-link">
-                    <span>Nāo tem uma conta? <a href="{% url 'account_signup' %}" >Cadastre-se</a></span>
-                  </div>
-        
-                  <div class="line"></div>
-         
-                  {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    <div class="form-content">
+      <header>Acessar</header>
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        <div class="field input-field">
+          {% render_field form.login type="text" class="input" placeholder="Nome de usuario"  %}
+
+        </div>
+        <div class="field input-field">
+          {% render_field form.password type="password" class="password" placeholder="Senha"  %}
+          <i class='bx bx-hide eye-icon'></i>
+        </div>
+
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="form-link">
+          <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Esqueceu Senha?" %}</a>
+        </div>
+        <div class="field button-field">
+          <button class="primaryAction" type="submit">{% trans "Entrar" %}</button>
+        </div>
+      </form>
+      <div class="form-link">
+        <span>Nāo tem uma conta? <a href="{% url 'account_signup' %}" >Cadastre-se</a></span>
       </div>
-  </div>  
+
+      <div class="line"></div>
+
+      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    </div>
+  </div>
 
 
 {% endblock %}

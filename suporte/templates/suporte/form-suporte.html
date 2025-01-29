@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 <form class="fixed-bottom bg-body-tertiary col-md-9 ms-sm-auto col-lg-10 px-md-4" hx-post="{% url 'enviar-suporte' %}"
-  hx-target="#minha-msg" hx-indicator=".htmx-indicator" hx-swap="beforeend">
+      hx-target="#minha-msg" hx-indicator=".htmx-indicator" hx-swap="beforeend">
   {% csrf_token %}
   {% render_field form.usuario class="form-control" %}
   <div style="display: flex;">

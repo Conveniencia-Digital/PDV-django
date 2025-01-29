@@ -3,166 +3,166 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <!-- HTMX -->
-  <script src="https://unpkg.com/htmx.org@1.5.0"></script>
-  <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
-  <title>Sistema Cell</title>
-  <style>
-    #error-messages {
-      border: solid 1px solid #fa0202d7;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container" id="container">
-    <div class="forms-container">
-      <div class="signin-signup">
-        <form class="sign-in-form" method="post" id="login">
-          {% csrf_token %}
-          <h2 class="title">Entrar no sistema</h2>
-          <div class="input-field">
-            <i class="fas fa-user"></i>
-            <input type="text" name="username" id="username" placeholder="Username" />
-          </div>
-          <div class="input-field">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="password" placeholder="Password" />
-          </div>
-          <input type="submit" value="Login" class="btn solid" />
-          <p class="social-text">Ou entre com suas redes sociais</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </div>
-        </form>
-        <form hx-post="{% url 'cadastrar' %}" class="sign-up-form" id="cadastrar">
-          {% csrf_token %}
-
-          <h2 class="title">Cadastrar-se</h2>
-          <div class="input-field">
-            <i class="fas fa-user"></i>
-            {% render_field form.username placeholder="Nome de usuario" %}
-          </div>
-          <div class="input-field">
-            <i class="fas fa-envelope"></i>
-            {% render_field form.email placeholder="Email" %}
-          </div>
-          <div class="input-field">
-            <i class="fas fa-lock"></i>
-
-            {% render_field form.password1 placeholder="Crie uma senha" %}
-            {% if form.password1.errors %}
-            <ul class="errorlist">
-              {% for error in form.password1.errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
-          <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente
-            numérica.</p>
-          <div class="input-field">
-            <i class="fas fa-lock"></i>
-            {% render_field form.password2 placeholder="Confirme a senha" %}
-            {% if form.password2.errors %}
-            <ul class="errorlist">
-              {% for error in form.password2.errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
-          <input id="finalizar" type="submit" class="btn" value="Cadastrar" />
-          <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="panels-container">
-      <div class="panel left-panel">
-        <div class="content">
-          <h3>Novo aqui ?</h3>
-          <p>
-            Tenha controle da sua loja, para nao perder dinheiro e lucrar muito mais. Com
-            Sistema Cell!
-          </p>
-          <button hx-get="{% url 'cadastrar' %}" hx-target="#cadastrar" hx-swap="inneHTML"
-            hx-indicator=".htmx-indicator" class="btn transparent" id="sign-up-btn">
-            Cadastrar-se
-          </button>
-        </div>
-        <img src="{% static 'img/log.svg' %}" class="image" alt="" />
-      </div>
-      <div class="panel right-panel">
-        <div class="content">
-          <h3>Ja e nosso cliente ?</h3>
-          <p>
-            Poderoso, rapido, e facil de usar.<br> Sistema Cell
-          </p>
-          <button class="btn transparent" hx-get="{% url 'login' %}" hx-target="#cadastrar" hx-swap="inneHTML"
-            hx-indicator=".htmx-indicator" id="sign-in-btn">
-            Entrar
-          </button>
-        </div>
-        <img src="{% static 'img/register.svg' %}" class="image" alt="" />
-      </div>
-    </div>
-  </div>
-
-  <script src="{% static 'js/app.js' %}"></script>
-  <script>
-    document.querySelector('#finalizar').addEventListener('mouseover', SenhaIncorreta);
-    document.querySelector('#finalizar').addEventListener('mouseout', SenhaIncorreta);
-    
-    function SenhaIncorreta() {
-      var senha1 = document.querySelector('#id_password1');
-      var senha2 = document.querySelector('#id_password2');
-      let confirmar1 = senha1.value;
-      let confirmar2 = senha2.value;
-      if (confirmar1 !== confirmar2) {
-        senha1.style.border = '1px solid #ff0000';
-
-        document.querySelector('input[type=submit]').setAttribute('type', 'button')
-
-      } else {
-        senha1.style.border = '';
-
-        document.querySelector('input[type=submit]').setAttribute('type', 'submit')
-
+    <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+    <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+    <title>Sistema Cell</title>
+    <style>
+      #error-messages {
+        border: solid 1px solid #fa0202d7;
       }
-    }
-  </script>
-</body>
+    </style>
+  </head>
+
+  <body>
+    <div class="container" id="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <form class="sign-in-form" method="post" id="login">
+            {% csrf_token %}
+            <h2 class="title">Entrar no sistema</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" name="username" id="username" placeholder="Username" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" name="password" id="password" placeholder="Password" />
+            </div>
+            <input type="submit" value="Login" class="btn solid" />
+            <p class="social-text">Ou entre com suas redes sociais</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+          <form hx-post="{% url 'cadastrar' %}" class="sign-up-form" id="cadastrar">
+            {% csrf_token %}
+
+            <h2 class="title">Cadastrar-se</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              {% render_field form.username placeholder="Nome de usuario" %}
+            </div>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              {% render_field form.email placeholder="Email" %}
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+
+              {% render_field form.password1 placeholder="Crie uma senha" %}
+              {% if form.password1.errors %}
+                <ul class="errorlist">
+                  {% for error in form.password1.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <p style="color: #444;">Sua senha deve conter pelo menos 8 caracteres.<br>Sua senha não pode ser totalmente
+              numérica.</p>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              {% render_field form.password2 placeholder="Confirme a senha" %}
+              {% if form.password2.errors %}
+                <ul class="errorlist">
+                  {% for error in form.password2.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <input id="finalizar" type="submit" class="btn" value="Cadastrar" />
+            <p class="social-text">Ou Cadastrar-se com suas redes sociais</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>Novo aqui ?</h3>
+            <p>
+              Tenha controle da sua loja, para nao perder dinheiro e lucrar muito mais. Com
+              Sistema Cell!
+            </p>
+            <button hx-get="{% url 'cadastrar' %}" hx-target="#cadastrar" hx-swap="inneHTML"
+                    hx-indicator=".htmx-indicator" class="btn transparent" id="sign-up-btn">
+              Cadastrar-se
+            </button>
+          </div>
+          <img src="{% static 'img/log.svg' %}" class="image" alt="" />
+        </div>
+        <div class="panel right-panel">
+          <div class="content">
+            <h3>Ja e nosso cliente ?</h3>
+            <p>
+              Poderoso, rapido, e facil de usar.<br> Sistema Cell
+            </p>
+            <button class="btn transparent" hx-get="{% url 'login' %}" hx-target="#cadastrar" hx-swap="inneHTML"
+                    hx-indicator=".htmx-indicator" id="sign-in-btn">
+              Entrar
+            </button>
+          </div>
+          <img src="{% static 'img/register.svg' %}" class="image" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/app.js' %}"></script>
+    <script>
+      document.querySelector('#finalizar').addEventListener('mouseover', SenhaIncorreta);
+      document.querySelector('#finalizar').addEventListener('mouseout', SenhaIncorreta);
+
+      function SenhaIncorreta() {
+        var senha1 = document.querySelector('#id_password1');
+        var senha2 = document.querySelector('#id_password2');
+        let confirmar1 = senha1.value;
+        let confirmar2 = senha2.value;
+        if (confirmar1 !== confirmar2) {
+          senha1.style.border = '1px solid #ff0000';
+
+          document.querySelector('input[type=submit]').setAttribute('type', 'button')
+
+        } else {
+          senha1.style.border = '';
+
+          document.querySelector('input[type=submit]').setAttribute('type', 'submit')
+
+        }
+      }
+    </script>
+  </body>
 
 </html>

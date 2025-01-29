@@ -1,52 +1,52 @@
 {% if object.forma_pagamento == "Fiado a pagar" %}
-<h5>Descricao</h5>
-<h6>{{ object.nome_despesa }}</h6>
+  <h5>Descricao</h5>
+  <h6>{{ object.nome_despesa }}</h6>
 
-<h5>Categoria</h5>
-<h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
+  <h5>Categoria</h5>
+  <h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
 
-<h5>Valor de entrada</h5>
-<h6>R$ {{ object.valor_entrada }}</h6>
+  <h5>Valor de entrada</h5>
+  <h6>R$ {{ object.valor_entrada }}</h6>
 
-<h5>Fornecedor</h5>
-<h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
+  <h5>Fornecedor</h5>
+  <h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
 
-<h5>Telefone de contato</h5>
-<h6><a href="tel:+55{{ object.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ object.fornecedor.telefone_contato|default:'Nao informado' }}</a></h6>
+  <h5>Telefone de contato</h5>
+  <h6><a href="tel:+55{{ object.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ object.fornecedor.telefone_contato|default:'Nao informado' }}</a></h6>
 
-<h5>Data de registro</h5>
-<h6>{{ object.data_cadastro|date:'d/m/y - h:i' }}</h6>
+  <h5>Data de registro</h5>
+  <h6>{{ object.data_cadastro|date:'d/m/y - h:i' }}</h6>
 
 
-<h5>Valor a pagar</h5>
-<h6>R$ {{ object.saldodespesa }}</h6>
+  <h5>Valor a pagar</h5>
+  <h6>R$ {{ object.saldodespesa }}</h6>
 
-<h5>Data de vencimento</h5>
-<h6>{{ object.data_vencimento|date:'d/m/y' }}</h6>
+  <h5>Data de vencimento</h5>
+  <h6>{{ object.data_vencimento|date:'d/m/y' }}</h6>
 
-<h5>Quantidade de parcelas</h5>
-<h6>{{ object.qtd_parcela }}</h6>
+  <h5>Quantidade de parcelas</h5>
+  <h6>{{ object.qtd_parcela }}</h6>
 
 {% else %}
 
-<h3>Pago</h3>
-<h5>Descricao</h5>
-<h6>{{ object.nome_despesa }}</h6>
+  <h3>Pago</h3>
+  <h5>Descricao</h5>
+  <h6>{{ object.nome_despesa }}</h6>
 
-<h5>Categoria</h5>
-<h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
+  <h5>Categoria</h5>
+  <h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
 
-<h5>Fornecedor</h5>
-<h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
+  <h5>Fornecedor</h5>
+  <h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
 
-<h5>Telefone de contato</h5>
-<h6><a href="tel:+55{{ object.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ object.fornecedor.telefone_contato|default:'Nao informado' }}</a></h6>
+  <h5>Telefone de contato</h5>
+  <h6><a href="tel:+55{{ object.fornecedor.telefone_contato }}" style="text-decoration: none;">{{ object.fornecedor.telefone_contato|default:'Nao informado' }}</a></h6>
 
-<h5>Data de registro</h5>
-<h6>{{ object.data_cadastro|date:'d/m/y - h:i' }}</h6>
+  <h5>Data de registro</h5>
+  <h6>{{ object.data_cadastro|date:'d/m/y - h:i' }}</h6>
 
-<h5>Valor pago</h5>
-<h6>R$ {{ object.preco_despesa }}</h6>
+  <h5>Valor pago</h5>
+  <h6>R$ {{ object.preco_despesa }}</h6>
 
 
 {% endif %}

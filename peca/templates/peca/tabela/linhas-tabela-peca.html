@@ -1,31 +1,31 @@
 <tr id="trPeca{{ object.pk }}">
-    {% if object.quantidade == 0 %}
+  {% if object.quantidade == 0 %}
     <td style="color: gray; text-decoration:line-through">{{ object.quantidade }}</td>
     <td style="color: gray; text-decoration:line-through">{{ object.nome_peca }}</td>
     <td style="color: gray; text-decoration:line-through">R$ {{ object.preco_peca}}</td>
-    {% else %}
+  {% else %}
     <td>{{ object.quantidade }}</td>
     <td>{{ object.nome_peca }}</td>
     <td>R$ {{ object.preco_peca}}</td>
-    {% endif %}
-    <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
-              hx-get="{% url 'editar-peca' object.pk %}"
-              hx-target="#recebe-conteudo-peca">
-            <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
-        
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-peca' object.pk %}"
-            hx-confirm="Deseja mesmo Apagar {{ object.nome_peca }} ?" hx-target="closest tr"
-            hx-swap="outerHTML swap:300ms">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
+  {% endif %}
+  <td>
+    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+          hx-get="{% url 'editar-peca' object.pk %}"
+          hx-target="#recebe-conteudo-peca">
+      <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    </span>
 
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
-              hx-get="{% url 'detalhe-peca' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML">
-            
-            <i class="fa-regular fa-eye" style="color: rgb(6, 96, 170);"></i>
-        </span>
+    <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-peca' object.pk %}"
+          hx-confirm="Deseja mesmo Apagar {{ object.nome_peca }} ?" hx-target="closest tr"
+          hx-swap="outerHTML swap:300ms">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
 
-    </td>
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+          hx-get="{% url 'detalhe-peca' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML">
+
+      <i class="fa-regular fa-eye" style="color: rgb(6, 96, 170);"></i>
+    </span>
+
+  </td>
 </tr>

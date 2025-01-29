@@ -1,21 +1,21 @@
 <tr id="pedidoTr{{ object.pk }}">
-    <td>{{ object.produto }}</td>
-    
-    <td>{{ object.cliente }}</td>
-    <td>{{ object.data_entrega|date:"d/m/Y" }}</td>
-    <td>{{ object.status }}</td>
-    <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-pedido' object.pk %}"
-            hx-target="#adicionar-pedido">
-            <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
+  <td>{{ object.produto }}</td>
 
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-pedido' object.pk %}"
-            hx-confirm="Deseja mesmo apagar este pedido" hx-target="closest tr"
-            hx-swap="outerHTML swap:1s">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
-        hx-get="{% url 'detalhe-pedido' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
-    </td>
+  <td>{{ object.cliente }}</td>
+  <td>{{ object.data_entrega|date:"d/m/Y" }}</td>
+  <td>{{ object.status }}</td>
+  <td>
+    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-pedido' object.pk %}"
+          hx-target="#adicionar-pedido">
+      <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    </span>
+
+    <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-pedido' object.pk %}"
+          hx-confirm="Deseja mesmo apagar este pedido" hx-target="closest tr"
+          hx-swap="outerHTML swap:1s">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+          hx-get="{% url 'detalhe-pedido' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
+  </td>
 </tr>

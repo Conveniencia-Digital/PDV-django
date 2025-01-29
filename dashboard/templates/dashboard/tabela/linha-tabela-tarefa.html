@@ -1,19 +1,19 @@
 
 <tr class="fade-me-out" id="tarefaTr{{ object.pk }}">
-   <td>{{ object.tarefa }}</td>
-   <td>{{ object.colaborador|default:"---" }}</td>
-   <td>{{ object.status }}</td>
-   <td>
+  <td>{{ object.tarefa }}</td>
+  <td>{{ object.colaborador|default:"---" }}</td>
+  <td>{{ object.status }}</td>
+  <td>
     <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-tarefa' object.pk %}"
-            hx-target="#cadastrar-tarefa">
-            <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
+          hx-target="#cadastrar-tarefa">
+      <i class="fa-solid fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    </span>
 
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-tarefa' object.pk %}"
-            hx-confirm="Deseja mesmo apagar {{ object.tarefa }}" hx-target="closest tr"
-            hx-swap="outerHTML swap:1s">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-   </td>
+    <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-tarefa' object.pk %}"
+          hx-confirm="Deseja mesmo apagar {{ object.tarefa }}" hx-target="closest tr"
+          hx-swap="outerHTML swap:1s">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
+  </td>
 
 </tr>

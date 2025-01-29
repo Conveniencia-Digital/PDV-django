@@ -1,32 +1,32 @@
 {% extends 'dashboard/pagina-inicial.html' %}
 {% block titulo %}
-Pedidos e encomendas
+  Pedidos e encomendas
 {% endblock titulo %}
 {% block conteudo %}
-<a hx-get="{% url 'cadastrar-pedido' %}" hx-target="#adicionar-pedido" hx-swap="innerHTML"
-    hx-indicator=".htmx-indicator" class="btn btn-outline-primary" data-bs-toggle="modal"
-    data-bs-target="#staticBackdrop">
+  <a hx-get="{% url 'cadastrar-pedido' %}" hx-target="#adicionar-pedido" hx-swap="innerHTML"
+     hx-indicator=".htmx-indicator" class="btn btn-outline-primary" data-bs-toggle="modal"
+     data-bs-target="#staticBackdrop">
     Cadastrar pedido
-</a>
-<div style="padding-top:18px">
+  </a>
+  <div style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
-            <tr>
-                <th>Produto</th>
-                <th>Cliente</th>
-                <th>Data entrega</th>
-                <th>Situacao</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="pedido-Tbody">
-            {% include 'pedido/tabela/tabela-pedido.html' %}
-        </tbody>
+      <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+        <tr>
+          <th>Produto</th>
+          <th>Cliente</th>
+          <th>Data entrega</th>
+          <th>Situacao</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="pedido-Tbody">
+        {% include 'pedido/tabela/tabela-pedido.html' %}
+      </tbody>
     </table>
-</div>
-{% include 'pedido/modais/modal-pedido.html' %}
-{% include 'pedido/modais/modal-alerta.html' %}
-{% include 'pedido/modais/modal-alerta-editar.html' %}
-{% include 'pedido/modais/modal-alerta-apagar.html' %}
-{% include "pedido/off-canvas/off-canvas-pedido.html" %}
+  </div>
+  {% include 'pedido/modais/modal-pedido.html' %}
+  {% include 'pedido/modais/modal-alerta.html' %}
+  {% include 'pedido/modais/modal-alerta-editar.html' %}
+  {% include 'pedido/modais/modal-alerta-apagar.html' %}
+  {% include "pedido/off-canvas/off-canvas-pedido.html" %}
 {% endblock conteudo %}

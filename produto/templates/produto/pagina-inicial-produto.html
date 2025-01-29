@@ -1,77 +1,77 @@
 {% extends 'dashboard/pagina-inicial.html'%}
 
 {% block style %}
-<style>
+  <style>
     tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 300ms ease-out;
+      opacity: 0;
+      transition: opacity 300ms ease-out;
     }
     .card {
-        max-width: 20rem; 
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        margin-bottom: 30px;
+      max-width: 20rem;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      margin-bottom: 30px;
 
     }
     .card .card-text {
-        margin: 30px auto ;
+      margin: 30px auto ;
     }
     .table {
-        font-size: 20px;
+      font-size: 20px;
     }
     .btn {
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        font-size: 20px;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      font-size: 20px;
 
     }
-</style>
+  </style>
 {% endblock style %}
 {% block titulo %}
   Produtos
 {% endblock titulo %}
 
 {% block conteudo %}
-<div class="row" id="relatorio-peca">
+  <div class="row" id="relatorio-peca">
     <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Seus produtos cadastrados <b></b></h5>     
-          <h2 class="card-text">Seu Lucro R$</h2>       
-          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
-        </div>
+      <div class="card-body">
+        <h5 class="card-title">Seus produtos cadastrados <b></b></h5>
+        <h2 class="card-text">Seu Lucro R$</h2>
+        <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
       </div>
-</div>
-<div>
+    </div>
+  </div>
+  <div>
     <a
-           
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-            hx-get="{% url 'criar-produtos' %}"
-            hx-target="#adicionar-conteudo"
-            hx-swap="innerHTML"> Cadastrar produto</a>
-</div>
-<div class="table-responsive" style="padding-top:18px">
+
+      class="btn btn-outline-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#staticBackdrop"
+      hx-get="{% url 'criar-produtos' %}"
+      hx-target="#adicionar-conteudo"
+      hx-swap="innerHTML"> Cadastrar produto</a>
+  </div>
+  <div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+      <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
         <tr>
-            <th>Qtd.</th>
-            <th>Produto</th>
-            <th>Preço venda</th>
-            <th>Ações</th>
+          <th>Qtd.</th>
+          <th>Produto</th>
+          <th>Preço venda</th>
+          <th>Ações</th>
         </tr>
-        </thead>   
-        <tbody id="produto-Tbody">
-            {% include "produto/tabela/tabela-produto.html" %}
-        </tbody>
+      </thead>
+      <tbody id="produto-Tbody">
+        {% include "produto/tabela/tabela-produto.html" %}
+      </tbody>
     </table>
 
-</div>
+  </div>
 
-{% include "produto/modais-vazios/modal-cadastrar-produto.html" %}
-{% include "produto/modais-vazios/modal-alerta.html" %}
-{% include "produto/modais-vazios/modal-alerta-apagar.html" %}
-{% include "produto/modais-vazios/modal-alerta-editar.html" %}
-{% include "produto/off-canvas/off-canvas-produtos.html" %}
+  {% include "produto/modais-vazios/modal-cadastrar-produto.html" %}
+  {% include "produto/modais-vazios/modal-alerta.html" %}
+  {% include "produto/modais-vazios/modal-alerta-apagar.html" %}
+  {% include "produto/modais-vazios/modal-alerta-editar.html" %}
+  {% include "produto/off-canvas/off-canvas-produtos.html" %}
 
 {% endblock conteudo %}
 

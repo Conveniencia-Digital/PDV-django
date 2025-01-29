@@ -1,56 +1,56 @@
 <tr id="trOrcamento{{ object.pk }}" style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224);">
-    <th>Cliente</th>
-    <th>Telefone para contato</th>
-    <th>Status</th>
-    <th>Data cadastro</th>
-    <th>Ações</th>  
+  <th>Cliente</th>
+  <th>Telefone para contato</th>
+  <th>Status</th>
+  <th>Data cadastro</th>
+  <th>Ações</th>
 </tr>
 <tr>
-    <td>{{object.cliente.nome_cliente}}</td>
-    <td><a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
-    <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
-    <td>{{object.data_criacao|date:'d/m/y - h:i'}}</td>
-    <td><a data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-        hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">
-        <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
-    </a>
+  <td>{{object.cliente.nome_cliente}}</td>
+  <td><a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
+  <td style="color: rgb(23, 99, 23);">{{ object.status }}</td>
+  <td>{{object.data_criacao|date:'d/m/y - h:i'}}</td>
+  <td><a data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+         hx-get="{% url 'detalhe-orcamento' object.pk %}" hx-target="#adicionar-conteudo">
+    <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
+  </a>
     <a href="" hx-get="{% url 'editar-orcamento' object.pk %}" data-bs-toggle="modal"
-    data-bs-target="#staticBackdrop" hx-target="#adicionar-conteudo">
-        <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
+       data-bs-target="#staticBackdrop" hx-target="#adicionar-conteudo">
+      <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
     </a>
-        
-    </td>
+
+  </td>
 </tr>
 
 <tr>
-    <th>Serviços</th>
-    <th>Peças</th>
-    <th>Quantidade</th>
-    <th>Preço</th>
-    <th>Sub Total</th>
+  <th>Serviços</th>
+  <th>Peças</th>
+  <th>Quantidade</th>
+  <th>Preço</th>
+  <th>Sub Total</th>
 </tr>
 
 {% for items in object.orcamento_items.all %}
-<tr>
-   
+  <tr>
+
     <td>{{ items.servico }}</td>
     <td>{{ items.peca }}</td>
     <td>{{ items.quantidade }}</td>
     <td>{{ items.preco_orcamento }}</td>
     <td>{{ items.subtotal }}</td>
-</tr>
+  </tr>
 {% endfor %}
 <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>Desconto</td>
-    <td>{{ object.desconto }}</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>Desconto</td>
+  <td>{{ object.desconto }}</td>
 </tr>
 <tr class="bg-default table-borderless">
-    <td></td>
-    <td>Forma de pagamento</td>
-    <td>{{ object.forma_pagamento }}</td>
-    <th>Total</th>
-    <th>{{ object.total }}</th>
+  <td></td>
+  <td>Forma de pagamento</td>
+  <td>{{ object.forma_pagamento }}</td>
+  <th>Total</th>
+  <th>{{ object.total }}</th>
 </tr>

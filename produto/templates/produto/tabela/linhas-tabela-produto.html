@@ -1,29 +1,29 @@
 <tr id="trProduto{{ object.pk }}">
-    {% if object.quantidade == 0 %}
+  {% if object.quantidade == 0 %}
     <td style="color: gray; text-decoration:line-through">{{ object.quantidade }}</td>
     <td style="color: gray; text-decoration:line-through">{{ object.nome_produto }}</td>
     <td style="color: gray; text-decoration:line-through">R$ {{ object.preco|default:'---' }}</td>
-    {% else %}
+  {% else %}
     <td>{{ object.quantidade }}</td>
     <td>{{ object.nome_produto }}</td>
     <td>R$ {{ object.preco|default:'---' }}</td>
-    {% endif %}
-    <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-            hx-get="{% url 'editar-produtos' object.pk %}" 
-            hx-target="#adicionar-conteudo"> 
-            <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
-        </span>
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" 
-            hx-get="{% url 'apagar-produtos' object.pk %}" hx-confirm="Deseja mesmo apagar {{ object.nome_produto }} ?"
-            hx-target="closest tr" hx-swap="outerHTML swap:300ms">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
-        </span>
-        <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
-              hx-get="{% url 'detalhe-produto' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML">
-            <i class="fa-regular fa-eye" style="color: rgb(40, 18, 237);"></i>
-        </span>
-    </td>
-   
+  {% endif %}
+  <td>
+    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+          hx-get="{% url 'editar-produtos' object.pk %}"
+          hx-target="#adicionar-conteudo">
+      <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
+    </span>
+    <span data-bs-toggle="modal" data-bs-target="#success_tic_delete"
+          hx-get="{% url 'apagar-produtos' object.pk %}" hx-confirm="Deseja mesmo apagar {{ object.nome_produto }} ?"
+          hx-target="closest tr" hx-swap="outerHTML swap:300ms">
+      <i class="fa-regular fa-trash-can" style="color: red;"></i>
+    </span>
+    <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+          hx-get="{% url 'detalhe-produto' object.pk %}" hx-target="#conteudo-canvas" hx-swap="innerHTML">
+      <i class="fa-regular fa-eye" style="color: rgb(40, 18, 237);"></i>
+    </span>
+  </td>
+
 
 </tr>

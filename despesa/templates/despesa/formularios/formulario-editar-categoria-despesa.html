@@ -1,30 +1,30 @@
 
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalToggle"> Cadastrar Categoria </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        
-    </button>
+  <h5 class="modal-title" id="exampleModalToggle"> Cadastrar Categoria </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+  </button>
 </div>
 <form
-        hx-post="{% url 'editar-categoria-despesa' object.pk %}"
-        hx-target="#tr-Categoria{{ object.pk }}"
-        hx-swap = "outerHTML"
-        hx-indicator=".htmx-indicator">
-        
-    <div class="modal-body">
-        {% csrf_token %}
-        {{ form }}
-    </div>
+  hx-post="{% url 'editar-categoria-despesa' object.pk %}"
+  hx-target="#tr-Categoria{{ object.pk }}"
+  hx-swap = "outerHTML"
+  hx-indicator=".htmx-indicator">
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary" data-bs-target="#staticBackdrop" data-bs-toggle="modal">Finalizar</button>
-    </div>
+  <div class="modal-body">
+    {% csrf_token %}
+    {{ form }}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary" data-bs-target="#staticBackdrop" data-bs-toggle="modal">Finalizar</button>
+  </div>
 </form>
 
 
-    <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-      });
-    </script>
+<script>
+  $('form').on('submit', function() {
+    $('#staticBackdrop').modal('toggle')
+  });
+</script>

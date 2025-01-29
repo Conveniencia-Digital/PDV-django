@@ -95,42 +95,42 @@
       <button type="submit" class="btn btn-outline-primary">Finalizar</button>
     </div>
 
-</form>
+  </form>
 
 
-<script>
-  
-  document.getElementById('id_forma_pagamento').addEventListener('change', function () {
-    var qtd_parcela = document.getElementById('id_qtd_parcela');
-    var valor_entrada = document.getElementById('id_valor_entrada');
-    var dia_vencimento = document.getElementById('id_data_vencimento');
-    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
-    var label_data_vencimento = document.getElementById('label_data_vencimento');
-    var label_valor_entrada = document.getElementById('label_valor_entrada');
+  <script>
 
-    if (this.value === 'Fiado a pagar') {
-      qtd_parcela.setAttribute('type', 'Number');
-      valor_entrada.setAttribute('type', 'Number');
-      dia_vencimento.setAttribute('type', 'Date');
-      label_valor_entrada.style.color = "rgb(67, 67, 67)";
-      label_data_vencimento.style.color = "rgb(67, 67, 67)";
-      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
-    } else {
-      qtd_parcela.setAttribute('type', 'Hidden');
-      valor_entrada.setAttribute('type', 'Hidden');
-      dia_vencimento.setAttribute('type', 'Hidden');
-      label_valor_entrada.style.color = "#FFFFFF";
-      label_data_vencimento.style.color = "#FFFFFF";
-      label_qtd_parcela.style.color = "#FFFFFF";
+    document.getElementById('id_forma_pagamento').addEventListener('change', function () {
+      var qtd_parcela = document.getElementById('id_qtd_parcela');
+      var valor_entrada = document.getElementById('id_valor_entrada');
+      var dia_vencimento = document.getElementById('id_data_vencimento');
+      var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+      var label_data_vencimento = document.getElementById('label_data_vencimento');
+      var label_valor_entrada = document.getElementById('label_valor_entrada');
 
-    }
-  });
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, "500");
-  });
+      if (this.value === 'Fiado a pagar') {
+        qtd_parcela.setAttribute('type', 'Number');
+        valor_entrada.setAttribute('type', 'Number');
+        dia_vencimento.setAttribute('type', 'Date');
+        label_valor_entrada.style.color = "rgb(67, 67, 67)";
+        label_data_vencimento.style.color = "rgb(67, 67, 67)";
+        label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+      } else {
+        qtd_parcela.setAttribute('type', 'Hidden');
+        valor_entrada.setAttribute('type', 'Hidden');
+        dia_vencimento.setAttribute('type', 'Hidden');
+        label_valor_entrada.style.color = "#FFFFFF";
+        label_data_vencimento.style.color = "#FFFFFF";
+        label_qtd_parcela.style.color = "#FFFFFF";
+
+      }
+    });
+    $('form').on('submit', function () {
+      $('#staticBackdrop').modal('toggle')
+      setTimeout(() => {
+        $('#success_tic').modal('toggle')
+      }, "500");
+    });
 
 
-</script>
+  </script>

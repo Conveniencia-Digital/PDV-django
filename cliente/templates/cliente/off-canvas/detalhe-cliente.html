@@ -1,43 +1,43 @@
 <div style="padding: 20px;">
-    <h5>Informações do Cliente </h5>
-    <hr>
-    <h6>{{ object.nome_cliente }}</h6>
-    {% if object.data_nascimento == object.data_criacao %}
-        <h6></h6>
-    {% else %}
-        <h6>{{ object.data_nascimento|date:'d/m/y' }}</h6>
-    {% endif %}
-    {%  if object.cpf == None %}
-        <h6></h6>
-    {% else %}
-        <h6>{{ object.cpf }}</h6>
-    {% endif %}
-    <h6>{{ object.telefone_contato }}</h6>
-    
-    {% if object.telefone_contato2 == None %}
-        <h6></h6>
-    {% else %}
+  <h5>Informações do Cliente </h5>
+  <hr>
+  <h6>{{ object.nome_cliente }}</h6>
+  {% if object.data_nascimento == object.data_criacao %}
+    <h6></h6>
+  {% else %}
+    <h6>{{ object.data_nascimento|date:'d/m/y' }}</h6>
+  {% endif %}
+  {%  if object.cpf == None %}
+    <h6></h6>
+  {% else %}
+    <h6>{{ object.cpf }}</h6>
+  {% endif %}
+  <h6>{{ object.telefone_contato }}</h6>
+
+  {% if object.telefone_contato2 == None %}
+    <h6></h6>
+  {% else %}
     <h6>{{ object.telefone_contato2 }}</h6>
-    {% endif %}
+  {% endif %}
 
-    {% if object.rua == None %}
-        <h6></h6>
-    {% else %}
-        <h6>{{ object.rua }}</h6>
-    {% endif %}
+  {% if object.rua == None %}
+    <h6></h6>
+  {% else %}
+    <h6>{{ object.rua }}</h6>
+  {% endif %}
 
-    {% if object.bairro == None  %}
-        <h6></h6>
-    {% else %}
-        <h6>{{ object.bairro }}</h6>
-    {% endif %}
-    
-    {% if object.observacao == None %}
-        <h6></h6>
-    {% else %}
-        <h6>{{ object.observacao }}</h6>
-    {% endif %}
-    
-    <h6>{{ object.data_criacao|date:'d/m/y - h:i:s A' }}</h6>
-    <h6>{{ object.data_edicao|date:'d/m/y - h:i:s A' }}</h6>
+  {% if object.bairro == None  %}
+    <h6></h6>
+  {% else %}
+    <h6>{{ object.bairro }}</h6>
+  {% endif %}
+
+  {% if object.observacao == None %}
+    <h6></h6>
+  {% else %}
+    <h6>{{ object.observacao }}</h6>
+  {% endif %}
+
+  <h6>{{ object.data_criacao|date:'d/m/y - h:i:s A' }}</h6>
+  <h6>{{ object.data_edicao|date:'d/m/y - h:i:s A' }}</h6>
 </div>

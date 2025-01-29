@@ -1,69 +1,69 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_contas_a_receber}}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-      
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_contas_a_receber}}</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+  </button>
 </div>
 <form hx-post="{% url 'editar-contas-a-receber' object.pk %}" hx-target="#financeiroTr{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+      hx-indicator=".htmx-indicator" hx-swap="outerHTML">
 
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.usuario class="form-control" %}  
-                {% render_field form.cliente class="form-select" %}
-                <label for="">Selecione o cliente</label>
-            </div>
-            <div class="col form-floating">       
-                {% render_field form.status class="form-select" %}
-                <label for="">Selecione o status</label>
-            </div>
-        </div>
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class="form-control" %}
+        {% render_field form.cliente class="form-select" %}
+        <label for="">Selecione o cliente</label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.status class="form-select" %}
+        <label for="">Selecione o status</label>
+      </div>
+    </div>
         <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.nome_contas_a_receber class="form-control" %}
-                <label for="">Informe a venda ou serviço </label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.preco_contas_a_receber class="form-control" value="0.00" %}
-                <label for="">Valor a receber</label>
-            </div>
-        </div>
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.observacao class="form-control" %}
-                <label for="">Observaçāo</label>
-            </div>
-        </div>
-        <div class="row g-2">
-            <div class="col-6  form-floating">
-              {% render_field form.valor_entrada class="form-control" value="0.00" %}
-              <label id="label_valor_entrada">Valor pago</label>
-            </div>
-            <div class="col-3 form-floating">
-              {% render_field form.qtd_parcela class="form-control" value="01" %}
-              <label id="label_qtd_parcela">Qtd. parcela</label>
-            </div>
-            <div class="col-3 form-floating">
-              {% render_field form.data_vencimento class="form-control" type="date" %}
-              <label id="label_data_vencimento">Data vencimento</label>
-            </div>
-          </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.nome_contas_a_receber class="form-control" %}
+        <label for="">Informe a venda ou serviço </label>
+      </div>
+      <div class="col form-floating">
+        {% render_field form.preco_contas_a_receber class="form-control" value="0.00" %}
+        <label for="">Valor a receber</label>
+      </div>
     </div>
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.observacao class="form-control" %}
+        <label for="">Observaçāo</label>
+      </div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6  form-floating">
+        {% render_field form.valor_entrada class="form-control" value="0.00" %}
+        <label id="label_valor_entrada">Valor pago</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.qtd_parcela class="form-control" value="01" %}
+        <label id="label_qtd_parcela">Qtd. parcela</label>
+      </div>
+      <div class="col-3 form-floating">
+        {% render_field form.data_vencimento class="form-control" type="date" %}
+        <label id="label_data_vencimento">Data vencimento</label>
+      </div>
+    </div>
+  </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Finalizar</button>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-primary">Finalizar</button>
+  </div>
 </form>
 <script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-            $('#success_tic_editar').modal('toggle')
-        }, 500)
-    });   
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic_editar').modal('toggle')
+    }, 500)
+  });
 </script>

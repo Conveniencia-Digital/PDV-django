@@ -1,103 +1,103 @@
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel"> Detalhe </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel"> Detalhe </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+  </button>
 </div>
 <div class="modal-body">
-    <div class="contentPrint">
-        <style>
-            .header {
-                display: flex;
-                justify-content: space-between;
-                border-bottom: solid black;
-            }
+  <div class="contentPrint">
+    <style>
+      .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: solid black;
+      }
 
-            .logo {
-                font-size: 1.75em;
-                align-self: center;
-            }
+      .logo {
+        font-size: 1.75em;
+        align-self: center;
+      }
 
-            .content {
-                margin-top: 30px;
-            }
+      .content {
+        margin-top: 30px;
+      }
 
-            .description {
-                font-size: 0.75em;
-            }
-        </style>
-        <div class="header">
-            <div class="logo">Conveniência Digital</div>
-            <div class="information">
-                <p class="description">Centro de vendas <br>
-                    CNPJ: 29.216.862/0001-38 <br>
-                    Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
-                    Telefone: 67 9 9664 -9605
-                </p>
-            </div>
-        </div>
-        <div class="content">
-            <p>Prezado(a), {{ object.cliente }}</p>
-            <p>Conforme solicitado segue cupom fiscal disponibilizado pela area de vendas.</p>
-            <p>Ordem de servico: {{ object.id }} <br></p>
-            <p>Vendedor: {{ object.vendedor }} <br></p>
-            <p>Data e hora da compra: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
-            <p>Status: {{ object.status }} <br></p>
-            <table class="table">
-                <tbody>
-                    <tr class="bg-light" style="font-size: 15px;">
-                        <th>Produtos</th>
-                        <th>Quantidade</th>
-                        <th>Preço</th>
-                        <th>Sub Total</th>
-                        <th>Desconto</th>
-                        <th>Forma de pagamento</th>
-                    </tr>
-                    {% for items in object.vendas_items.all %}
-                    <tr>
-                        <td>{{ items.produto }}</td>
-                        <td>{{ items.quantidade }}</td>
-                        <td>{{ items.preco }}</td>
-                        <td>{{ items.subtotal }}</td>
-                        <td>{{ object.desconto }}</td>
-                        <td>{{ object.forma_pagamento }}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr class="bg-default table-borderless">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <th>Total</th>
-                        <th>{{ object.total }}</th>
-                    </tr>
-                </tbody>
-            </table>
-            <p>Observaçāo: {{ object.observacao }}</p>
-        </div>
+      .description {
+        font-size: 0.75em;
+      }
+    </style>
+    <div class="header">
+      <div class="logo">Conveniência Digital</div>
+      <div class="information">
+        <p class="description">Centro de vendas <br>
+          CNPJ: 29.216.862/0001-38 <br>
+          Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
+          Telefone: 67 9 9664 -9605
+        </p>
+      </div>
     </div>
+    <div class="content">
+      <p>Prezado(a), {{ object.cliente }}</p>
+      <p>Conforme solicitado segue cupom fiscal disponibilizado pela area de vendas.</p>
+      <p>Ordem de servico: {{ object.id }} <br></p>
+      <p>Vendedor: {{ object.vendedor }} <br></p>
+      <p>Data e hora da compra: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
+      <p>Status: {{ object.status }} <br></p>
+      <table class="table">
+        <tbody>
+          <tr class="bg-light" style="font-size: 15px;">
+            <th>Produtos</th>
+            <th>Quantidade</th>
+            <th>Preço</th>
+            <th>Sub Total</th>
+            <th>Desconto</th>
+            <th>Forma de pagamento</th>
+          </tr>
+          {% for items in object.vendas_items.all %}
+            <tr>
+              <td>{{ items.produto }}</td>
+              <td>{{ items.quantidade }}</td>
+              <td>{{ items.preco }}</td>
+              <td>{{ items.subtotal }}</td>
+              <td>{{ object.desconto }}</td>
+              <td>{{ object.forma_pagamento }}</td>
+            </tr>
+          {% endfor %}
+          <tr class="bg-default table-borderless">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th>Total</th>
+            <th>{{ object.total }}</th>
+          </tr>
+        </tbody>
+      </table>
+      <p>Observaçāo: {{ object.observacao }}</p>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
-    <button id="myBtn" onclick="imprimir('.contentPrint')" type="button"
-        class="btn btn-outline-primary">Imprimir</button>
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+  <button id="myBtn" onclick="imprimir('.contentPrint')" type="button"
+          class="btn btn-outline-primary">Imprimir</button>
 </div>
 
 
 
 {% block scripts %}
-<script>
+  <script>
     function imprimir(divName) {
-        content = document.querySelector('.contentPrint').innerHTML;
-        originalContents = document.body.innerHTML;
-        document.body.innerHTML = content;
+      content = document.querySelector('.contentPrint').innerHTML;
+      originalContents = document.body.innerHTML;
+      document.body.innerHTML = content;
 
-        window.print();
-        document.body.innerHTML = originalContents;
-        setTimeout(function () {
-            window.location.reload();
-        }, 500)
+      window.print();
+      document.body.innerHTML = originalContents;
+      setTimeout(function () {
+        window.location.reload();
+      }, 500)
     }
-</script>
+  </script>
 
 {% endblock scripts %}

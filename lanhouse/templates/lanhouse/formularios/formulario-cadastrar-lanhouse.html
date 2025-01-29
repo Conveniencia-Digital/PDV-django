@@ -8,7 +8,7 @@
   <div class="modal-body">
     <div class="row g-2">
       <div class="col form-floating">
-        
+
         {% render_field form.usuario class='form-control'%}
         {% render_field form.cliente class='form-select'%}
         <label>Cliente </label>
@@ -28,27 +28,27 @@
     {{ formset.management_form }}
     <div id="lanhouse">
       {% for itemslanhouse in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="row g-2">
-        {% render_field itemslanhouse.lanhouse data-field='lanhouse' %}
-        {% render_field itemslanhouse.id data-field='id' %}
-        <div class="col-6 mb-3 form-floating">
-          {% render_field itemslanhouse.servico value="Selecione" hx-get="/servico/lanhouse/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="servico" class="form-select" %}
-          <label>Informe o serviço </label>
+        <div id="item-{{ forloop.counter0 }}" class="row g-2">
+          {% render_field itemslanhouse.lanhouse data-field='lanhouse' %}
+          {% render_field itemslanhouse.id data-field='id' %}
+          <div class="col-6 mb-3 form-floating">
+            {% render_field itemslanhouse.servico value="Selecione" hx-get="/servico/lanhouse/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="servico" class="form-select" %}
+            <label>Informe o serviço </label>
+          </div>
+          <div class=" col mb-3 form-floating">
+            {% render_field itemslanhouse.preco data-field='preco' value="0.00" %}
+            <label>Preço Unitario </label>
+          </div>
+          <div class="col mb-3 form-floating">
+            {% render_field itemslanhouse.quantidade class="form-control" data-field='quantidade' value="01" %}
+            <label>Quantidade</label>
+          </div>
         </div>
-        <div class=" col mb-3 form-floating">
-          {% render_field itemslanhouse.preco data-field='preco' value="0.00" %}
-          <label>Preço Unitario </label>
-        </div>
-        <div class="col mb-3 form-floating">
-          {% render_field itemslanhouse.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-        </div>
-      </div>
       {% endfor %}
     </div>
 
     <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'add-item-lanhouse' %}" hx-target="#lanhouse"
-      hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add serviço
+            hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add serviço
     </button>
     <hr>
     <div class="form-row">
@@ -57,9 +57,9 @@
       </div>
     </div>
     <div class="row g-2">
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.forma_pagamento class="form-select" %}
-          <label>Forma de pagamento</label> 
+      <div class="col-md-6 mb-3 form-floating">
+        {% render_field form.forma_pagamento class="form-select" %}
+        <label>Forma de pagamento</label>
       </div>
       <div class="col-md-3 mb-3 form-floating">
         {% render_field form.desconto class="form-control" id="desconto" value="00.00" data-field="desconto" %}
@@ -68,7 +68,7 @@
       <div  class="col-md-3 mb-3 form-floating">
         <input id="totalValue" type="Number" class="form-control" readonly>
         <label>Valor total</label>
-      </div>     
+      </div>
     </div>
     <div class="row g-2" style="color: white;">
       <div class="col-md-6 mb-3 form-floating">
@@ -104,11 +104,11 @@
   </div>
 </form>
 <script>
-  document.querySelector('#desconto').addEventListener('click', Desconto) 
-  document.querySelector('#desconto').addEventListener('keydown', Desconto) 
-  document.querySelector('#desconto').addEventListener('keyup', Desconto) 
-  document.querySelector('#desconto').addEventListener('change', Desconto) 
-  
+  document.querySelector('#desconto').addEventListener('click', Desconto)
+  document.querySelector('#desconto').addEventListener('keydown', Desconto)
+  document.querySelector('#desconto').addEventListener('keyup', Desconto)
+  document.querySelector('#desconto').addEventListener('change', Desconto)
+
   Array.from(document.querySelectorAll('[data-field="servico"], [data-field="quantidade"]'))
     .forEach((item, i) => {
       item.addEventListener('change', Desconto);
@@ -120,7 +120,7 @@
       item.addEventListener('keyup', Desconto);
       item.addEventListener('keydown', Desconto);
     });
-  
+
   function Desconto () {
     var desconto = parseFloat(document.querySelector('#desconto').value);
     var total = parseFloat(document.querySelector('#totalValue').value);
@@ -141,7 +141,7 @@
     }
 
   };
- 
+
 
 
 
@@ -193,7 +193,7 @@
 
   function reorderItems() {
     var totalValue = 0;
-    
+
     Array.from(document.querySelectorAll("[id^='item-']"))
       .forEach((item, i) => {
         item.setAttribute('id', 'item-' + i)
@@ -216,11 +216,11 @@
 
         let preco = parseFloat(item.querySelector('[data-field="preco"]').value);
         let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
-        
-        
-    
+
+
+
         totalValue += preco * qtd;
-        
+
       })
 
     Array.from(document.querySelectorAll("#id_id"))
@@ -231,14 +231,14 @@
 
     // htmx.org/api/#process
     htmx.process(document.querySelector("#lanhouse"));
-    
+
     document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
-    
+
   }
- 
-  
- 
- 
+
+
+
+
   function removeRow() {
     const span = event.target.parentNode
     const div = span.parentNode

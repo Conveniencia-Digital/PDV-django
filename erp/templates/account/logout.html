@@ -6,17 +6,17 @@
 
 {% block content %}
 
-<div class="form login">
-  <div class="form-content">
+  <div class="form login">
+    <div class="form-content">
       <header>{% trans "Desconectar" %}</header>
       <p>{% trans 'Tem certeza que deseja se desconectar?' %}</p>
       <form method="post" action="{% url 'account_logout' %}">
         {% csrf_token %}
         {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
         {% endif %}
         <div class="field button-field">
-        <button type="submit">{% trans 'Desconectar' %}</button>
+          <button type="submit">{% trans 'Desconectar' %}</button>
         </div>
       </form>
     </div>

@@ -2,11 +2,11 @@
 <div class="modal-header">
   <h5 class="modal-title" id="staticBackdropLabel"> Cadastrar contas a receber </h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-   
+
   </button>
 </div>
 <form hx-post="{% url 'cadastrar-contas-a-receber' %}" hx-target="#financeiro-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+      hx-swap="afterbegin">
 
   <div class="modal-body">
     {% csrf_token %}
@@ -31,8 +31,8 @@
     </div>
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
-          {% render_field form.observacao class="form-control" %}
-          <label for="">Observaçāo</label>
+        {% render_field form.observacao class="form-control" %}
+        <label for="">Observaçāo</label>
       </div>
     </div>
     <div class="row g-2">
@@ -64,9 +64,9 @@
     }, 500)
   });
 
-  
-    document.querySelector('#id_status').setAttribute('hidden', 'hidden')
 
-  
+  document.querySelector('#id_status').setAttribute('hidden', 'hidden')
+
+
 
 </script>

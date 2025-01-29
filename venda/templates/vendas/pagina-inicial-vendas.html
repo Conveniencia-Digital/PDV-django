@@ -2,63 +2,63 @@
 {% load relatoriovenda %}
 
 {% block titulo %}
-Vendas
+  Vendas
 {% endblock titulo %}
 {% block style %}
-<style>
+  <style>
     tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 300ms ease-out;
+      opacity: 0;
+      transition: opacity 300ms ease-out;
     }
 
     .card {
-        max-width: 20rem;
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      max-width: 20rem;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
 
     }
 
     .card .card-text {
-        margin: 30px auto;
+      margin: 30px auto;
     }
 
     .table {
-        font-size: 20px;
+      font-size: 20px;
     }
 
     .btn {
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        font-size: 20px;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      font-size: 20px;
 
     }
-</style>
+  </style>
 {% endblock style %}
 {% block conteudo %}
 
-    
-    <div class="row" id="relatorio-venda">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Voce fez <b>{% qtd_vendas request %}</b> vendas este mes </h5>
-                <h2 class="card-text"><sup>R$</sup> {% total_vendas request %}</h2>
-            </div>
-        </div>
+
+  <div class="row" id="relatorio-venda">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Voce fez <b>{% qtd_vendas request %}</b> vendas este mes </h5>
+        <h2 class="card-text"><sup>R$</sup> {% total_vendas request %}</h2>
+      </div>
     </div>
-    
-    
-    <div style="margin-top: 30px;">
-        <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
-            hx-target="#addConteudo" hx-swap="innerHTML">Vender
-        </a>
-    </div>
-    <div class="table-responsive" style="padding-top: 18px;">
-        <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-            <thead></thead>
-            <tbody id="vendas-Tbody">
-                {% include 'vendas/tabela/tabela-venda.html' %}
-            </tbody>
-        </table>
-    </div>
-    {% include 'vendas/modal/modal-venda.html' %}
-    {% include 'vendas/modal/modal-alerta.html' %}
+  </div>
+
+
+  <div style="margin-top: 30px;">
+    <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
+       hx-target="#addConteudo" hx-swap="innerHTML">Vender
+    </a>
+  </div>
+  <div class="table-responsive" style="padding-top: 18px;">
+    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+      <thead></thead>
+      <tbody id="vendas-Tbody">
+        {% include 'vendas/tabela/tabela-venda.html' %}
+      </tbody>
+    </table>
+  </div>
+  {% include 'vendas/modal/modal-venda.html' %}
+  {% include 'vendas/modal/modal-alerta.html' %}
 
 {% endblock conteudo %}

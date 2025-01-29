@@ -1,95 +1,95 @@
 {% extends 'dashboard/pagina-inicial.html' %}
 {% load orcamento_extra %}
 {% block style %}
-<style>
+  <style>
     tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 300ms ease-out;
+      opacity: 0;
+      transition: opacity 300ms ease-out;
     }
 
     .card {
-        max-width: 20rem;
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      max-width: 20rem;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
 
     }
 
     .card .card-text {
-        margin: 30px auto;
+      margin: 30px auto;
     }
 
     .table {
-        font-size: 20px;
+      font-size: 20px;
     }
 
     .btn {
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        font-size: 20px;
+      box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
+      font-size: 20px;
 
     }
-</style>
+  </style>
 {% endblock style %}
 
 {% block titulo %} Orçamentos {% endblock titulo %}
 
 {% block conteudo%}
 
-<div class="row" id="relatorio-orcamento">
+  <div class="row" id="relatorio-orcamento">
     <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Voce fez <b>{% qtd_orcamento request %}</b> orcamentos este mes <b></b></h5>
-            <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>           
-        </div>
+      <div class="card-body">
+        <h5 class="card-title">Voce fez <b>{% qtd_orcamento request %}</b> orcamentos este mes <b></b></h5>
+        <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>
+      </div>
     </div>
-</div>
+  </div>
 
-<hr>
+  <hr>
 
-<nav class="navbar justify-content-center">
+  <nav class="navbar justify-content-center">
     <ul class="nav justify-content-center">
-        <li class="nav-item">
-            <a  class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'cadastrar-orcamento' %}"
-                hx-target="#adicionar-conteudo">Novo orçamento
-            </a>
-        </li>
-        <li class="nav-item">
-            <a
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'cadastrar-servico' %}"
-                hx-target="#adicionar-conteudo"
-                style="margin-left: 10px;">
-                Cadastrar Serviço 
-            </a>
-        </li>
-        <li class="nav-item">
-            <a
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'servico' %}"
-                hx-target="#adicionar-conteudo"
-                style="margin-left: 10px;">
-                Lista de serviços
-            </a>
-        </li>    
-      </ul>
-</nav>
+      <li class="nav-item">
+        <a  class="btn btn-outline-primary"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-get="{% url 'cadastrar-orcamento' %}"
+           hx-target="#adicionar-conteudo">Novo orçamento
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="btn btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          hx-get="{% url 'cadastrar-servico' %}"
+          hx-target="#adicionar-conteudo"
+          style="margin-left: 10px;">
+          Cadastrar Serviço
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="btn btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          hx-get="{% url 'servico' %}"
+          hx-target="#adicionar-conteudo"
+          style="margin-left: 10px;">
+          Lista de serviços
+        </a>
+      </li>
+    </ul>
+  </nav>
 
 
-<div class="table-responsive" style="padding-top:18px">
+  <div class="table-responsive" style="padding-top:18px">
     <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead></thead>
-        <tbody id="orcamento-Tbody">
+      <thead></thead>
+      <tbody id="orcamento-Tbody">
         {% include 'orcamento/tabela/tabela-orcamento.html' %}
-        </tbody>
+      </tbody>
     </table>
-</div>
+  </div>
 
-{% include 'orcamento/modal/modal-orcamento.html' %}
-{% include 'orcamento/modal/modal-alerta.html' %}
+  {% include 'orcamento/modal/modal-orcamento.html' %}
+  {% include 'orcamento/modal/modal-alerta.html' %}
 {% endblock conteudo%}
 

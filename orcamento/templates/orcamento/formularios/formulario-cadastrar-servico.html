@@ -1,33 +1,33 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalToggle"> Cadastrar serviço </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <h5 class="modal-title" id="exampleModalToggle"> Cadastrar serviço </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form
-    hx-post="{% url 'cadastrar-servico' %}"
-    hx-target="#servico-Tbody" 
-    hx-swap="afterbegin"
-    hx-indicator=".htmx-indicator">
-        
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.usuario class='form-control' %}
-                {% render_field form.servico class='form-control' %}
-                <label for="">Informe o servico</label>
-            </div>
-        </div>
-    </div>
+  hx-post="{% url 'cadastrar-servico' %}"
+  hx-target="#servico-Tbody"
+  hx-swap="afterbegin"
+  hx-indicator=".htmx-indicator">
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  <div class="modal-body">
+    {% csrf_token %}
+    <div class="row g-2" style="margin-bottom: 10px;">
+      <div class="col form-floating">
+        {% render_field form.usuario class='form-control' %}
+        {% render_field form.servico class='form-control' %}
+        <label for="">Informe o servico</label>
+      </div>
     </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
 
 <script>
-    $('form').on('submit', function() {
+  $('form').on('submit', function() {
     $('#staticBackdrop').modal('toggle')
-    });
+  });
 </script>
