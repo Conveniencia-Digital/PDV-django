@@ -20,5 +20,5 @@ urlpatterns = [
     path('addform/', login_required(addform), name='addform'),
     path('apagaritemvenda/', login_required(apagaritemvenda), name='apagar-item-venda'),
     path('detalhevendas/<int:pk>', login_required(DetalheVendas.as_view()), name='detalhe-vendas'),
-    path('totalvendas/', valor_total_vendas, name='total-vendas')
+    path('totalvendas/', valor_total_vendas, name='total-vendas'),
 ]

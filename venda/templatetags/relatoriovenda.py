@@ -5,12 +5,10 @@ from venda.models import Vendas
 register = template.Library()
 
 
-
 @register.simple_tag
-def total_vendas(request):#vendas = Vendas.objects.all()
+def total_vendas(request):  # vendas = Vendas.objects.all()
     valor_total = sum(venda.total() for venda in Vendas.objects.filter(usuario=request.user))
     return valor_total
-
 
 
 @register.simple_tag

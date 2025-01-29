@@ -12,7 +12,6 @@ class ContasAReceber(models.Model):
         (PAGO, 'Pago'),
         (A_RECEBER, 'A receber'),
         (CALOTE, 'Calote'),
-
     ]
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)

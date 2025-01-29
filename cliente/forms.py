@@ -7,10 +7,7 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = '__all__'
-        widgets = {
-            'data_nascimento': forms.NumberInput(attrs={'type': 'date'}),
-            'observacao': forms.TextInput()
-        }
+        widgets = {'data_nascimento': forms.NumberInput(attrs={'type': 'date'}), 'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)

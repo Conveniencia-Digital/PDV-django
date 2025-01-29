@@ -15,8 +15,7 @@ class Vendas(models.Model):
         (ENTREGUE, 'Concluida e entregue'),
         (CANCELADA, 'Cancelada e estornada'),
         (TROCA, 'Troca de produto'),
-        (RETORNO_GARANTIA, 'Retorno para garantia')
-
+        (RETORNO_GARANTIA, 'Retorno para garantia'),
     ]
     PIX = 'Pix'
     CARTAO_CREDITO = 'Cartāo de credito'
@@ -28,7 +27,7 @@ class Vendas(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado a receber')
+        (FIADO, 'Fiado a receber'),
     ]
 
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -51,29 +50,27 @@ class Vendas(models.Model):
         return self.cliente, self.vendedor
 
     def total(self):
-        qs = self.vendas_items.filter(vendas=self.pk).values_list(
-            'preco', 'quantidade') or 0
+        qs = self.vendas_items.filter(vendas=self.pk).values_list('preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc
 
     def valor_a_receber(self):
-        qs = self.vendas_items.filter(vendas=self.pk).values_list(
-            'preco', 'quantidade') or 0
+        qs = self.vendas_items.filter(vendas=self.pk).values_list('preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc - self.valor_entrada
 
 
 class ItemsVenda(models.Model):
-    vendas = models.ForeignKey(Vendas,
-                               on_delete=models.SET_NULL,
-                               related_name='vendas_items',
-                               blank=True,
-                               null=True,
-                               )
-    produto = models.ForeignKey(Produto,
-                                on_delete=models.CASCADE)
+    vendas = models.ForeignKey(
+        Vendas,
+        on_delete=models.SET_NULL,
+        related_name='vendas_items',
+        blank=True,
+        null=True,
+    )
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     preco = models.DecimalField(max_digits=9, decimal_places=2)
 

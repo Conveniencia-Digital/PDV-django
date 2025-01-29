@@ -19,7 +19,7 @@ def cadastrarpedido(request):
     template_name = 'pedido/formularios/form-cadastrar-pedido.html'
     form = PedidoForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         if form.is_valid():
             pedido = form.save()
             template_name = 'pedido/tabela/linha-tabela-pedido.html'
@@ -39,7 +39,7 @@ def editarpedido(request, pk):
     if instance.usuario != request.user:
         raise PermissionError
 
-    if request.method == "POST":
+    if request.method == 'POST':
         if form.is_valid():
             template_name = 'pedido/tabela/linha-tabela-pedido.html'
             pedido = form.save()

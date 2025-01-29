@@ -18,10 +18,16 @@ class ListaLanhouse(ListView):
 def cadastrarlanhouse(request):
     template_name = 'lanhouse/formularios/formulario-cadastrar-lanhouse.html'
     lanhouse_instance = LanhouseModel()
-    form = LanhouseForm(request.POST or None, user=request.user, initial={
-                        'usuario': request.user}, instance=lanhouse_instance, prefix='main')
-    formset = LanhouseFormset(request.POST or None, instance=lanhouse_instance,
-                              prefix='items', form_kwargs={'user': request.user})
+    form = LanhouseForm(
+        request.POST or None,
+        user=request.user,
+        initial={'usuario': request.user},
+        instance=lanhouse_instance,
+        prefix='main',
+    )
+    formset = LanhouseFormset(
+        request.POST or None, instance=lanhouse_instance, prefix='items', form_kwargs={'user': request.user}
+    )
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():

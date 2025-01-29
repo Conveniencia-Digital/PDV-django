@@ -17,7 +17,14 @@ urlpatterns = [
     path('editarcontas_a_receber/<int:pk>/', login_required(editarcontas_a_receber), name='editar-contas-a-receber'),
     path('apagarcontas_a_receber/<int:pk>/', login_required(apagarcontas_a_receber), name='apagar-contas-a-receber'),
     path('detalhefinanceiro/<int:pk>/', login_required(DetalheFinanceiro.as_view()), name='detalhe-financeiro'),
-    path('detalhefinanceirovenda/<int:pk>/', login_required(DetalheFinanceiroVenda.as_view()), name='detalhe-financeiro-venda'),
-    path('detalhefinanceiroorcamento/<int:pk>/',
-         login_required(DetalheFinanceiroOrcamento.as_view()), name='detalhe-financeiro-orcamento'),
+    path(
+        'detalhefinanceirovenda/<int:pk>/',
+        login_required(DetalheFinanceiroVenda.as_view()),
+        name='detalhe-financeiro-venda',
+    ),
+    path(
+        'detalhefinanceiroorcamento/<int:pk>/',
+        login_required(DetalheFinanceiroOrcamento.as_view()),
+        name='detalhe-financeiro-orcamento',
+    ),
 ]

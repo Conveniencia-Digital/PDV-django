@@ -26,11 +26,9 @@ class LanhouseForm(forms.ModelForm):
 
     class Meta:
         model = LanhouseModel
-        fields = "__all__"
+        fields = '__all__'
 
-        widgets = {
-            'observacao': forms.TextInput()
-        }
+        widgets = {'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -71,11 +69,5 @@ class ItemsLanhouseForm(forms.ModelForm):
 
 
 LanhouseFormset = inlineformset_factory(
-    LanhouseModel,
-    ItemsLanhouse,
-    form=ItemsLanhouseForm,
-    extra=0,
-    can_delete=False,
-    min_num=1,
-    validate_min=True
+    LanhouseModel, ItemsLanhouse, form=ItemsLanhouseForm, extra=0, can_delete=False, min_num=1, validate_min=True
 )

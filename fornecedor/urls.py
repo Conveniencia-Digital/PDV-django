@@ -16,5 +16,5 @@ urlpatterns = [
     path('editarfornecedor/<int:pk>', login_required(editarfornecedor), name='editar-fornecedor'),
     path('apagarfornecedor/<int:pk>/', login_required(apagarfornecedor), name='apagar-fornecedor'),
     path('totalfornecedor/', login_required(total_fornecedor), name='total-fornecedor'),
-    path('detalhefornecedor/<int:pk>/', login_required(DetalheFornecedorView.as_view()), name='detalhe-fornecedor')
+    path('detalhefornecedor/<int:pk>/', login_required(DetalheFornecedorView.as_view()), name='detalhe-fornecedor'),
 ]

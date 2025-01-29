@@ -14,6 +14,5 @@ urlpatterns = [
     path('cadastrarcolaborador/', login_required(cadastrarcolaborador), name='cadastrar-colaborador'),
     path('editarcolaborador/<int:pk>/', login_required(editarcolaborador), name='editar-colaborador'),
     path('apagarcolaborador/<int:pk>/', login_required(apagarcolaborador), name='apagar-colaborador'),
-    path('detalhecolaborador/<int:pk>/', login_required(DetalheColaboradorView.as_view()), name='detalhe-colaborador')
-
+    path('detalhecolaborador/<int:pk>/', login_required(DetalheColaboradorView.as_view()), name='detalhe-colaborador'),
 ]

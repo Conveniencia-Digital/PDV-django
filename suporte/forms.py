@@ -8,9 +8,7 @@ class SuporteForms(forms.ModelForm):
         model = Suporte
         fields = '__all__'
 
-        widgets = {
-            'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem'})
-        }
+        widgets = {'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem'})}
 
     def __init__(self, *args, **kwargs):
         super(SuporteForms, self).__init__(*args, **kwargs)

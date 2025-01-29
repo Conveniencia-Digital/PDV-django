@@ -20,10 +20,16 @@ def cadastrarvendas(request):
     template_name = 'vendas/formularios/formulario-cadastrar-vendas.html'
     venda_instance = Vendas()
 
-    form = VendasForm(request.POST or None, user=request.user, initial={
-                      'usuario': request.user}, instance=venda_instance, prefix='main')
-    formset = VendasItemsFormset(request.POST or None, instance=venda_instance,
-                                 prefix='items', form_kwargs={'user': request.user})
+    form = VendasForm(
+        request.POST or None,
+        user=request.user,
+        initial={'usuario': request.user},
+        instance=venda_instance,
+        prefix='main',
+    )
+    formset = VendasItemsFormset(
+        request.POST or None, instance=venda_instance, prefix='items', form_kwargs={'user': request.user}
+    )
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -86,17 +92,22 @@ def editarvendas(request, pk):
     template_name = 'vendas/formularios/formulario-editar-vendas.html'
     venda_instance = Vendas.objects.get(pk=pk)
 
-    form = VendasForm(request.POST or None, user=request.user, initial={
-                      'usuario': request.user}, instance=venda_instance, prefix='main')
-    formset = VendasItemsFormset(request.POST or None, form_kwargs={
-                                 'user': request.user}, instance=venda_instance, prefix='items')
+    form = VendasForm(
+        request.POST or None,
+        user=request.user,
+        initial={'usuario': request.user},
+        instance=venda_instance,
+        prefix='main',
+    )
+    formset = VendasItemsFormset(
+        request.POST or None, form_kwargs={'user': request.user}, instance=venda_instance, prefix='items'
+    )
 
     if venda_instance.usuario != request.user:
         raise PermissionError
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
-
             template_name = 'vendas/tabela/linhas-tabela-vendas.html'
             vendas = form.save()
             items_venda = formset.save()

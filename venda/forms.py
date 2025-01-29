@@ -33,7 +33,7 @@ class VendasForm(forms.ModelForm):
 class ItemsVendaForm(forms.ModelForm):
     required_css_class = 'required'
     id = forms.IntegerField()
-    #produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
+    # produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
 
     class Meta:
         model = ItemsVenda
@@ -41,7 +41,7 @@ class ItemsVendaForm(forms.ModelForm):
 
         widgets = {
             'quantidade': NumberInput(attrs={'placeholder': 'Quantidade'}),
-            'preco': NumberInput(attrs={'placeholder': 'Preco do produto'})
+            'preco': NumberInput(attrs={'placeholder': 'Preco do produto'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -60,11 +60,5 @@ class ItemsVendaForm(forms.ModelForm):
 
 
 VendasItemsFormset = inlineformset_factory(
-    Vendas,
-    ItemsVenda,
-    form=ItemsVendaForm,
-    extra=0,
-    can_delete=False,
-    min_num=1,
-    validate_min=True
+    Vendas, ItemsVenda, form=ItemsVendaForm, extra=0, can_delete=False, min_num=1, validate_min=True
 )

@@ -11,9 +11,7 @@ def valor_total(request):
     return total_lanhouse
 
 
-
 @register.simple_tag
 def qtd_lanhouse(request):
     qtd = LanhouseModel.objects.filter(usuario=request.user).count()
     return qtd
-    

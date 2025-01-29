@@ -5,14 +5,12 @@ from produto.models import Produto
 
 
 class ProdutoForms(forms.ModelForm):
-
     class Meta:
         model = Produto
         fields = '__all__'
 
         widgets = {
             'observacao': forms.TextInput(),
-
         }
 
     def __init__(self, *args, **kwargs):

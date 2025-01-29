@@ -5,5 +5,5 @@ from comunidade.views import ListaMensagem, enviarMensagem
 
 urlpatterns = [
     path('comunidade/', login_required(ListaMensagem.as_view()), name='comunidade'),
-    path('enviarmensagem/', login_required(enviarMensagem), name='enviar-mensagem')
+    path('enviarmensagem/', login_required(enviarMensagem), name='enviar-mensagem'),
 ]

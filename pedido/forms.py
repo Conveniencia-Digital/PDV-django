@@ -9,10 +9,7 @@ class PedidoForms(forms.ModelForm):
         model = Pedido
         fields = '__all__'
 
-        widgets = {
-            'valor_produto': forms.NumberInput(),
-            'observacao': forms.TextInput()
-        }
+        widgets = {'valor_produto': forms.NumberInput(), 'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

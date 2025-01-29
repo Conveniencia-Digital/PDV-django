@@ -9,16 +9,13 @@ from peca.models import Pecas
 
 class OrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
-    cliente = forms.ModelChoiceField(
-        queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
 
     class Meta:
         model = Orcamento
         fields = '__all__'
 
-        widgets = {
-            'observacao': forms.TextInput()
-        }
+        widgets = {'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('usuario')
@@ -47,17 +44,13 @@ class ItemsOrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
 
     id = forms.IntegerField()
-    peca = forms.ModelChoiceField(
-        queryset=Pecas.objects.all(), empty_label='Selecione a peca')
+    peca = forms.ModelChoiceField(queryset=Pecas.objects.all(), empty_label='Selecione a peca')
 
     class Meta:
         model = ItemsOrcamento
-        fields = ('orcamento', 'id', 'peca', 'servico',
-                  'quantidade', 'preco_orcamento')
+        fields = ('orcamento', 'id', 'peca', 'servico', 'quantidade', 'preco_orcamento')
 
-        widgets = {
-            'preco_orcamento': NumberInput(attrs={'placeholder': '0,00'})
-        }
+        widgets = {'preco_orcamento': NumberInput(attrs={'placeholder': '0,00'})}
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('usuario')
@@ -75,11 +68,5 @@ class ItemsOrcamentoForms(forms.ModelForm):
 
 
 ItemsOrcamentoFormset = inlineformset_factory(
-    Orcamento,
-    ItemsOrcamento,
-    form=ItemsOrcamentoForms,
-    extra=0,
-    can_delete=True,
-    min_num=1,
-    validate_min=True
+    Orcamento, ItemsOrcamento, form=ItemsOrcamentoForms, extra=0, can_delete=True, min_num=1, validate_min=True
 )

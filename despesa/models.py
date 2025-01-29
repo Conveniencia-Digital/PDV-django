@@ -23,7 +23,7 @@ class Despesa(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado a pagar')
+        (FIADO, 'Fiado a pagar'),
     ]
 
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)

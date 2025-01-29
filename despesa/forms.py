@@ -17,7 +17,6 @@ class CategoriaDespesaForms(forms.ModelForm):
 
 
 class DespesaForms(forms.ModelForm):
-
     class Meta:
         model = Despesa
         fields = '__all__'

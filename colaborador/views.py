@@ -66,4 +66,6 @@ def apagarcolaborador(request, pk):
 class DetalheColaboradorView(DetailView):
     model = Colaborador
     template_name = 'colaborador/off-canvas/detalhe-colaborador.html'
-#source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate
+
+
+# source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate

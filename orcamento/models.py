@@ -20,7 +20,6 @@ class Orcamento(models.Model):
     CANCELADO_ENTREGUE = 'Cancelado e entregue'
 
     STATUS = [
-
         (ANALISE, 'Em analise'),
         (PASSAR_ORCAMENTO, 'Passar orçamento'),
         (AGUARDANDO_LIBERACAO, 'Aguardando liberaçāo'),
@@ -31,8 +30,7 @@ class Orcamento(models.Model):
         (GARANTIA_ENCERRADA, 'Garantia encerrada'),
         (RETORNO_GARANTIA, 'Retorno garantia'),
         (CANCELADO, 'Cancelado'),
-        (CANCELADO_ENTREGUE, 'Cancelado e entregue')
-
+        (CANCELADO_ENTREGUE, 'Cancelado e entregue'),
     ]
     PIX = 'Pix'
     CARTAO_CREDITO = 'Cartāo de credito'
@@ -44,7 +42,7 @@ class Orcamento(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado a receber')
+        (FIADO, 'Fiado a receber'),
     ]
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
@@ -68,15 +66,13 @@ class Orcamento(models.Model):
         return self.cliente
 
     def total(self):
-        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
-            'preco_orcamento', 'quantidade') or 0
+        qs = self.orcamento_items.filter(orcamento=self.pk).values_list('preco_orcamento', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc
 
     def valor_a_receber(self):
-        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
-            'preco_orcamento', 'quantidade') or 0
+        qs = self.orcamento_items.filter(orcamento=self.pk).values_list('preco_orcamento', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc - self.valor_entrada
@@ -91,13 +87,8 @@ class Servico(models.Model):
 
 
 class ItemsOrcamento(models.Model):
-
     orcamento = models.ForeignKey(
-        Orcamento,
-        on_delete=models.SET_NULL,
-        related_name='orcamento_items',
-        null=True,
-        blank=True
+        Orcamento, on_delete=models.SET_NULL, related_name='orcamento_items', null=True, blank=True
     )
 
     peca = models.ForeignKey(

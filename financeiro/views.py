@@ -41,8 +41,9 @@ def cadastrarcontas_a_receber(request):
 def editarcontas_a_receber(request, pk):
     template_name = 'financeiro/formularios/formulario-editar-contas-a-receber.html'
     instance = ContasAReceber.objects.get(pk=pk)
-    form = ContasAReceberForms(request.POST or None, instance=instance, initial={
-                               'usuario': request.user}, user=request.user)
+    form = ContasAReceberForms(
+        request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user
+    )
     if instance.usuario != request.user:
         raise PermissionError
 

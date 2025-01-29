@@ -7,9 +7,7 @@ class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedores
         fields = '__all__'
-        widgets = {
-            'observacao': forms.TextInput()
-        }
+        widgets = {'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         super(FornecedorForm, self).__init__(*args, **kwargs)

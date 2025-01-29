@@ -16,7 +16,7 @@ class LanhouseModel(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado a receber')
+        (FIADO, 'Fiado a receber'),
     ]
 
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -35,8 +35,7 @@ class LanhouseModel(models.Model):
         ordering = ('-pk',)
 
     def total(self):
-        qs = self.lanhouse_items.filter(lanhouse=self.pk).values_list(
-            'preco', 'quantidade') or 0
+        qs = self.lanhouse_items.filter(lanhouse=self.pk).values_list('preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc
@@ -55,10 +54,9 @@ class LanhouseServico(models.Model):
 
 
 class ItemsLanhouse(models.Model):
-    lanhouse = models.ForeignKey(LanhouseModel, on_delete=models.SET_NULL,
-                                 related_name='lanhouse_items',
-                                 blank=True,
-                                 null=True)
+    lanhouse = models.ForeignKey(
+        LanhouseModel, on_delete=models.SET_NULL, related_name='lanhouse_items', blank=True, null=True
+    )
     servico = models.ForeignKey(LanhouseServico, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     preco = models.DecimalField(max_digits=9, decimal_places=2)

@@ -14,7 +14,6 @@ class PecasForms(forms.ModelForm):
             'preco_peca': forms.NumberInput(attrs={'step': '0.01'}),
             'preco_de_custo': forms.NumberInput(attrs={'step': '0.01'}),
             'valor_entrada': forms.NumberInput(attrs={'step': '0.01'}),
-
         }
 
     def __init__(self, *args, **kwargs):

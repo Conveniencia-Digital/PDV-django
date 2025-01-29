@@ -20,10 +20,16 @@ def cadastrarorcamento(request):
     template_name = 'orcamento/formularios/formulario-cadastrar-orcamento.html'
     orcamento_instance = Orcamento()
 
-    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={
-                          'usuario': request.user}, instance=orcamento_instance, prefix='main')
-    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance,
-                                    prefix='items', form_kwargs={'usuario': request.user})
+    form = OrcamentoForms(
+        request.POST or None,
+        usuario=request.user,
+        initial={'usuario': request.user},
+        instance=orcamento_instance,
+        prefix='main',
+    )
+    formset = ItemsOrcamentoFormset(
+        request.POST or None, instance=orcamento_instance, prefix='items', form_kwargs={'usuario': request.user}
+    )
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -42,10 +48,16 @@ def editarorcamento(request, pk):
     template_name = 'orcamento/formularios/formulario-editar-orcamento.html'
     orcamento_instance = Orcamento.objects.get(pk=pk)
 
-    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={
-                          'usuario': request.user}, instance=orcamento_instance, prefix='main')
-    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance,
-                                    prefix='items', form_kwargs={'usuario': request.user})
+    form = OrcamentoForms(
+        request.POST or None,
+        usuario=request.user,
+        initial={'usuario': request.user},
+        instance=orcamento_instance,
+        prefix='main',
+    )
+    formset = ItemsOrcamentoFormset(
+        request.POST or None, instance=orcamento_instance, prefix='items', form_kwargs={'usuario': request.user}
+    )
 
     if orcamento_instance.usuario != request.user:
         raise PermissionError

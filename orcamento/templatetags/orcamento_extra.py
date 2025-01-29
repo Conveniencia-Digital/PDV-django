@@ -7,13 +7,13 @@ register = template.Library()
 
 @register.simple_tag
 def valor_total(request):
-    total_orcamento = sum(valor.total() for valor in Orcamento.objects.filter(usuario=request.user, status='Finalizado e entregue'))
+    total_orcamento = sum(
+        valor.total() for valor in Orcamento.objects.filter(usuario=request.user, status='Finalizado e entregue')
+    )
     return total_orcamento
-
 
 
 @register.simple_tag
 def qtd_orcamento(request):
     qtd = Orcamento.objects.filter(usuario=request.user).count()
     return qtd
-    

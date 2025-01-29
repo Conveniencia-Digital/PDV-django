@@ -31,7 +31,7 @@ class Pecas(models.Model):
         (AUTOFALANTES, 'Auto-falantes'),
         (LENTES, 'Lentes'),
         (TAMPAS, 'Tampas'),
-        (OUTROS, 'Outros')
+        (OUTROS, 'Outros'),
     ]
     PIX = 'Cartāo de credito'
     CARTAO_CREDITO = 'Cartāo de credito'
@@ -43,7 +43,7 @@ class Pecas(models.Model):
         (CARTAO_CREDITO, 'Cartāo de credito'),
         (CARTAO_DEBITO, 'Cartāo de debito'),
         (DINHEIRO, 'Dinheiro'),
-        (FIADO, 'Fiado a pagar')
+        (FIADO, 'Fiado a pagar'),
     ]
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)
@@ -72,9 +72,6 @@ class Pecas(models.Model):
 
     def lucrototal(self):
         return (self.preco_peca - self.preco_de_custo) * self.quantidade
-
-    def precototal(self):
-        return self.preco_de_custo * self.quantidade
 
     def vendatotal(self):
         return self.preco_peca * self.quantidade

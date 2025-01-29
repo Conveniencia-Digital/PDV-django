@@ -24,8 +24,11 @@ urlpatterns = [
     path('listacategoriadespesa/', login_required(ListaCategoriaDespesa.as_view()), name='lista-categoria-despesa'),
     path('apagarcategoriadespesa/<int:pk>/', login_required(apagarcategoriadespesa), name='apagar-categoria-despesa'),
     path('editarcategoriadespesa/<int:pk>/', login_required(editarcatergoriadespesa), name='editar-categoria-despesa'),
-    path('detalhedespesaproduto/<int:pk>/', login_required(DetalheDespesaProduto.as_view()), name='detalhe-despesa-produto'),
+    path(
+        'detalhedespesaproduto/<int:pk>/',
+        login_required(DetalheDespesaProduto.as_view()),
+        name='detalhe-despesa-produto',
+    ),
     path('detalhedespesapeca/<int:pk>/', login_required(DetalheDespesaPeca.as_view()), name='detalhe-despesa-peca'),
     path('detalhedespesa/<int:pk>/', login_required(DetalheDespesa.as_view()), name='detalhe-despesa'),
-
 ]

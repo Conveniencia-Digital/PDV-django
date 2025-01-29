@@ -8,9 +8,7 @@ class ComunidadeForms(forms.ModelForm):
         model = Comunidade
         fields = '__all__'
 
-        widgets = {
-            'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem...'})
-        }
+        widgets = {'mensagem': forms.TextInput(attrs={'placeholder': 'Mensagem...'})}
 
     def __init__(self, *args, **kwargs):
         super(ComunidadeForms, self).__init__(*args, **kwargs)

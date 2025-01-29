@@ -12,7 +12,6 @@ class Pedido(models.Model):
         (ENTREGUE, 'Concluida e entregue'),
         (CANCELADA, 'Cancelada e estornada'),
         (PROCESSAMENTO, 'Em processo'),
-
     ]
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)

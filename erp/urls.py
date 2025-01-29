@@ -20,5 +20,4 @@ urlpatterns = [
     path('', include('suporte.urls')),
     path('', include('pedido.urls')),
     path('', include('lanhouse.urls')),
-
 ]
