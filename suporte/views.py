@@ -1,16 +1,16 @@
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import ListView
-from suporte.models import Suporte
-from suporte.forms import SuporteForms
-from django.db.models import Q
-from django.contrib.auth.models import User
 
-# Create your views here.
+from suporte.forms import SuporteForms
+from suporte.models import Suporte
+
 
 class SuporteView(ListView):
     model = Suporte
     template_name = 'suporte/suporte.html'
-    
+
     def get_queryset(self):
         user = self.request.user
         adm = User.objects.filter(is_staff=True)
@@ -18,7 +18,6 @@ class SuporteView(ListView):
             return Suporte.objects.all()
         else:
             return Suporte.objects.filter(Q(usuario=user) | Q(usuario__in=adm))
-       
 
 
 def enviarsuporte(request):
@@ -31,6 +30,6 @@ def enviarsuporte(request):
             context = {'object': suporte}
             template_name = 'suporte/mensagem-suporte.html'
             return render(request, template_name, context)
-    
+
     context = {'form': form}
     return render(request, template_name, context)

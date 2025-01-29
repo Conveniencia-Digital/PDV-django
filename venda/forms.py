@@ -1,11 +1,10 @@
 from django import forms
-from django.forms import inlineformset_factory, NumberInput
+from django.forms import NumberInput, inlineformset_factory
 
-from venda.models import Vendas, ItemsVenda
-from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
-
+from produto.models import Produto
+from venda.models import ItemsVenda, Vendas
 
 
 class VendasForm(forms.ModelForm):
@@ -16,14 +15,11 @@ class VendasForm(forms.ModelForm):
     class Meta:
         model = Vendas
         fields = '__all__'
-        widgets = {
-            'observacao': forms.TextInput()
-
-         }
+        widgets = {'observacao': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
-        super(VendasForm, self).__init__(*args, **kwargs)      
+        super(VendasForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
         self.fields['usuario'].widget = forms.HiddenInput()
@@ -72,6 +68,3 @@ VendasItemsFormset = inlineformset_factory(
     min_num=1,
     validate_min=True
 )
-                                           
-                                           
-                                           

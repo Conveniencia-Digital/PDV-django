@@ -1,5 +1,4 @@
 from django import template
-from django.shortcuts import render
 
 from venda.models import Vendas
 

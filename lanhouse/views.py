@@ -1,9 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic import ListView
-from lanhouse.models import LanhouseModel, LanhouseServico, ItemsLanhouse
-from lanhouse.forms import LanhouseForm, LanhouseFormset, LanhouseServicoForm, ItemsLanhouseForm
-from django.contrib.auth.decorators import login_required
 
+from lanhouse.forms import ItemsLanhouseForm, LanhouseForm, LanhouseFormset, LanhouseServicoForm
+from lanhouse.models import LanhouseModel, LanhouseServico
 
 
 class ListaLanhouse(ListView):
@@ -13,13 +13,15 @@ class ListaLanhouse(ListView):
     def get_queryset(self):
         return LanhouseModel.objects.filter(usuario=self.request.user)
 
-  
+
 @login_required
 def cadastrarlanhouse(request):
     template_name = 'lanhouse/formularios/formulario-cadastrar-lanhouse.html'
     lanhouse_instance = LanhouseModel()
-    form = LanhouseForm(request.POST or None, user=request.user, initial={'usuario': request.user}, instance=lanhouse_instance, prefix='main')
-    formset = LanhouseFormset(request.POST or None, instance=lanhouse_instance, prefix='items', form_kwargs={'user': request.user})
+    form = LanhouseForm(request.POST or None, user=request.user, initial={
+                        'usuario': request.user}, instance=lanhouse_instance, prefix='main')
+    formset = LanhouseFormset(request.POST or None, instance=lanhouse_instance,
+                              prefix='items', form_kwargs={'user': request.user})
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -28,10 +30,9 @@ def cadastrarlanhouse(request):
             template_name = 'lanhouse/tabela/linha-tabela-lanhouse.html'
             context = {'object': lanhouse, 'items': items_lanhouse}
             return render(request, template_name, context)
-    
+
     context = {'form': form, 'formset': formset}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -45,17 +46,15 @@ def precoservicolanhouse(request):
     servico_lanhouse_pk = 0
     for i in lista:
         servico_lanhouse_pk = i
-    
 
     servico = LanhouseServico.objects.get(pk=servico_lanhouse_pk)
     context = {'servico': servico}
     return render(request, template_name, context)
 
 
-
 @login_required
 def cadastrarservicolanhouse(request):
-    template_name =  'lanhouse/formularios/formulario-cadastrar-servico-lanhouse.html'
+    template_name = 'lanhouse/formularios/formulario-cadastrar-servico-lanhouse.html'
     form = LanhouseServicoForm(request.POST or None, initial={'usuario': request.user})
 
     if request.method == 'POST':
@@ -64,17 +63,16 @@ def cadastrarservicolanhouse(request):
             template_name = 'lanhouse/tabela/linhas-tabela-servico.html'
             context = {'object': servico}
             return render(request, template_name, context)
-        
+
     context = {'form': form}
     return render(request, template_name, context)
-
 
 
 @login_required
 def editarservicolanhouse(request, pk):
     template_name = 'lanhouse/formularios/formulario-editar-servico-lanhouse.html'
-    instance =  LanhouseServico.objects.get(pk=pk)
-    form = LanhouseServicoForm(request.POST or None, instance=instance, initial={'usuario':request.user})
+    instance = LanhouseServico.objects.get(pk=pk)
+    form = LanhouseServicoForm(request.POST or None, instance=instance, initial={'usuario': request.user})
 
     if request.method == 'POST':
         if form.is_valid():
@@ -82,7 +80,7 @@ def editarservicolanhouse(request, pk):
             template_name = 'lanhouse/tabela/linhas-tabela-servico.html'
             context = {'object': servico}
             return render(request, template_name, context)
-    
+
     context = {'form': form, 'object': instance}
     return render(request, template_name, context)
 
@@ -101,8 +99,6 @@ def additemlanhouse(request):
     form = ItemsLanhouseForm(user=request.user)
     context = {'itemslanhouse': form}
     return render(request, template_name, context)
-
-
 
 
 class ListaServicoLanhouse(ListView):

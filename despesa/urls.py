@@ -1,8 +1,19 @@
-from django.urls import path
-from despesa.views import ListaDespesa, cadastrardespesa, editardespesa, apagardespesa, cadastrarcategoriadespesa, ListaCategoriaDespesa, \
-                         apagarcategoriadespesa, editarcatergoriadespesa, DetalheDespesaProduto, DetalheDespesaPeca, DetalheDespesa
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 
+from despesa.views import (
+    DetalheDespesa,
+    DetalheDespesaPeca,
+    DetalheDespesaProduto,
+    ListaCategoriaDespesa,
+    ListaDespesa,
+    apagarcategoriadespesa,
+    apagardespesa,
+    cadastrarcategoriadespesa,
+    cadastrardespesa,
+    editarcatergoriadespesa,
+    editardespesa,
+)
 
 urlpatterns = [
     path('despesa/', login_required(ListaDespesa.as_view()), name='despesa'),
@@ -12,9 +23,9 @@ urlpatterns = [
     path('apagardespesa/<int:pk>/', login_required(apagardespesa), name='apagar-despesa'),
     path('listacategoriadespesa/', login_required(ListaCategoriaDespesa.as_view()), name='lista-categoria-despesa'),
     path('apagarcategoriadespesa/<int:pk>/', login_required(apagarcategoriadespesa), name='apagar-categoria-despesa'),
-    path('editarcategoriadespesa/<int:pk>/', login_required(editarcatergoriadespesa), name= 'editar-categoria-despesa'),
+    path('editarcategoriadespesa/<int:pk>/', login_required(editarcatergoriadespesa), name='editar-categoria-despesa'),
     path('detalhedespesaproduto/<int:pk>/', login_required(DetalheDespesaProduto.as_view()), name='detalhe-despesa-produto'),
     path('detalhedespesapeca/<int:pk>/', login_required(DetalheDespesaPeca.as_view()), name='detalhe-despesa-peca'),
     path('detalhedespesa/<int:pk>/', login_required(DetalheDespesa.as_view()), name='detalhe-despesa'),
-   
+
 ]

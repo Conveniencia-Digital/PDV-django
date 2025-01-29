@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Colaborador(models.Model):
@@ -19,11 +19,5 @@ class Colaborador(models.Model):
     data_pagamento = models.DateField(null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
 
-
     def __str__(self) -> str:
         return self.nome_colaborador
-
-
-
-
-

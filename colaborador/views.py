@@ -1,8 +1,9 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-from colaborador.models import Colaborador
-from colaborador.forms import ColaboradorForms
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
+from colaborador.forms import ColaboradorForms
+from colaborador.models import Colaborador
 
 
 class ListaColaborador(ListView):
@@ -28,7 +29,6 @@ def cadastrarcolaborador(request):
 
     context = {'form': form}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -61,7 +61,6 @@ def apagarcolaborador(request, pk):
     else:
         raise PermissionError
     return render(request, template_name)
-
 
 
 class DetalheColaboradorView(DetailView):

@@ -1,7 +1,7 @@
 from django import template
-from django.db.models.aggregates import Sum, Count
+from django.db.models.aggregates import Sum
+
 from peca.models import Pecas
-from django.shortcuts import render
 
 register = template.Library()
 

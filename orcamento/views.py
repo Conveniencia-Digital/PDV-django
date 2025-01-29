@@ -1,9 +1,10 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-from orcamento.models import Orcamento, ItemsOrcamento, Servico
-from orcamento.forms import OrcamentoForms, ItemsOrcamentoForms, ItemsOrcamentoFormset, ServicoForms
-from peca.models import Pecas
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
+from orcamento.forms import ItemsOrcamentoForms, ItemsOrcamentoFormset, OrcamentoForms, ServicoForms
+from orcamento.models import ItemsOrcamento, Orcamento, Servico
+from peca.models import Pecas
 
 
 class ListaOrcamento(ListView):
@@ -14,15 +15,15 @@ class ListaOrcamento(ListView):
         return Orcamento.objects.filter(usuario=self.request.user)
 
 
-
 @login_required
 def cadastrarorcamento(request):
     template_name = 'orcamento/formularios/formulario-cadastrar-orcamento.html'
     orcamento_instance = Orcamento()
 
-    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={'usuario': request.user}, instance=orcamento_instance, prefix='main')
-    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance, prefix='items', form_kwargs={'usuario': request.user})
-
+    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={
+                          'usuario': request.user}, instance=orcamento_instance, prefix='main')
+    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance,
+                                    prefix='items', form_kwargs={'usuario': request.user})
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
@@ -35,14 +36,16 @@ def cadastrarorcamento(request):
     context = {'form': form, 'formset': formset}
     return render(request, template_name, context)
 
-    
+
 @login_required
 def editarorcamento(request, pk):
     template_name = 'orcamento/formularios/formulario-editar-orcamento.html'
     orcamento_instance = Orcamento.objects.get(pk=pk)
 
-    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={'usuario': request.user}, instance=orcamento_instance, prefix='main')
-    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance, prefix='items', form_kwargs={'usuario': request.user})
+    form = OrcamentoForms(request.POST or None, usuario=request.user, initial={
+                          'usuario': request.user}, instance=orcamento_instance, prefix='main')
+    formset = ItemsOrcamentoFormset(request.POST or None, instance=orcamento_instance,
+                                    prefix='items', form_kwargs={'usuario': request.user})
 
     if orcamento_instance.usuario != request.user:
         raise PermissionError
@@ -54,7 +57,7 @@ def editarorcamento(request, pk):
             items_orcamento = formset.save()
             context = {'object': orcamento, 'items': items_orcamento}
             return render(request, template_name, context)
-    
+
     context = {'object': orcamento_instance, 'form': form, 'formset': formset}
     return render(request, template_name, context)
 
@@ -67,14 +70,12 @@ def adicionarlinhas(request):
     return render(request, template_name, context)
 
 
-
 @login_required
 def adicionarlinhaservico(request):
     template_name = 'orcamento/formularios/linha-servico-orcamento.html'
     form = ItemsOrcamentoForms(usuario=request.user)
     context = {'items_orcamento_form': form}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -93,7 +94,6 @@ def preco_peca(request):
     return render(request, template_name, context)
 
 
-
 @login_required
 def apagaritemorcamento(pk):
     item_orcamento = ItemsOrcamento.objects.get(pk=pk)
@@ -103,11 +103,10 @@ def apagaritemorcamento(pk):
 
 class DetalheOrcamento(DetailView):
     model = Orcamento
-    template_name= 'orcamento/detalhe-orcamento.html'
+    template_name = 'orcamento/detalhe-orcamento.html'
 
     def get_queryset(self):
         return Orcamento.objects.filter(usuario=self.request.user)
-    
 
 
 def total_orcamento(request):
@@ -116,7 +115,6 @@ def total_orcamento(request):
     qtd_orcamento = Orcamento.objects.filter(usuario=request.user).count()
     context = {'total_orcamento': total, 'qtd_orcamento': qtd_orcamento}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -130,10 +128,9 @@ def cadastrarservico(request):
             servico = form.save()
             context = {'object': servico}
             return render(request, template_name, context)
-    
+
     context = {'form': form}
     return render(request, template_name, context)
-    
 
 
 class ListaServicos(ListView):

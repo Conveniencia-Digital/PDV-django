@@ -1,11 +1,9 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-
-from cliente.models import Cliente
-from cliente.forms import ClienteForm
 from django.contrib.auth.decorators import login_required
-    
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
+from cliente.forms import ClienteForm
+from cliente.models import Cliente
 
 
 class ListaCliente(ListView):
@@ -16,10 +14,9 @@ class ListaCliente(ListView):
         return Cliente.objects.filter(usuario=self.request.user)
 
 
-
 @login_required
 def cadastrarcliente(request):
-    template_name = 'cliente/formularios/formulario-cadastrar-cliente.html' 
+    template_name = 'cliente/formularios/formulario-cadastrar-cliente.html'
     form = ClienteForm(request.POST or None, initial={'usuario': request.user})
     if request.method == 'POST':
         if form.is_valid():
@@ -32,13 +29,12 @@ def cadastrarcliente(request):
     return render(request, template_name, context)
 
 
-
 @login_required
 def editarcliente(request, pk):
     template_name = 'cliente/formularios/formulario-editar-cliente.html'
     instance = Cliente.objects.get(pk=pk)
-    form = ClienteForm(request.POST or None, instance=instance, initial={'usuario':request.user})
-    
+    form = ClienteForm(request.POST or None, instance=instance, initial={'usuario': request.user})
+
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -54,8 +50,6 @@ def editarcliente(request, pk):
     return render(request, template_name, context)
 
 
-
-
 @login_required
 def apagarcliente(request, pk):
     template_name = 'cliente/tabela/tabela-cliente.html'
@@ -67,16 +61,14 @@ def apagarcliente(request, pk):
     return render(request, template_name)
 
 
-
 @login_required
 def total_clientes(request):
     template_name = 'cliente/informacao-cliente.html'
-    total_cliente =  Cliente.objects.count()
+    total_cliente = Cliente.objects.count()
     context = {'total_cliente': total_cliente}
     return render(request, template_name, context)
-    
+
 
 class DetalheClienteView(DetailView):
     model = Cliente
     template_name = 'cliente/off-canvas/detalhe-cliente.html'
-    

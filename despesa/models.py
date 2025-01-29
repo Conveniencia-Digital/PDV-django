@@ -1,6 +1,8 @@
-from django.db import models
-from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
+from django.db import models
+
+from fornecedor.models import Fornecedores
+
 
 class CategoriaDespesa(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -23,7 +25,7 @@ class Despesa(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado a pagar')
     ]
-    
+
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     categoria_despesa = models.ForeignKey(CategoriaDespesa, on_delete=models.CASCADE, null=True, blank=True)
     nome_despesa = models.CharField(max_length=90)
@@ -36,9 +38,5 @@ class Despesa(models.Model):
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
-
-
     def saldodespesa(self):
         return self.preco_despesa - self.valor_entrada
-    
-   

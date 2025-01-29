@@ -1,6 +1,7 @@
-from django.db import models
-from cliente.models import Cliente
 from django.contrib.auth.models import User
+from django.db import models
+
+from cliente.models import Cliente
 
 
 class ContasAReceber(models.Model):
@@ -11,7 +12,7 @@ class ContasAReceber(models.Model):
         (PAGO, 'Pago'),
         (A_RECEBER, 'A receber'),
         (CALOTE, 'Calote'),
-        
+
     ]
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)
@@ -25,7 +26,5 @@ class ContasAReceber(models.Model):
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=20, default=A_RECEBER)
 
-
     def valorareceber(self):
         return self.preco_contas_a_receber - self.valor_entrada
-

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from relatorio.views import Relatorios
 
 urlpatterns = [

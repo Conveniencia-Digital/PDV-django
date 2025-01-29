@@ -1,17 +1,16 @@
 from django import forms
-from django.forms import inlineformset_factory, NumberInput
+from django.forms import NumberInput, inlineformset_factory
 
-from orcamento.models import ItemsOrcamento, Orcamento, Servico
-from peca.models import Pecas
 from cliente.models import Cliente
 from colaborador.models import Colaborador
+from orcamento.models import ItemsOrcamento, Orcamento, Servico
+from peca.models import Pecas
 
 
 class OrcamentoForms(forms.ModelForm):
     required_css_class = 'required'
     cliente = forms.ModelChoiceField(
         queryset=Cliente.objects.all(), empty_label='Selecione o cliente')
-   
 
     class Meta:
         model = Orcamento
@@ -21,7 +20,6 @@ class OrcamentoForms(forms.ModelForm):
             'observacao': forms.TextInput()
         }
 
-           
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('usuario')
         super(OrcamentoForms, self).__init__(*args, **kwargs)
@@ -30,7 +28,6 @@ class OrcamentoForms(forms.ModelForm):
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['tecnico'].queryset = Colaborador.objects.filter(usuario=user)
         self.fields['usuario'].widget = forms.HiddenInput()
-        
 
 
 class ServicoForms(forms.ModelForm):
@@ -38,15 +35,12 @@ class ServicoForms(forms.ModelForm):
         model = Servico
         fields = '__all__'
 
-
     def __init__(self, *args, **kwargs):
         super(ServicoForms, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():   
+        for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-        
+
         self.fields['usuario'].widget = forms.HiddenInput()
-
-
 
 
 class ItemsOrcamentoForms(forms.ModelForm):
@@ -65,13 +59,12 @@ class ItemsOrcamentoForms(forms.ModelForm):
             'preco_orcamento': NumberInput(attrs={'placeholder': '0,00'})
         }
 
-    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('usuario')
         super(ItemsOrcamentoForms, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-        
+
         self.fields['orcamento'].label = ''
         self.fields['orcamento'].widget = forms.HiddenInput()
 
@@ -79,8 +72,6 @@ class ItemsOrcamentoForms(forms.ModelForm):
         self.fields['id'].widget = forms.HiddenInput()
         self.fields['peca'].queryset = Pecas.objects.filter(quantidade__gt=0, usuario=user)
         self.fields['servico'].queryset = Servico.objects.filter(usuario=user)
-       
-       
 
 
 ItemsOrcamentoFormset = inlineformset_factory(

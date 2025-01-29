@@ -1,20 +1,18 @@
 from django import forms
-from django.forms import inlineformset_factory, NumberInput
+from django.forms import inlineformset_factory
 
-from lanhouse.models import LanhouseModel, LanhouseServico, ItemsLanhouse
 from cliente.models import Cliente
 from colaborador.models import Colaborador
-
-
+from lanhouse.models import ItemsLanhouse, LanhouseModel, LanhouseServico
 
 
 class LanhouseServicoForm(forms.ModelForm):
     required_css_class = 'required'
-    
+
     class Meta:
         model = LanhouseServico
         fields = '__all__'
-    
+
     def __init__(self, *args, **kwargs):
         super(LanhouseServicoForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -23,12 +21,9 @@ class LanhouseServicoForm(forms.ModelForm):
         self.fields['usuario'].widget = forms.HiddenInput()
 
 
-
-
-
 class LanhouseForm(forms.ModelForm):
     required_css_class = 'required'
-    
+
     class Meta:
         model = LanhouseModel
         fields = "__all__"
@@ -37,23 +32,18 @@ class LanhouseForm(forms.ModelForm):
             'observacao': forms.TextInput()
         }
 
-    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(LanhouseForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-        
+
         self.fields['usuario'].widget = forms.HiddenInput()
         self.fields['data_vencimento'].widget = forms.HiddenInput()
         self.fields['valor_entrada'].widget = forms.HiddenInput()
         self.fields['qtd_parcela'].widget = forms.HiddenInput()
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['vendedor'].queryset = Colaborador.objects.filter(usuario=user)
-
-
-        
-        
 
 
 class ItemsLanhouseForm(forms.ModelForm):
@@ -63,7 +53,6 @@ class ItemsLanhouseForm(forms.ModelForm):
     class Meta:
         model = ItemsLanhouse
         fields = ('lanhouse', 'id', 'servico', 'quantidade', 'preco')
-       
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -79,7 +68,6 @@ class ItemsLanhouseForm(forms.ModelForm):
         self.fields['preco'].widget.attrs['step'] = 0.01
 
         self.fields['servico'].queryset = LanhouseServico.objects.filter(usuario=user)
-
 
 
 LanhouseFormset = inlineformset_factory(

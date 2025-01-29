@@ -1,17 +1,17 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.views.generic import ListView
+
 from dashboard.forms import TarefaForms
 from dashboard.models import Tarefas
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 
 
 class PaginaInicialView(ListView):
     model = Tarefas
     template_name = 'dashboard/pagina-inicial.html'
-    
+
     def get_queryset(self):
         return Tarefas.objects.filter(usuario=self.request.user)
-
 
 
 @login_required
@@ -25,14 +25,12 @@ def cadastrartarefa(request):
             template_name = 'dashboard/tabela/linha-tabela-tarefa.html'
             context = {'object': tarefa}
             return render(request, template_name, context)
-    
+
     context = {'form': form}
     return render(request, template_name, context)
 
 
-
-
-@login_required       
+@login_required
 def apagartarefa(request, pk):
     template_name = 'dashboard/tabela/tabela-tarefa.html'
     obj = Tarefas.objects.get(pk=pk)
@@ -41,8 +39,6 @@ def apagartarefa(request, pk):
         return render(request, template_name)
     else:
         raise PermissionError
-
-
 
 
 @login_required
@@ -59,6 +55,6 @@ def editartarefa(request, pk):
             tarefa = form.save()
             context = {'object': tarefa}
             return render(request, template_name, context)
-    
+
     context = {'form': form, 'object': instance}
     return render(request, template_name, context)

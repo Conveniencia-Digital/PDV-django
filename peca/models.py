@@ -1,7 +1,7 @@
-from django.db import models
-from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
+from django.db import models
 
+from fornecedor.models import Fornecedores
 
 
 class Pecas(models.Model):
@@ -30,7 +30,7 @@ class Pecas(models.Model):
         (FLEX, 'Flex'),
         (AUTOFALANTES, 'Auto-falantes'),
         (LENTES, 'Lentes'),
-        (TAMPAS, 'Tampas'),  
+        (TAMPAS, 'Tampas'),
         (OUTROS, 'Outros')
     ]
     PIX = 'Cartāo de credito'
@@ -65,14 +65,14 @@ class Pecas(models.Model):
         return self.nome_peca
 
     def lucro(self):
-         return f'R$ {self.preco_peca - self.preco_de_custo}'
-    
+        return f'R$ {self.preco_peca - self.preco_de_custo}'
+
     def precototal(self):
         return self.preco_de_custo * self.quantidade
-  
+
     def lucrototal(self):
-        return (self.preco_peca - self.preco_de_custo) * self.quantidade 
-    
+        return (self.preco_peca - self.preco_de_custo) * self.quantidade
+
     def precototal(self):
         return self.preco_de_custo * self.quantidade
 

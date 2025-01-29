@@ -1,7 +1,7 @@
-from django.db import models
-from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
+from django.db import models
 
+from fornecedor.models import Fornecedores
 
 
 class Produto(models.Model):
@@ -28,8 +28,8 @@ class Produto(models.Model):
         (CARREGADORES, 'Carregadores'),
         (FONTES, 'Fontes'),
         (DIVERSOS, 'Diversos'),
-        (INFORMATICA, 'Informatica'),    
-        (CAIXA_SOM, 'Caixa de som')     
+        (INFORMATICA, 'Informatica'),
+        (CAIXA_SOM, 'Caixa de som')
     ]
     PIX = 'Cartāo de credito'
     CARTAO_CREDITO = 'Cartāo de credito'
@@ -60,8 +60,6 @@ class Produto(models.Model):
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
-
-
     def __str__(self):
         return self.nome_produto
 
@@ -69,8 +67,8 @@ class Produto(models.Model):
         return self.preco - self.preco_de_custo
 
     def lucrototal(self):
-        return (self.preco - self.preco_de_custo) * self.quantidade 
-    
+        return (self.preco - self.preco_de_custo) * self.quantidade
+
     def precototal(self):
         return self.preco_de_custo * self.quantidade
 
@@ -79,6 +77,3 @@ class Produto(models.Model):
 
     def saldodespesa(self):
         return (self.preco_de_custo * self.quantidade) - self.valor_entrada
-
-
-    

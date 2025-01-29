@@ -1,7 +1,7 @@
-from django.urls import path
 from django.contrib.auth.decorators import login_required
-from pedido.views import cadastrarpedido, editarpedido, ListaPedido, apagarpedido, DetalhePedido
+from django.urls import path
 
+from pedido.views import DetalhePedido, ListaPedido, apagarpedido, cadastrarpedido, editarpedido
 
 urlpatterns = [
     path('cadastrarpedido', login_required(cadastrarpedido), name='cadastrar-pedido'),

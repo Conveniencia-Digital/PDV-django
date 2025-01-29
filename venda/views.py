@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from venda.forms import ItemsVendaForm, VendasItemsFormset, VendasForm
-from django.views.generic import ListView, DetailView
-from produto.models import Produto
-from venda.models import Vendas, ItemsVenda
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
+from produto.models import Produto
+from venda.forms import ItemsVendaForm, VendasForm, VendasItemsFormset
+from venda.models import ItemsVenda, Vendas
 
 
 class ListaVendas(ListView):
@@ -20,16 +20,17 @@ def cadastrarvendas(request):
     template_name = 'vendas/formularios/formulario-cadastrar-vendas.html'
     venda_instance = Vendas()
 
-    form = VendasForm(request.POST or None, user=request.user, initial={'usuario': request.user}, instance=venda_instance, prefix='main')
-    formset = VendasItemsFormset(request.POST or None, instance=venda_instance, prefix='items', form_kwargs={'user': request.user})
-    
+    form = VendasForm(request.POST or None, user=request.user, initial={
+                      'usuario': request.user}, instance=venda_instance, prefix='main')
+    formset = VendasItemsFormset(request.POST or None, instance=venda_instance,
+                                 prefix='items', form_kwargs={'user': request.user})
 
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
             template_name = 'vendas/tabela/linhas-tabela-vendas.html'
             vendas = form.save()
             items_venda = formset.save()
-                   
+
             context = {'object': vendas, 'items': items_venda}
             return render(request, template_name, context)
 
@@ -48,12 +49,10 @@ def buscarpreco(request):
     produto_pk = 0
     for i in lista:
         produto_pk = i
-    
 
     produto = Produto.objects.get(pk=produto_pk)
     context = {'produto': produto}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -62,7 +61,6 @@ def addform(request):
     form = ItemsVendaForm(user=request.user)
     context = {'itemsvendaform': form}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -88,15 +86,17 @@ def editarvendas(request, pk):
     template_name = 'vendas/formularios/formulario-editar-vendas.html'
     venda_instance = Vendas.objects.get(pk=pk)
 
-    form = VendasForm(request.POST or None, user=request.user, initial={'usuario': request.user}, instance=venda_instance, prefix='main')
-    formset = VendasItemsFormset(request.POST or None, form_kwargs={'user': request.user}, instance=venda_instance, prefix='items')
+    form = VendasForm(request.POST or None, user=request.user, initial={
+                      'usuario': request.user}, instance=venda_instance, prefix='main')
+    formset = VendasItemsFormset(request.POST or None, form_kwargs={
+                                 'user': request.user}, instance=venda_instance, prefix='items')
 
     if venda_instance.usuario != request.user:
         raise PermissionError
-    
+
     if request.method == 'POST':
         if form.is_valid() and formset.is_valid():
-            
+
             template_name = 'vendas/tabela/linhas-tabela-vendas.html'
             vendas = form.save()
             items_venda = formset.save()
@@ -105,10 +105,9 @@ def editarvendas(request, pk):
         else:
             print(form.errors)
             print(formset.errors)
-   
-    context = {'object':venda_instance, 'form': form, 'formset': formset}
-    return render(request, template_name, context)
 
+    context = {'object': venda_instance, 'form': form, 'formset': formset}
+    return render(request, template_name, context)
 
 
 def valor_total_vendas(request):

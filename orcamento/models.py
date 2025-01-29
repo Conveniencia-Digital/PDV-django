@@ -1,8 +1,9 @@
+from django.contrib.auth.models import User
 from django.db import models
-from peca.models import Pecas
+
 from cliente.models import Cliente
 from colaborador.models import Colaborador
-from django.contrib.auth.models import User
+from peca.models import Pecas
 
 
 class Orcamento(models.Model):
@@ -17,13 +18,13 @@ class Orcamento(models.Model):
     RETORNO_GARANTIA = 'Retorno garantia'
     CANCELADO = 'Cancelado'
     CANCELADO_ENTREGUE = 'Cancelado e entregue'
-   
+
     STATUS = [
 
         (ANALISE, 'Em analise'),
         (PASSAR_ORCAMENTO, 'Passar orçamento'),
         (AGUARDANDO_LIBERACAO, 'Aguardando liberaçāo'),
-        (LIBERADO,'Liberado'),
+        (LIBERADO, 'Liberado'),
         (EM_REPARO, 'Em reparo'),
         (FINALIZADO, 'Finalizado'),
         (FINALIZADO_ENTREGUE, 'Finalizado e entregue'),
@@ -60,8 +61,6 @@ class Orcamento(models.Model):
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
-
-    
     class Meta:
         ordering = ('-pk',)
 
@@ -72,10 +71,8 @@ class Orcamento(models.Model):
         qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
             'preco_orcamento', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
-        desc = t - self.desconto 
+        desc = t - self.desconto
         return desc
-    
-
 
     def valor_a_receber(self):
         qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
@@ -93,10 +90,8 @@ class Servico(models.Model):
         return self.servico
 
 
-
-
 class ItemsOrcamento(models.Model):
-    
+
     orcamento = models.ForeignKey(
         Orcamento,
         on_delete=models.SET_NULL,
@@ -104,21 +99,20 @@ class ItemsOrcamento(models.Model):
         null=True,
         blank=True
     )
-   
+
     peca = models.ForeignKey(
         Pecas,
         on_delete=models.CASCADE,
     )
     servico = models.ForeignKey(
-        Servico, 
+        Servico,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
-   
+
     quantidade = models.IntegerField()
     preco_orcamento = models.DecimalField(max_digits=9, decimal_places=2)
-   
 
     class Meta:
         ordering = ('pk',)
@@ -129,10 +123,8 @@ class ItemsOrcamento(models.Model):
 
     def subtotal(self):
         return self.preco_orcamento * (self.quantidade or 0)
-    
+
     def save(self, *args, **kwargs):
         self.peca.quantidade -= self.quantidade
         self.peca.save()
         super(ItemsOrcamento, self).save(*args, **kwargs)
-
-

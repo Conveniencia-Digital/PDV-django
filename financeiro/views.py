@@ -1,12 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 
-from financeiro.models import ContasAReceber
 from financeiro.forms import ContasAReceberForms
-from venda.models import Vendas, ItemsVenda
-from orcamento.models import Orcamento, ItemsOrcamento
-from cliente.models import Cliente
-
+from financeiro.models import ContasAReceber
+from orcamento.models import ItemsOrcamento, Orcamento
+from venda.models import ItemsVenda, Vendas
 
 
 class ListaContasAReceber(ListView):
@@ -18,14 +16,14 @@ class ListaContasAReceber(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListaContasAReceber, self).get_context_data(**kwargs)
-        context['venda'] = Vendas.objects.filter(forma_pagamento = 'Fiado a receber', usuario=self.request.user)
-        context['orcamento'] = Orcamento.objects.filter(forma_pagamento = 'Fiado a receber', usuario=self.request.user)
-        return context 
+        context['venda'] = Vendas.objects.filter(forma_pagamento='Fiado a receber', usuario=self.request.user)
+        context['orcamento'] = Orcamento.objects.filter(forma_pagamento='Fiado a receber', usuario=self.request.user)
+        return context
 
 
 def cadastrarcontas_a_receber(request):
     template_name = 'financeiro/formularios/formulario-cadastrar-contas-a-receber.html'
-   
+
     form = ContasAReceberForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == 'POST':
@@ -43,7 +41,8 @@ def cadastrarcontas_a_receber(request):
 def editarcontas_a_receber(request, pk):
     template_name = 'financeiro/formularios/formulario-editar-contas-a-receber.html'
     instance = ContasAReceber.objects.get(pk=pk)
-    form = ContasAReceberForms(request.POST or None, instance=instance, initial={'usuario': request.user}, user=request.user)
+    form = ContasAReceberForms(request.POST or None, instance=instance, initial={
+                               'usuario': request.user}, user=request.user)
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -80,7 +79,7 @@ class DetalheFinanceiroVenda(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetalheFinanceiroVenda, self).get_context_data(**kwargs)
-        context['produto'] = ItemsVenda.objects.all()   
+        context['produto'] = ItemsVenda.objects.all()
         return context
 
 
@@ -90,5 +89,5 @@ class DetalheFinanceiroOrcamento(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetalheFinanceiroOrcamento, self).get_context_data(**kwargs)
-        context['peca'] = ItemsOrcamento.objects.all()   
+        context['peca'] = ItemsOrcamento.objects.all()
         return context

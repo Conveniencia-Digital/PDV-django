@@ -1,0 +1,14 @@
+# Set the maximum line length to 79.
+line-length = 119
+exclude = [".venv", "migrations", "__init__.py"]
+
+[lint]
+# Add the `line-too-long` rule to the enforced rule set. By default, Ruff omits rules that
+# overlap with the use of a formatter, like Black, but we can override this behavior by
+# explicitly adding the rule.
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[format]
+# Prefer single quotes over double quotes.
+quote-style = "single"

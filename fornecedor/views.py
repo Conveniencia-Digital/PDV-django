@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-
-from fornecedor.models import Fornecedores
-from fornecedor.forms import FornecedorForm
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
+from fornecedor.forms import FornecedorForm
+from fornecedor.models import Fornecedores
 
 
 class ListaFornecedor(ListView):
@@ -12,7 +12,6 @@ class ListaFornecedor(ListView):
 
     def get_queryset(self):
         return Fornecedores.objects.filter(usuario=self.request.user)
-
 
 
 @login_required
@@ -32,13 +31,12 @@ def cadastrarfornecedor(request):
     return render(request, template_name, context)
 
 
-
 @login_required
 def editarfornecedor(request, pk):
     template_name = 'fornecedor/formularios/formulario-editar-fornecedor.html'
     instance = Fornecedores.objects.get(pk=pk)
-    form = FornecedorForm(request.POST or None, instance=instance, initial={'usuario':request.user})
-    
+    form = FornecedorForm(request.POST or None, instance=instance, initial={'usuario': request.user})
+
     if instance.usuario != request.user:
         raise PermissionError
 
@@ -54,7 +52,6 @@ def editarfornecedor(request, pk):
     return render(request, template_name, context)
 
 
-
 @login_required
 def apagarfornecedor(request, pk):
     template_name = 'fornecedor/tabela/tabela-fornecedor.html'
@@ -66,16 +63,12 @@ def apagarfornecedor(request, pk):
     return render(request, template_name)
 
 
-
-
 @login_required
 def total_fornecedor(request):
     template_name = 'fornecedor/informacao-fornecedor.html'
-    total_fornecedor =  Fornecedores.objects.count()
+    total_fornecedor = Fornecedores.objects.count()
     context = {'total_fornecedor': total_fornecedor}
     return render(request, template_name, context)
-    
-
 
 
 class DetalheFornecedorView(DetailView):

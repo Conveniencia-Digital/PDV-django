@@ -1,10 +1,9 @@
+from django.contrib.auth.models import User
 from django.db import models
-from produto.models import Produto
+
 from cliente.models import Cliente
 from colaborador.models import Colaborador
-from django.contrib.auth.models import User
-
-
+from produto.models import Produto
 
 
 class Vendas(models.Model):
@@ -31,7 +30,7 @@ class Vendas(models.Model):
         (DINHEIRO, 'Dinheiro'),
         (FIADO, 'Fiado a receber')
     ]
-    
+
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_edicao = models.DateTimeField(auto_now=True)
@@ -50,15 +49,13 @@ class Vendas(models.Model):
 
     def __str__(self):
         return self.cliente, self.vendedor
-    
+
     def total(self):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(
             'preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc
-    
-    
 
     def valor_a_receber(self):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(
@@ -66,7 +63,6 @@ class Vendas(models.Model):
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc - self.valor_entrada
-
 
 
 class ItemsVenda(models.Model):
@@ -94,4 +90,3 @@ class ItemsVenda(models.Model):
         self.produto.quantidade -= self.quantidade
         self.produto.save()
         super(ItemsVenda, self).save(*args, **kwargs)
-

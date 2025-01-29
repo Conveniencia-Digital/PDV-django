@@ -1,6 +1,4 @@
 from django import template
-from django.shortcuts import render
-from django.db.models.aggregates import Count, Sum
 
 from cliente.models import Cliente
 

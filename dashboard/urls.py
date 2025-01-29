@@ -1,6 +1,7 @@
-from django.urls import path
-from dashboard.views import PaginaInicialView, cadastrartarefa, apagartarefa, editartarefa
 from django.contrib.auth.decorators import login_required
+from django.urls import path
+
+from dashboard.views import PaginaInicialView, apagartarefa, cadastrartarefa, editartarefa
 
 urlpatterns = [
     path('', login_required(PaginaInicialView.as_view()), name='inicio'),

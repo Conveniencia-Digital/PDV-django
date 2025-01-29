@@ -1,7 +1,14 @@
-from django.urls import path
 from django.contrib.auth.decorators import login_required
-from fornecedor.views import ListaFornecedor, cadastrarfornecedor, editarfornecedor, apagarfornecedor, total_fornecedor, DetalheFornecedorView
+from django.urls import path
 
+from fornecedor.views import (
+    DetalheFornecedorView,
+    ListaFornecedor,
+    apagarfornecedor,
+    cadastrarfornecedor,
+    editarfornecedor,
+    total_fornecedor,
+)
 
 urlpatterns = [
     path('fornecedor/', login_required(ListaFornecedor.as_view()), name='fornecedor'),

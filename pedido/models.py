@@ -1,6 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
 from cliente.models import Cliente
+
 
 class Pedido(models.Model):
     ENTREGUE = 'Entregue'
@@ -22,7 +24,6 @@ class Pedido(models.Model):
     valor_pago = models.DecimalField(max_digits=9, decimal_places=2)
     observacao = models.TextField(null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=20, default=PROCESSAMENTO)
-
 
     def valor_a_receber(self):
         return self.valor_produto - self.valor_pago

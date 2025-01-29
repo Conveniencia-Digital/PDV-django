@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-from django.db.models.aggregates import Sum
-from peca.models import Pecas
-from peca.forms import PecasForms
 from django.contrib.auth.decorators import login_required
+from django.db.models.aggregates import Sum
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
+from peca.forms import PecasForms
+from peca.models import Pecas
+
 
 class Peca(ListView):
     model = Pecas
@@ -27,7 +29,6 @@ def cadastrarpeca(request):
 
     context = {'form': form}
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -56,7 +57,7 @@ def apagarpeca(request, pk):
     if objeto.usuario == request.user:
         objeto.delete()
     else:
-       
+
         raise PermissionError
     return render(request, template_name)
 
@@ -69,11 +70,11 @@ def relatoriopeca(request):
 
     for i in preco_venda.values():
         preco_venda = i
-    
+
     for c in preco_custo.values():
         preco_custo = c
 
-    lucro = preco_venda - preco_custo    
+    lucro = preco_venda - preco_custo
 
     context = {'preco_venda': preco_venda, 'preco_custo': preco_custo, 'lucro': lucro, 'total': total}
     return render(request, template_name, context)
@@ -85,4 +86,3 @@ class DetalhePeca(DetailView):
 
     def get_queryset(self):
         return Pecas.objects.filter(usuario=self.request.user)
-    

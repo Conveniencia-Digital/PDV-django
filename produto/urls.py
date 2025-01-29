@@ -1,6 +1,7 @@
-from django.urls import path
-from .views import criarprodutos, ListaProduto, editarprodutos, apagarprodutos, DetalheProduto
 from django.contrib.auth.decorators import login_required
+from django.urls import path
+
+from .views import DetalheProduto, ListaProduto, apagarprodutos, criarprodutos, editarprodutos
 
 urlpatterns = [
     path('produtos', login_required(ListaProduto.as_view()), name='produtos'),
