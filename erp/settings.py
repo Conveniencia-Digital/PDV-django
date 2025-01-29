@@ -11,8 +11,6 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
-DATABASE_URL = config('DATABASE_URL')
-
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -70,7 +68,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default=[], cast=Csv())
+# CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default=[], cast=Csv())
 
 
 MIDDLEWARE = [
@@ -82,6 +80,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
+
+    # Add the account middleware:
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 
@@ -105,7 +106,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'erp.wsgi.application'
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', '')
 EMAIL_PORT = config('EMAIL_PORT', 587)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
@@ -115,6 +116,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', '')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+DATABASE_URL = config('DATABASE_URL', '')
 
 DATABASES = {
     'default': {

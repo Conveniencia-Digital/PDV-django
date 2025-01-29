@@ -7,3 +7,4 @@
 * Isola dados sensíveis em variáveis de ambiente. #8
 * Adiciona Dockerfile e docker-compose. #11
 * Aplica lint no projeto. #9
+* Roda a aplicação. #10
