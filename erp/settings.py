@@ -1,38 +1,22 @@
-
 import os
-import psycopg2
 from pathlib import Path
 
+from decouple import config, Csv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_URL = 'postgresql://postgres:0V1X7WEjQBsI1ODHgWaN@containers-us-west-20.railway.app:5528/railway'
- 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w&2gd=a5#a+y_myd7vx)1ym82jc5s_6)33orr(!d*o__ra(a1u'
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
-ALLOWED_HOSTS = [
-    '*',
-    '0.0.0.0',
-    'web-production-8a75.up.railway.app',
-    'https://web-production-8a75.up.railway.app',
-    'http://web-production-8a75.up.railway.app',
-    '127.0.0.1'
-    
-]
+DATABASE_URL = config('DATABASE_URL')
 
 AUTHENTICATION_BACKENDS = [
-    
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-    
 ]
 
 
@@ -44,14 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-       
+
     # my apps
     'dashboard',
     'produto',
@@ -73,13 +57,12 @@ INSTALLED_APPS = [
     'lanhouse',
 
 ]
-# Application definition
 
 SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-       
+
         'APP': {
             'client_id': '614591685918-oq7tr0k0htn000e6kvo01shjhkphahrg.apps.googleusercontent.com',
             'secret': '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',
@@ -88,7 +71,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-8a75.up.railway.app']
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default=[], cast=Csv())
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,13 +86,12 @@ MIDDLEWARE = [
 ]
 
 
-
 ROOT_URLCONF = 'erp.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth','accounts', 'socialaccount')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth', 'accounts', 'socialaccount')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,13 +106,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'erp.wsgi.application'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'suaconvenienciadigital@gmail.com'
-EMAIL_HOST_PASSWORD = 'mancunxwxrjjvtuy'
-
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST', '')
+EMAIL_PORT = config('EMAIL_PORT', 587)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', '')
 
 
 # Database
@@ -138,11 +120,11 @@ EMAIL_HOST_PASSWORD = 'mancunxwxrjjvtuy'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '0V1X7WEjQBsI1ODHgWaN',
-        'HOST': 'containers-us-west-20.railway.app',
-        'PORT': '5528',
+        'NAME': config('DB_NAME', 'pdv_db'),
+        'USER': config('DB_USER', 'postgres'),
+        'PASSWORD': config('DB_PASSWORD', 'postgres'),
+        'HOST': config('DB_HOST', '127.0.0.1'),
+        'PORT': config('DB_PORT', 5439),
     }
 }
 
@@ -169,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
