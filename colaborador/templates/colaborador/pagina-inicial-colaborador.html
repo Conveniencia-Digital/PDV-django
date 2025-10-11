@@ -1,5 +1,5 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-
+{% load totalcolaborador %}
 {% block titulo %}
 Funcionarios
 {% endblock titulo%}
@@ -35,10 +35,10 @@ Funcionarios
 
 
 {% block conteudo %}
-<div class="row" id="total-colaborador">
+<div class="row" id="total-colaboradores">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title"> Funcionarios cadastrados <b></b></h5>
+            <h5 class="card-title"> Funcionarios cadastrados <b>{% total_colaborador %}</b></h5>
         </div>
     </div>
 </div>

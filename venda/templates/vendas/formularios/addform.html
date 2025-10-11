@@ -100,8 +100,115 @@
 
   };
 
+  
 
+  function verificarDuplicatas() {
+    let produtos = document.querySelectorAll('[data-field="produto"]');
+    let produtosSelecionados = new Set();
+    let duplicatas = false;
 
+    produtos.forEach(produto => {
+        let valor = produto.value;
+        let itemRow = produto.closest('.row'); 
+
+        if (valor !== "Selecione" && valor !== "") {
+            if (produtosSelecionados.has(valor)) {
+                alert("Este produto já foi adicionado! O item será removido.");
+                
+                // Remove a linha do formulário automaticamente
+                if (itemRow) {
+                    itemRow.remove();
+                    reorderItems(); // Atualiza os índices
+                }
+
+                duplicatas = true;
+            } else {
+                produtosSelecionados.add(valor);
+            }
+        }
+    });
+
+    return !duplicatas; // Retorna falso se houver duplicatas
+}
+
+// ✅ Bloqueia o envio do formulário se houver duplicatas
+document.querySelector('form').addEventListener('submit', function(event) {
+    if (!verificarDuplicatas()) {
+        event.preventDefault(); // Impede o envio do formulário
+    }
+});
+
+// ✅ Chama a função quando um novo produto é adicionado
+document.getElementById('addItem').addEventListener('click', function () {
+    setTimeout(() => {
+        verificarDuplicatas();
+        reorderItems();
+    }, 500);
+});
+
+// ✅ Aciona a função sempre que o usuário altera um produto
+document.addEventListener("change", function (event) {
+    if (event.target.matches('[data-field="produto"]')) {
+        verificarDuplicatas();
+    }
+});
+
+// ✅ Reorganiza os índices do formset
+function reorderItems() {
+    var totalValue = 0;
+
+    let items = Array.from(document.querySelectorAll("[id^='item-']"));
+    items.forEach((item, i) => {
+        item.setAttribute('id', 'item-' + i);
+
+        let vendasField = item.querySelector('[data-field="vendas"]');
+        let produtoField = item.querySelector('[data-field="produto"]');
+        let quantidadeField = item.querySelector('[data-field="quantidade"]');
+        let precoField = item.querySelector('[data-field="preco"]');
+
+        if (vendasField) {
+            vendasField.setAttribute('name', `items-${i}-vendas`);
+            vendasField.setAttribute('id', `id_items-${i}-vendas`);
+        }
+
+        if (produtoField) {
+            produtoField.setAttribute('name', `items-${i}-produto`);
+            produtoField.setAttribute('id', `id_items-${i}-produto`);
+            produtoField.setAttribute('hx-target', `#id_items-${i}-preco`);
+        }
+
+        if (quantidadeField) {
+            quantidadeField.setAttribute('name', `items-${i}-quantidade`);
+        }
+
+        if (precoField) {
+            precoField.setAttribute('name', `items-${i}-preco`);
+            precoField.setAttribute('id', `id_items-${i}-preco`);
+
+            let preco = parseFloat(precoField.value) || 0;
+            let qtd = parseInt(quantidadeField.value) || 1;
+            totalValue += preco * qtd;
+        }
+    });
+
+    // Atualiza o número total de formulários
+    document.querySelector('#id_items-TOTAL_FORMS').value = items.length;
+
+    // Processa o htmx para reconhecer os novos elementos
+    htmx.process(document.querySelector("#venda"));
+
+    // Atualiza o valor total
+    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
+}
+
+// ✅ Remove uma linha corretamente
+function removeRow(event) {
+    const row = event.target.closest('.row');
+    if (row) {
+        row.remove();
+        reorderItems();
+    }
+}
 
 
 
@@ -124,53 +231,6 @@ Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quant
     item.addEventListener('blur', reorderItems);
   })
 
-function reorderItems() {
-  var totalValue = 0
-  Array.from(document.querySelectorAll("[id^='item-']"))
-    .forEach((item, i) => {
-      item.setAttribute('id', 'item-' + i)
-
-      if (!item.querySelector('[data-field="vendas"]')) {
-        return
-      }
-
-      item.querySelector('[data-field="vendas"]').setAttribute('name', 'items-' + i + '-vendas')
-      item.querySelector('[data-field="vendas"]').setAttribute('id', 'id_items-' + i + '-vendas')
-
-      item.querySelector('[data-field="produto"]').setAttribute('name', 'items-' + i + '-produto')
-      item.querySelector('[data-field="produto"]').setAttribute('id', 'id_items-' + i + '-produto')
-      item.querySelector('[data-field="produto"]').setAttribute('hx-target', '#id_items-'+ i +'-preco')
-
-      
-      
-      item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
-      item.querySelector('[data-field="quantidade"]').setAttribute('id', 'id_items-' + i + '-quantidade')
-
-      item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
-      item.querySelector('[data-field="preco"]').setAttribute('id', 'id_items-' + i + '-preco')
-      let preco = parseFloat(item.querySelector('[data-field="preco"]').value);
-      let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
-      totalValue += preco * qtd
-  })
-
-  Array.from(document.querySelectorAll("#id_id"))
-    .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
-
-  let totalItems = $('#venda').children().length
-  document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
-
-  // htmx.org/api/#process
-  htmx.process(document.querySelector("#venda"))
-  document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
-}
-
-
-function removeRow(event) {
-  const span = event.target.parentNode
-  const div = span.parentNode
-  div.parentNode.removeChild(div)
-  reorderItems()
-}
 
 Array.from(document.querySelectorAll('.remove-row'))
   .forEach((item, i) => {

@@ -2,7 +2,7 @@
 
     <td>{{ object.servico }}</td>
     <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop2" hx-get="{ url 'editar-categoria-despesa' object.pk %}" hx-target="#adicionar-conteudo2"><i class="fa fa-edit"></i></span></td>
-    <td><span hx-get="{ url 'apagar-categoria-despesa' object.pk %}" hx-target="closest tr"
+    <td><span hx-get="{% url 'apagarservico' object.pk %}" hx-target="closest tr"
             hx-swap="outerHTML swap:1s">
             <i class="fa fa-trash-can"></i>
         </span>

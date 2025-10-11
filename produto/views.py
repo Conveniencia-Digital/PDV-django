@@ -64,4 +64,4 @@ def apagarprodutos(request, pk):
 
 class DetalheProduto(DetailView):
     model = Produto
-    template_name = 'produto/off-canvas/detalhe-produtos.html'
+    template_name = 'produto/detalhes/detalhe-produtos.html'

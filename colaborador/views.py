@@ -68,3 +68,11 @@ class DetalheColaboradorView(DetailView):
     model = Colaborador
     template_name = 'colaborador/off-canvas/detalhe-colaborador.html'
 #source /Users/convenienciadigital/Documents/GitHub/PDV-django/venv/bin/activate
+
+
+@login_required
+def total_colaborador(request):
+    template_name = 'colaborador/informacao-colaborador.html'
+    total_colaborador =  Colaborador.objects.count()
+    context = {'total_colaborador': total_colaborador}
+    return render(request, template_name, context)

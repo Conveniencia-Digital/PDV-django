@@ -95,3 +95,13 @@ class ItemsVenda(models.Model):
         self.produto.save()
         super(ItemsVenda, self).save(*args, **kwargs)
 
+
+
+    
+
+
+
+
+
+
+

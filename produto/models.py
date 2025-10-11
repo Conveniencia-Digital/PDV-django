@@ -17,6 +17,10 @@ class Produto(models.Model):
     DIVERSOS = 'Diversos'
     INFORMATICA = 'Informatica'
     CAIXA_SOM = 'Caixa de som'
+    COPOS_GARRAFAS = 'Copos | Garrafas'
+    RELOGIOS = 'Relogios'
+    BRINQUEDOS = 'Brinquedos'
+    PERFUMES = 'Perfumes'
     CATEGORIAS_PRODUTOS = [
         (FONES, 'Fones'),
         (CABOS, 'Cabos'),
@@ -29,9 +33,13 @@ class Produto(models.Model):
         (FONTES, 'Fontes'),
         (DIVERSOS, 'Diversos'),
         (INFORMATICA, 'Informatica'),    
-        (CAIXA_SOM, 'Caixa de som')     
+        (CAIXA_SOM, 'Caixa de som'),
+        (COPOS_GARRAFAS, 'Copos | Garrafas'),     
+        (RELOGIOS, 'Relogios'),    
+        (BRINQUEDOS, 'Brinquedos'),  
+        (PERFUMES, 'Perfumes')    
     ]
-    PIX = 'Cartāo de credito'
+    PIX = 'Pix'
     CARTAO_CREDITO = 'Cartāo de credito'
     CARTAO_DEBITO = 'Cartāo de debito'
     DINHEIRO = 'Dinheiro'
@@ -52,6 +60,7 @@ class Produto(models.Model):
     quantidade = models.IntegerField()
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
+    margem_de_lucro = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     preco = models.DecimalField(max_digits=9, decimal_places=2)
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
     fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, null=True, blank=True)
@@ -79,6 +88,18 @@ class Produto(models.Model):
 
     def saldodespesa(self):
         return (self.preco_de_custo * self.quantidade) - self.valor_entrada
+    
+    def qtdproduto(self):
+        return(self.quantidade)
+    
+    def margem_lucro_total_percentual(self):
+        if self.preco == 0:
+            return Decimal('0.00')
+        margem = (self.lucrototal() / self.vendatotal()) * 100
+        return round(margem, 2)
+    
+    
+    
 
 
     

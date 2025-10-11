@@ -1,34 +1,3 @@
-<style>
-    tr.htmx-swapping td {
-  opacity: 0;
-  transition: opacity 1s ease-out;
-}
-</style>
-<div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Serviço</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    
-    </button>
-</div>
-<div class="modal-body">
-    <div class="table-responsive">
-        <table class="table table-borderless table-hover">
-            <thead>
-                <tr>
-                    <th>Serviço</th>
-                    <th>Editar</th>
-                    <th>Apagar</th>
-                </tr>
-            </thead>
-            <tbody id="servico">
-                {% for object in object_list %}
-                {% include 'orcamento/tabela/linhas-tabela-servico.html' %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Fechar</button>
-</div>
-
+{% for object in object_list %}
+    {% include 'orcamento/tabela/linhas-tabela-servico.html' %}
+{% endfor %}

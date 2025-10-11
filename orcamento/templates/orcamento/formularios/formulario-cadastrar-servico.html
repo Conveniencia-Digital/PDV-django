@@ -4,10 +4,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form
-    hx-post="{% url 'cadastrar-servico' %}"
-    hx-target="#servico-Tbody" 
-    hx-swap="afterbegin"
-    hx-indicator=".htmx-indicator">
+    hx-post="{% url 'cadastrar-servico' %}">
         
     <div class="modal-body">
         {% csrf_token %}
@@ -22,12 +19,15 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+        <button type="submit" class="btn btn-outline-primary">Cadastrar</button>
     </div>
 </form>
 
 <script>
-    $('form').on('submit', function() {
-    $('#staticBackdrop').modal('toggle')
+    $('form').on('submit', function () {
+      $('#staticBackdrop').modal('toggle');
+      setTimeout(() => {
+        $('#success_tic_servico').modal('toggle'); 
+      }, "500");
     });
-</script>
+  </script>

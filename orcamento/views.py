@@ -138,4 +138,16 @@ def cadastrarservico(request):
 
 class ListaServicos(ListView):
     model = Servico
+    template_name = 'orcamento/lista-servico-orcamento.html'
+
+    def get_queryset(self):
+        return Servico.objects.filter(usuario=self.request.user)
+
+def apagarservico(request, pk):
     template_name = 'orcamento/tabela/tabela-servico.html'
+    obj = Servico.objects.get(pk=pk)
+    if obj.usuario != request.user:
+        raise PermissionError
+    else:
+        obj.delete()
+        return render(request, template_name)

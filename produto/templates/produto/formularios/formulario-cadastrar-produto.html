@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-  <h5 class="modal-title" id="staticBackdropLabel"> Novo produto </h5>
+  <h5 class="modal-title" id="staticBackdropLabel"> Cadastro de produto </h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form hx-post="{% url 'criar-produtos' %}" hx-target="#produto-Tbody" hx-indicator=".htmx-indicator"
@@ -47,20 +47,26 @@
       <div class="row g-2">
         <div class="col-md-3">
           <div class="form-floating">
+            {% render_field form.quantidade value="01" %}
+            <label for="floatingSelectGrid">Informe a quantidade</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-floating">
             {% render_field form.preco_de_custo value="0.00" %}
             <label for="floatingSelectGrid">Preço custo(unidade)</label>
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-floating">
-            {% render_field form.preco value="0.00" %}
-            <label for="floatingSelectGrid">Preço venda(unidade)</label>
+            {% render_field form.margem_de_lucro value="0" %}
+            <label for="floatingSelectGrid">Margem de lucro %</label>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="form-floating">
-            {% render_field form.quantidade value="01" %}
-            <label for="floatingSelectGrid">Informe a quantidade</label>
+            {% render_field form.preco value="0.00" %}
+            <label for="floatingSelectGrid">Preço venda(unidade)</label>
           </div>
         </div>
       </div>
@@ -131,6 +137,47 @@
 
 
   });
+  document.querySelector("#staticBackdrop").addEventListener("shown.bs.modal", function() {
+    let precoDeCusto = document.querySelector("#id_preco_de_custo");
+    let margemDeLucro = document.querySelector("#id_margem_de_lucro");
+    let preco = document.querySelector("#id_preco");
+
+    function calcularValores() {
+        let custo = parseFloat(precoDeCusto.value) || 0;
+        let venda = parseFloat(preco.value) || 0;
+        let margem = parseFloat(margemDeLucro.value) || 0;
+
+        if (precoDeCusto.value !== "" && margemDeLucro.value !== "") {
+            // Calcular preço de venda com base no custo e margem
+            if (document.activeElement === margemDeLucro || document.activeElement === precoDeCusto) {
+                if (margem < 100) {
+                    preco.value = (custo / (1 - margem / 100)).toFixed(2);
+                } else {
+                    preco.value = "0.00"; // Evita erro caso margem seja 100% ou maior
+                }
+            }
+        }
+
+        if (preco.value !== "" && precoDeCusto.value !== "") {
+            // Calcular margem de lucro com base no preço de venda
+            if (document.activeElement === preco) {
+                if (venda > custo) {
+                    margemDeLucro.value = ((1 - (custo / venda)) * 100).toFixed(2);
+                } else {
+                    margemDeLucro.value = "0"; // Evita erro caso venda seja menor ou igual ao custo
+                }
+            }
+        }
+    }
+
+    // Adiciona evento de input nos campos para recalcular
+    precoDeCusto.addEventListener("input", calcularValores);
+    margemDeLucro.addEventListener("input", calcularValores);
+    preco.addEventListener("input", calcularValores);
+});
+
+
+
 
 
 

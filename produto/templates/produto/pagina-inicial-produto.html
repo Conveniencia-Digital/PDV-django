@@ -1,4 +1,5 @@
-{% extends 'dashboard/pagina-inicial.html'%}
+{% extends 'dashboard/pagina-inicial.html' %}
+{% load relatorioproduto %}
 
 {% block style %}
 <style>
@@ -21,7 +22,9 @@
     .btn {
         box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
         font-size: 20px;
-
+    }
+    .card-text {
+      font-size: 20px;
     }
 </style>
 {% endblock style %}
@@ -31,16 +34,40 @@
 
 {% block conteudo %}
 <div class="row" id="relatorio-peca">
+  <div class="col-sm-3">
     <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Seus produtos cadastrados <b></b></h5>     
-          <h2 class="card-text">Seu Lucro R$</h2>       
-          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$</h6>
-          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$</h6>
-        </div>
+      <div class="card-body">
+        <h5 class="card-title">Produtos em estoque</h5>
+        <p class="card-text">{% quantidade_produtos request %}</p>
       </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Preço de custo</h5>
+        <p class="card-text">R${% custo_total_produto request %}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Preço de venda</h5>
+        <p class="card-text">R${% total_produtos request %}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Seu Lucro</h5>
+        <p class="card-text">R${% lucro_total_produtos request %} - %{% margem_de_lucro_produto request %}</p>
+      </div>
+    </div>
+  </div>
 </div>
-<div>
+<div class="row"><div>
     <a
            
             class="btn btn-outline-primary"
@@ -71,7 +98,7 @@
 {% include "produto/modais-vazios/modal-alerta.html" %}
 {% include "produto/modais-vazios/modal-alerta-apagar.html" %}
 {% include "produto/modais-vazios/modal-alerta-editar.html" %}
-{% include "produto/off-canvas/off-canvas-produtos.html" %}
+{% include "produto/modais-vazios/modal-detalhe-produtos.html" %}
 
 {% endblock conteudo %}
 

@@ -1,3 +1,19 @@
+{% block style %}
+    <style>
+        .toggle-detalhes i {
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-detalhes[aria-expanded="true"] i {
+        transform: rotate(180deg);
+    }
+    .toggle-detalhes:hover i {
+        color: #0d6efd;
+        transform: translateY(1px);
+    }
+    </style>
+{% endblock style %}
+
 <tr id="trVenda{{ object.pk }}" style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
     <th>Cliente</th>
     <th>Data da venda</th>
@@ -21,31 +37,32 @@
         data-bs-target="#staticBackdrop" hx-target="#addConteudo">
             <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
         </a>
+        <a href="#esconder{{ object.pk }}" data-bs-toggle="collapse" style="text-decoration: none; margin-left: 10px;" class="toggle-detalhes" role="button" aria-bs-expanded="false" aria-controls="esconder{{ object.pk }}"><i class="fa-solid fa-chevron-down"></i> </a>
     </td>
    
 </tr>
 
-<tr>
+<tr class="collapse" id="esconder{{ object.pk }}">
     <th>Produtos</th>
     <th>Quantidade</th>
     <th>Preço Unidade</th>
     <th>Sub Total</th>
 </tr>
 {% for items in object.vendas_items.all %}
-<tr>
+<tr class="collapse" id="esconder{{ object.pk }}">
     <td>{{ items.produto }}</td>
     <td>{{ items.quantidade }}</td>
     <td>{{ items.preco }}</td>
     <td>{{ items.subtotal }}</td>
 </tr>
 {% endfor %}
-<tr style="color: red;">
+<tr class="collapse" id="esconder{{ object.pk }}" style="color: red;">
     <td></td>
     <td></td>
     <th>Desconto</th>
     <th>{{ object.desconto }}</th>
 </tr>
-<tr style="color: green;">
+<tr class="collapse" id="esconder{{ object.pk }}" style="color: green;">
     <th>Forma de pagamento</th>
     <th>{{object.forma_pagamento}}</th>
     <th>Total</th>

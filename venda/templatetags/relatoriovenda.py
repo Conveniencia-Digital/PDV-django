@@ -18,3 +18,5 @@ def total_vendas(request):#vendas = Vendas.objects.all()
 def qtd_vendas(request):
     qtd_vendas = Vendas.objects.filter(usuario=request.user).count()
     return qtd_vendas
+
+
