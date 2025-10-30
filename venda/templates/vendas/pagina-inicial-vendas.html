@@ -36,14 +36,32 @@ Vendas
 {% block conteudo %}
 
     
-    <div class="row" id="relatorio-venda">
+<div class="row" id="relatorio-venda">
+  <div class="col-sm-4">   
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Voce fez <b>{% qtd_vendas request %}</b> vendas este mes </h5>
+                <h5 class="card-title">Você fez <b>{% qtd_vendas request %}</b> vendas este mês </h5>
                 <h2 class="card-text"><sup>R$</sup> {% total_vendas request %}</h2>
             </div>
-        </div>
-    </div>
+        </div>  
+  </div>
+  <div class="col-sm-3">  
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Seu lucro bruto foi de</h5>
+                <h2 class="card-text"><sup>R$</sup> {% lucro_total_vendas request %}</h2>
+            </div>
+        </div> 
+  </div>
+  <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sua margem de lucro foi</h5>
+                <h2 class="card-text"><sup>%</sup>{% margem_lucro_total_vendas request %}</h2>
+            </div>
+        </div> 
+  </div>
+</div>
     
     
     <div style="margin-top: 30px;">

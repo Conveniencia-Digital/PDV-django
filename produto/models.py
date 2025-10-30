@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
@@ -76,6 +77,12 @@ class Produto(models.Model):
 
     def lucro(self):
         return self.preco - self.preco_de_custo
+    
+    def margem_lucro_und(self):
+        if self.preco == 0:
+            return Decimal('0.00')
+        margem_und = ((self.preco - self.preco_de_custo) / self.preco) * 100
+        return round(margem_und,2)
 
     def lucrototal(self):
         return (self.preco - self.preco_de_custo) * self.quantidade 

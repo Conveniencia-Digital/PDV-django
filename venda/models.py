@@ -1,10 +1,9 @@
+from decimal import Decimal
 from django.db import models
 from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
-
-
 
 
 class Vendas(models.Model):
@@ -66,8 +65,31 @@ class Vendas(models.Model):
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
         return desc - self.valor_entrada
+    
 
+    def lucro_total(self):
+        desconto = self.desconto or Decimal('0.00')
+        lucro_itens = sum((item.preco - item.produto.preco_de_custo) * item.quantidade
+                        for item in self.vendas_items.select_related('produto').all())
+        
+        if lucro_itens == 0:
+            return Decimal('0.00')
+        
+        receita_bruta = sum(item.preco * item.quantidade for item in self.vendas_items.all())
 
+        if receita_bruta == 0:
+            return Decimal('0.00')
+        
+        desconto_proporcao = (desconto / receita_bruta) if receita_bruta else Decimal('0.00')
+        lucro_liquido = lucro_itens - (lucro_itens * desconto_proporcao)
+
+        return Decimal(lucro_liquido).quantize(Decimal('0.01'))
+
+    def margem_lucro_total_vendas(self):
+        if self.desconto == 0:
+            return Decimal('0.00')
+        margem_vendas = (self.lucro_total() / self.total()) * 100
+        return round(margem_vendas, 2)
 
 class ItemsVenda(models.Model):
     vendas = models.ForeignKey(Vendas,
@@ -89,11 +111,18 @@ class ItemsVenda(models.Model):
 
     def subtotal(self):
         return self.quantidade * self.preco
+    
+    def lucro_unitario(self):
+        return (self.preco - self.produto.preco_de_custo)
+    
+    def lucro_total_item(self):
+        return (self.preco - self.produto.preco_de_custo) * self.quantidade
 
     def save(self, *args, **kwargs):
         self.produto.quantidade -= self.quantidade
         self.produto.save()
         super(ItemsVenda, self).save(*args, **kwargs)
+
 
 
 

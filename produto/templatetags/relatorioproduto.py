@@ -39,3 +39,5 @@ def margem_de_lucro_produto(request):
     margem_percentual = (total_lucro / total_venda) * 100
     return round(margem_percentual, 2)
 
+
+

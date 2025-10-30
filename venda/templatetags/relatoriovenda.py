@@ -20,3 +20,21 @@ def qtd_vendas(request):
     return qtd_vendas
 
 
+@register.simple_tag
+def lucro_total_vendas(request):
+    vendas = Vendas.objects.filter(usuario=request.user)
+    total_lucro = sum(v.lucro_total() for v in vendas)
+    return total_lucro
+
+
+@register.simple_tag
+def margem_lucro_total_vendas(request):
+    vendas = Vendas.objects.filter(usuario=request.user)
+    total_lucro_vendas = sum(p.lucro_total() for p in vendas)
+    total_vendas = sum(p.total() for p in vendas)
+
+    if total_vendas == 0:
+        return 0
+    
+    margem_percentual_vendas = (total_lucro_vendas / total_vendas) * 100
+    return round(margem_percentual_vendas, 2)
