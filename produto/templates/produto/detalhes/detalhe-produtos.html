@@ -1,35 +1,73 @@
-<div class="container text-center" style="padding-top: 20px;">    
-    <h3>Produto</h3>
-    <h5>{{ object.nome_produto }}</h5>
-    <h3>Categoria</h3>
-    <h5>{{ object.categoria_produtos }}</h5>
-    <h3>Quantidade em estoque</h3>
-    <h5>{{ object.quantidade}}</h5>
-    <h3>Preco de custo por unidade</h3>
-    <h5><sup>R$</sup> {{ object.preco_de_custo }}</h5>
-    <h3>Preco de venda por unidade</h3>
-    <h5><sup>R$</sup> {{ object.preco }}</h5>
-    <h3>lucro por unidade</h3>
-    <h5><sup>R$</sup> {{ object.lucro }} - %{{ object.margem_lucro_und }}</h5>
-    <h3>Preco de custo de todos os produto</h3>
-    <h5><sup>R$</sup> {{ object.precototal }}</h5>
-    <h3>Preco de venda de todos os produto</h3>
-    <h5><sup>R$</sup> {{ object.vendatotal }}</h5>
-    <h3>lucro de venda de todos os produto</h3>
-    <h5><sup>R$</sup> {{ object.lucrototal }}</h5>
-    <h3>Fornecedor</h3>
-    {% if object.fornecedor == None %}
-    <h5>Nao informado</h5>
-    {% else %}
-    <h5>{{ object.fornecedor }}</h5>
-    {% endif %}
-    <h3>Data de cadastro</h3>
-    <h5>{{ object.data_criacao|date:'d/m/y h:i' }}</h5>
-    <h3>Ultima edicao</h3>
-    <h5>{{ object.data_edicao|date:'d/m/y h:i' }}</h5>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-dark text-center">
+      <th scope="col">Qtd. em Estoque</th>
+      <th scope="col">Produto</th>
+      <th scope="col">Categoria</th>
+      <th scope="col">Fornecedor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="text-center">
+      <td>{{ object.quantidade }}</td>
+      <td>{{ object.nome_produto }}</td>
+      <td>{{ object.categoria_produtos }}</td>
+      <td>{% if object.fornecedor == None %}
+            Não informado
+          {% else %}
+            {{ object.fornecedor }}
+          {% endif %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-dark text-center">
+      <th scope="col">Preço de Custo por Unidade</th>
+      <th scope="col">Preço de Venda por Unidade</th>
+      <th scope="col">Margem de Lucro por Unidade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="text-center">
+      <td><sup>R$</sup> {{ object.preco_de_custo }}</td>
+      <td><sup>R$</sup> {{ object.preco }}</td>
+      <td><sup>R$</sup> {{ object.lucro }} <b>(%{{ object.margem_lucro_und }})</b></td>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-dark text-center">
+      <th scope="col">Preço de Custo de Total</th>
+      <th scope="col">Preço de Venda Total</th>
+      <th scope="col">Margem de Lucro Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="text-center">
+      <td><sup>R$</sup> {{ object.precototal }}</td>
+      <td><sup>R$</sup> {{ object.vendatotal }}</td>
+      <td><sup>R$</sup> {{ object.lucrototal }} <b>(%{{ object.margem_lucro_total_percentual }})</b></td>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-dark text-center">
+      <th scope="col">Data do Cadastro</th>
+      <th scope="col">Ultima Edição</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="text-center">
+      <td>{{ object.data_criacao|date:'d/m/y h:i' }}</td>
+      <td>{{ object.data_edicao|date:'d/m/y h:i' }}</td>
+    </tr>
+  </tbody>
+</table>
 
-</div>
-  
 
         
     

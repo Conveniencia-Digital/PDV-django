@@ -1,0 +1,44 @@
+<div class="row align-items-center mt-4" id="relatorio-venda">
+  <div class="col-sm-4">   
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-2">
+                    {% if periodo == 'hoje' %}
+                        Vendas hoje
+                    {% elif periodo == 'ontem' %}
+                        Vendas ontem
+                    {% elif periodo == '7dias' %}
+                        Vendas últimos 7 dias
+                    {% elif periodo == 'este_mes' %}
+                        Vendas deste mês
+                    {% elif periodo == 'mes_passado' %}
+                        Vendas mês passado
+                    {% elif periodo == 'este_ano' %}
+                        Vendas deste ano
+                    {% elif inicio or fim %}
+                        Vendas no periodo
+                        {% if inicio %} {{ inicio|date:"d/m/Y" }} {% endif %}
+                        {% if inicio and fim %} {% endif %}
+                        {% if fim %} {{ fim|date:"d/m/Y" }} {% endif %}
+                    {% else %}
+                        Vendas hoje
+                    {% endif %}
+                </h6>
+
+                <h2 class="fw-bold">{{ qtd_vendas }}</h2>
+                <h6 class="text-muted mb-2">Total Vendido</h6>
+                <h2 class="fw-bold"><sup>R$</sup> {{ total_vendas }}</h2>
+            </div>
+        </div>  
+  </div>
+  <div class="col-sm-4">  
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-2">Seu lucro bruto foi de</h6>
+                <h2 class="fw-bold"><sup>R$</sup> {{ lucro_total }}</h2>
+                <h6 class="text-muted mb-2">Sua margem de lucro foi</h6>
+                <h2 class="fw-bold"><sup>%</sup>{{ margem_lucro_total_vendas }}</h2>
+            </div>
+        </div> 
+  </div>
+</div> 

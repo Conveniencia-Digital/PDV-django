@@ -1,71 +1,16 @@
-{% load widget_tweaks %}
 
-<div id="item-{{ forloop.counter0 }}" class="row g-2">
-  <style> 
-  
+document.body.addEventListener("htmx:afterSwap", function (evt) {
+    document.querySelectorAll('[data-field="preco"]').forEach(el => {
+        el.setAttribute("readonly", "readonly");
+    });
+});
 
-    @media (max-width:760px) {
-    #remove {
-      width: 80vw;
-      height: 20px; 
-      font-size:15px;
-      margin-bottom: 30px;
-      margin-left: 2px;
-      
-    }
 
-  }
-  @media (min-width: 900px){
-    #remove {
-      width: 60px; 
-      height: 25px; 
-      font-size: 10px; 
-      margin-top: 12px;
-      margin-left: 2px;
-    }
-    
-  }
-  </style>
-    {% render_field itemsvendaform.vendas data-field='vendas' %}
-    {% render_field itemsvendaform.id data-field='id'  %}
-   
-    <div class="row g-2" style="display: flex;">
-      <div id="mouse" class="col-md-6 mb-3 form-floating">
-          {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-          <label>Informe o produto </label>
-        </div>
-      <div class="col-md-3 mb-3 form-floating">
-          {% render_field itemsvendaform.preco data-field='preco' value="0.00" readonly="readonly" %}
-          <label>Preço Unitario </label>
-      </div>
-      <div class="col-md-2 mb-2 form-floating">
-          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-      </div>
-      {% if items_venda_form.id.value %}
-          <div class="col-md-1 mb-1">
-               <span
-                  class="span-is-link no ml-2 remove-row"
-                  hx-delete="{% url 'apagar-item-venda' items_venda_form.id.value %}"
-                  hx-confirm="Deseja mesmo deletar o item {{items_venda_form.id.value}}?"
-                  hx-target="#item-{{ forloop.counter0 }}"
-                  hx-swap="outerHTML">
-                   <i class="fa fa-times fa-lg"></i>
-               </span>
-              {% else %}
-              <div class="col-1" onclick="removeRow()">
-                  <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">X</button>
-              </div>
-          </div>
-    </div>
-    {% endif %}
-</div>
-<script>
-  document.getElementById('id_main-desconto').addEventListener('click', Desconto); 
-  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto);
-  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto); 
-  document.getElementById('id_main-desconto').addEventListener('change', Desconto); 
-  document.querySelector('select').addEventListener('click', Desconto);
+
+  document.getElementById('id_main-desconto').addEventListener('click', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto) 
+  document.getElementById('id_main-desconto').addEventListener('change', Desconto) 
   
   Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"]'))
     .forEach((item, i) => {
@@ -99,9 +44,38 @@
     }
 
   };
+ 
 
+  document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
+    var qtd_parcela = document.getElementById('id_main-qtd_parcela');
+    var valor_entrada = document.getElementById('id_main-valor_entrada');
+    var dia_vencimento = document.getElementById('id_main-data_vencimento');
+    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
+    var label_data_vencimento = document.getElementById('label_data_vencimento');
+    var label_valor_entrada = document.getElementById('label_valor_entrada');
+
+    if (this.value === 'Fiado a receber') {
+      qtd_parcela.setAttribute('type', 'Number');
+      valor_entrada.setAttribute('type', 'Number');
+      dia_vencimento.setAttribute('type', 'Date');
+      label_valor_entrada.style.color = "rgb(67, 67, 67)";
+      label_data_vencimento.style.color = "rgb(67, 67, 67)";
+      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
+    } else {
+      qtd_parcela.setAttribute('type', 'Hidden');
+      valor_entrada.setAttribute('type', 'Hidden');
+      dia_vencimento.setAttribute('type', 'Hidden');
+      label_valor_entrada.style.color = "#FFFFFF";
+      label_data_vencimento.style.color = "#FFFFFF";
+      label_qtd_parcela.style.color = "#FFFFFF";
+
+    }
+  });
+  (function () {
+    reorderItems()
+  })();
   
-
+ 
   function verificarDuplicatas() {
     let produtos = document.querySelectorAll('[data-field="produto"]');
     let produtosSelecionados = new Set();
@@ -212,31 +186,46 @@ function removeRow(event) {
 
 
 
-    (function() {
-  // Chama o método pra numerar os objetos ao carregar a página.
-  reorderItems()
-})();
 
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
-    reorderItems()
-  }, 500)
-})
-Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"], #remove'))
-  .forEach((item,i) => {
-    item.addEventListener('click', reorderItems);
-    item.addEventListener('change', reorderItems);
-    item.addEventListener('mouseover', reorderItems);
-    item.addEventListener('mouseout', reorderItems);
-    item.addEventListener('blur', reorderItems);
+
+
+
+  document.querySelector('#addItem').addEventListener('click', function () {
+    setTimeout(() => {
+      reorderItems()
+    }, 500)
   })
+  Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"]'))
+    .forEach((item, i) => {
+      item.addEventListener('change', reorderItems);
+      item.addEventListener('mouseover', reorderItems);
+      item.addEventListener('click', reorderItems);
+      item.addEventListener('mouseout', reorderItems);
+      item.addEventListener('blur', reorderItems);
+    });
 
+  
 
-Array.from(document.querySelectorAll('.remove-row'))
-  .forEach((item, i) => {
-    item.addEventListener('click', function() {
-      document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block';
+  
+
+  Array.from(document.querySelectorAll('.remove-row'))
+    .forEach((item, i) => {
+      item.addEventListener('click', function () {
+        document.querySelector('button[type="submit"]').style.display = 'none'
+        document.querySelector('#btn-close').style.display = 'block'
+      })
     })
-  })
-</script>
+
+
+  $('form').on('submit', function () {
+    $('#staticBackdrop').modal('toggle')
+    setTimeout(() => {
+      $('#success_tic').modal('toggle')
+    }, 500)
+  });
+  function MyFunction(){
+    document.querySelector('#status').setAttribute('hidden', 'hidden')
+
+  }
+  setTimeout( MyFunction, -1000) 
+

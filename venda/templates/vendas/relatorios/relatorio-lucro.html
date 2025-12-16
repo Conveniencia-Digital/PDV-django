@@ -1,0 +1,110 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="staticBackdropLabel">Relatório de Vendas</h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="contentPrint">
+        <style>
+            .header {
+                display: flex;
+                justify-content: space-between;
+                border-bottom: solid black;
+            }
+            .logo {
+                font-size: 1.75em;
+                align-self: center;
+            }
+            .content {
+                margin-top: 30px;
+            }
+            .description {
+                font-size: 0.75em;
+            }
+            .table th, .table td {
+                font-size: 0.85em;
+            }
+        </style>
+
+        <!-- Cabeçalho -->
+        <div class="header">
+            <div class="logo">Conveniência Digital</div>
+            <div class="information">
+                <p class="description">
+                    Centro de vendas <br>
+                    CNPJ: 29.216.862/0001-38 <br>
+                    Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
+                    Telefone: 67 9 9664-9605
+                </p>
+            </div>
+        </div>
+
+        <!-- Conteúdo da venda -->
+        <div class="content">
+            <table class="table table-bordered">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço Unitário</th>
+                        <th>Subtotal</th>
+                        <th>Desconto</th>
+                        <th>Forma de Pagamento</th>
+                        <th>Lucro (R$)</th>
+                        <th>Lucro (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in object.vendas_items.all %}
+                    <tr>
+                        <td>{{ item.produto }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.preco }}</td>
+                        <td>R$ {{ item.subtotal }}</td>
+                        <td>R$ {{ object.desconto|default:"0.00" }}</td>
+                        <td>{{ object.forma_pagamento }}</td>
+                        <td>R$ {{ item.lucro_total_item }}</td>
+                        <td>{{ item.margem_lucro_percentual }}%</td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- Lucro total considerando desconto -->
+                    <tr class="bg-light">
+                        <th colspan="6" class="text-end">Lucro Total (com desconto)</th>
+                        <th colspan="2">R$ {{ object.lucro_total }}</th>
+                    </tr>
+                    <tr class="bg-light">
+                        <th colspan="6" class="text-end">Lucro Total (%)</th>
+                        <th colspan="2">{{ object.margem_lucro_total_percentual }}%</th>
+                    </tr>
+
+
+                </tbody>
+            </table>
+
+            <p><strong>Observação:</strong> {{ object.observacao }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button id="myBtn" onclick="imprimir('.contentPrint')" type="button" class="btn btn-outline-primary">Imprimir</button>
+</div>
+
+{% block scripts %}
+<script>
+    function imprimir(divName) {
+        let content = document.querySelector(divName).innerHTML;
+        let originalContents = document.body.innerHTML;
+        document.body.innerHTML = content;
+
+        window.print();
+        document.body.innerHTML = originalContents;
+
+        setTimeout(function () {
+            window.location.reload();
+        }, 500);
+    }
+</script>
+{% endblock scripts %}

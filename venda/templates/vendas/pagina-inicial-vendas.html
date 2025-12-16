@@ -30,54 +30,20 @@ Vendas
         font-size: 20px;
 
     }
+    .btn-periodo-ativo {
+    background-color: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+    }
+    
+
 
 </style>
 {% endblock style %}
 {% block conteudo %}
 
-    
-<div class="row" id="relatorio-venda">
-  <div class="col-sm-4">   
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Você fez <b>{% qtd_vendas request %}</b> vendas este mês </h5>
-                <h2 class="card-text"><sup>R$</sup> {% total_vendas request %}</h2>
-            </div>
-        </div>  
-  </div>
-  <div class="col-sm-3">  
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Seu lucro bruto foi de</h5>
-                <h2 class="card-text"><sup>R$</sup> {% lucro_total_vendas request %}</h2>
-            </div>
-        </div> 
-  </div>
-  <div class="col-sm-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Sua margem de lucro foi</h5>
-                <h2 class="card-text"><sup>%</sup>{% margem_lucro_total_vendas request %}</h2>
-            </div>
-        </div> 
-  </div>
-</div>
-    
-    
-    <div style="margin-top: 30px;">
-        <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'cadastrar-vendas' %}"
-            hx-target="#addConteudo" hx-swap="innerHTML">Vender
-        </a>
-    </div>
-    <div class="table-responsive" style="padding-top: 18px;">
-        <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-            <thead></thead>
-            <tbody id="vendas-Tbody">
-                {% include 'vendas/tabela/tabela-venda.html' %}
-            </tbody>
-        </table>
-    </div>
+    {% include 'vendas/bloco-dados.html' %}
     {% include 'vendas/modal/modal-venda.html' %}
     {% include 'vendas/modal/modal-alerta.html' %}
-
+</div>
 {% endblock conteudo %}

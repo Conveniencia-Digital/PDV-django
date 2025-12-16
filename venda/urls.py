@@ -1,5 +1,6 @@
 from django.urls import path
-from venda.views import cadastrarvendas, buscarpreco, addform, ListaVendas, apagaritemvenda, DetalheVendas, editarvendas, valor_total_vendas
+from venda.views import cadastrarvendas, buscarpreco, addform, ListaVendas, apagaritemvenda, DetalheVendas, editarvendas, valor_total_vendas, RelatorioLucro
+
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -10,5 +11,13 @@ urlpatterns = [
     path('addform/', login_required(addform), name='addform'),
     path('apagaritemvenda/', login_required(apagaritemvenda), name='apagar-item-venda'),
     path('detalhevendas/<int:pk>', login_required(DetalheVendas.as_view()), name='detalhe-vendas'),
-    path('totalvendas/', valor_total_vendas, name='total-vendas' )
+    path('totalvendas/', login_required(valor_total_vendas), name='total-vendas' ),
+    path('relatoriolucro/<int:pk>/', login_required(RelatorioLucro.as_view()), name='relatorio-lucro'),
+    #path('vendas/atualizar/', login_required(atualizar_vendas), name='atualizar-vendas'),
+
+
+   
+
+
+
 ]

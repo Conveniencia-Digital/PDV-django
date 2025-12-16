@@ -1,9 +1,8 @@
 {% block style %}
-    <style>
-        .toggle-detalhes i {
+<style>
+    .toggle-detalhes i {
         transition: transform 0.3s ease;
     }
-
     .toggle-detalhes[aria-expanded="true"] i {
         transform: rotate(180deg);
     }
@@ -11,61 +10,109 @@
         color: #0d6efd;
         transform: translateY(1px);
     }
-    </style>
+</style>
 {% endblock style %}
 
-<tr id="trVenda{{ object.pk }}" style="border-bottom: 0.15px solid rgb(229, 224, 224); border-top: 0.15px solid rgb(229, 224, 224); ">
-    <th>Cliente</th>
+<!-- Linha principal da venda -->
+<tr id="venda-{{ object.pk }}"
+    style="border-bottom: 0.15px solid rgb(229,224,224); border-top: 0.15px solid rgb(229,224,224);">
     <th>Data da venda</th>
+    <th>Cliente</th>
     <th>Status</th>
     <th>Ações</th>
 </tr>
+
 <tr>
-    <td>{{object.cliente.nome_cliente}}<br> <a href="tel:+55{{object.cliente.telefone_contato}}" style="text-decoration: none;">{{object.cliente.telefone_contato}}</a></td>
-    <td>{{object.data_criacao|date:'d/m/y - H:i:s'}}</td>
-    {% if object.status == 'Entregue' %}
-    <th style="color: rgb(23, 99, 23);">{{ object.status }}</th>
-    {% else %}
-    <th>{{ object.status }}</th>
-    {% endif %}
+    <td>{{ object.data_criacao|date:'d/m/y - H:i:s' }}</td>
     <td>
-        <a style="text-decoration: none;" hx-get="{% url 'detalhe-vendas' object.pk %}" data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop" hx-target="#addConteudo">
-            <i class="fa-solid fa-eye" style="color: rgb(0, 132, 255);"></i>
+        {{ object.cliente.nome_cliente }}<br>
+        <a href="tel:+55{{ object.cliente.telefone_contato }}" style="text-decoration: none;">
+            {{ object.cliente.telefone_contato }}
         </a>
-        <a href="" hx-get="{% url 'editar-vendas' object.pk %}" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop" hx-target="#addConteudo">
-            <i class="fa-solid fa-pen-to-square" style="margin-left: 10px; color: #9442ED;"></i>
-        </a>
-        <a href="#esconder{{ object.pk }}" data-bs-toggle="collapse" style="text-decoration: none; margin-left: 10px;" class="toggle-detalhes" role="button" aria-bs-expanded="false" aria-controls="esconder{{ object.pk }}"><i class="fa-solid fa-chevron-down"></i> </a>
     </td>
-   
+
+    
+    {% if object.status == 'Entregue' %}
+        <th style="color: rgb(23, 99, 23);">{{ object.status }}</th>
+    {% else %}
+        <th>{{ object.status }}</th>
+    {% endif %}
+
+    <td>
+        <a style="text-decoration: none;"
+           hx-get="{% url 'detalhe-vendas' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo">
+            <i class="fa-solid fa-print" style="color: rgb(0,132,255);"></i>
+        </a>
+
+        <a style="text-decoration: none; margin-left: 10px;"
+           hx-get="{% url 'editar-vendas' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo">
+            <i class="fa-solid fa-pen-to-square" style="color: #9442ED;"></i>
+        </a>
+
+        <a style="text-decoration: none; margin-left: 10px;"
+           hx-get="{% url 'relatorio-lucro' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo">
+            <i class="fa-solid fa-chart-simple"></i>
+        </a>
+
+        <!-- Botão collapse -->
+        <a class="toggle-detalhes"
+           data-bs-toggle="collapse"
+           href="#detalhes-{{ object.pk }}"
+           role="button"
+           aria-expanded="false"
+           aria-controls="detalhes-{{ object.pk }}"
+           style="text-decoration: none; margin-left: 10px;">
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </td>
 </tr>
 
-<tr class="collapse" id="esconder{{ object.pk }}">
-    <th>Produtos</th>
-    <th>Quantidade</th>
-    <th>Preço Unidade</th>
-    <th>Sub Total</th>
-</tr>
-{% for items in object.vendas_items.all %}
-<tr class="collapse" id="esconder{{ object.pk }}">
-    <td>{{ items.produto }}</td>
-    <td>{{ items.quantidade }}</td>
-    <td>{{ items.preco }}</td>
-    <td>{{ items.subtotal }}</td>
-</tr>
-{% endfor %}
-<tr class="collapse" id="esconder{{ object.pk }}" style="color: red;">
-    <td></td>
-    <td></td>
-    <th>Desconto</th>
-    <th>{{ object.desconto }}</th>
-</tr>
-<tr class="collapse" id="esconder{{ object.pk }}" style="color: green;">
-    <th>Forma de pagamento</th>
-    <th>{{object.forma_pagamento}}</th>
-    <th>Total</th>
-    <th>{{ object.total }}</th>
+<!-- Detalhes da venda -->
+<tr class="collapse" id="detalhes-{{ object.pk }}">
+    <td colspan="4">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Produtos</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unidade</th>
+                    <th>Sub Total</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                {% for items in object.vendas_items.all %}
+                <tr>
+                    <td>{{ items.produto }}</td>
+                    <td>{{ items.quantidade }}</td>
+                    <td>{{ items.preco }}</td>
+                    <td>{{ items.subtotal }}</td>
+                </tr>
+                {% endfor %}
+
+                <tr style="color: red;">
+                    <td></td>
+                    <td></td>
+                    <th>Desconto</th>
+                    <th>{{ object.desconto }}</th>
+                </tr>
+
+                <tr style="color: green;">
+                    <th>Forma de Pagamento</th>
+                    <td>{{ object.forma_pagamento }}</td>
+                    <th>Total</th>
+                    <th>{{ object.total }}</th>
+                </tr>
+            </tbody>
+        </table>
+    </td>
 </tr>

@@ -1,9 +1,10 @@
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from django.db import models
 from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 
 class Vendas(models.Model):
@@ -43,6 +44,7 @@ class Vendas(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    
 
     class Meta:
         ordering = ('-pk',)
@@ -80,8 +82,8 @@ class Vendas(models.Model):
         if receita_bruta == 0:
             return Decimal('0.00')
         
-        desconto_proporcao = (desconto / receita_bruta) if receita_bruta else Decimal('0.00')
-        lucro_liquido = lucro_itens - (lucro_itens * desconto_proporcao)
+        #desconto_proporcao = (desconto / receita_bruta) if receita_bruta else Decimal('0.00')
+        lucro_liquido = lucro_itens - desconto
 
         return Decimal(lucro_liquido).quantize(Decimal('0.01'))
 
@@ -90,6 +92,19 @@ class Vendas(models.Model):
             return Decimal('0.00')
         margem_vendas = (self.lucro_total() / self.total()) * 100
         return round(margem_vendas, 2)
+    
+    def margem_lucro_total_percentual(self):
+        """
+        Retorna a margem de lucro total da venda em % considerando o desconto.
+        """
+        lucro_liquido = self.lucro_total()  # já considera desconto proporcional
+        total_venda = self.total() or Decimal('0.00')
+
+        if total_venda == 0:
+            return Decimal('0.00')
+
+        margem = (lucro_liquido / total_venda) * 100
+        return margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 class ItemsVenda(models.Model):
     vendas = models.ForeignKey(Vendas,
@@ -122,6 +137,24 @@ class ItemsVenda(models.Model):
         self.produto.quantidade -= self.quantidade
         self.produto.save()
         super(ItemsVenda, self).save(*args, **kwargs)
+
+    def margem_lucro_percentual(self):
+        try:
+            if self.preco == 0:
+                return Decimal('0.00')
+            margem = ((self.preco - self.produto.preco_de_custo) / self.preco) * 100
+            return margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        except:
+            return Decimal('0.00')
+        
+
+
+
+   
+
+
+    
+
 
 
 

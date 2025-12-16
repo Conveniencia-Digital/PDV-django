@@ -46,7 +46,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Preço de custo</h5>
-        <p class="card-text">R${% custo_total_produto request %}</p>
+        <p class="card-text"><sup>R$</sup>{% custo_total_produto request %}</p>
       </div>
     </div>
   </div>
@@ -54,7 +54,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Preço de venda</h5>
-        <p class="card-text">R${% total_produtos request %}</p>
+        <p class="card-text"><sup>R$</sup>{% total_produtos request %}</p>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Seu Lucro</h5>
-        <p class="card-text">R${% lucro_total_produtos request %} - %{% margem_de_lucro_produto request %}</p>
+        <p class="card-text"><sup>R$</sup>{% lucro_total_produtos request %} - <b>(%{% margem_de_lucro_produto request %})</b></p>
       </div>
     </div>
   </div>

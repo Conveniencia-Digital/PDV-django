@@ -45,7 +45,7 @@ class ItemsVendaForm(forms.ModelForm):
 
         widgets = {
             'quantidade': NumberInput(attrs={'placeholder': 'Quantidade'}),
-            'preco': NumberInput(attrs={'placeholder': 'Preco do produto'})
+            'preco': NumberInput(attrs={'placeholder': 'Preco do produto', "readonly": "readonly"})
         }
 
     def __init__(self, *args, **kwargs):

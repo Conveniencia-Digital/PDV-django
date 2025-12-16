@@ -41,3 +41,5 @@ def margem_de_lucro_produto(request):
 
 
 
+
+

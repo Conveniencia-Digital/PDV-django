@@ -1,0 +1,16 @@
+<div id="relatorio-venda" class="table-responsive" style="padding-top: 18px;">
+        <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+            <thead></thead>
+            <tbody id="vendas-Tbody">
+                {% for object in object_list %}
+                    {% include 'vendas/tabela/linhas-tabela-vendas.html' %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center">Nenhum resultado encontrado.</td>
+                        </tr>
+                {% endfor %}
+
+               
+            </tbody>
+        </table>
+    </div>

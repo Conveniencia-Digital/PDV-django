@@ -1,0 +1,126 @@
+<div id="bloco-dados">
+        <div id="cards-relatorio">
+                {% include 'vendas/partials/cards.html' %}
+        </div>
+  <div id="bloco-completo">            
+        <div class="row align-items-center mt-4">
+
+            <!-- Botão de nova venda -->
+            <div class="col-md-3 mb-3">
+                <button 
+                    class="btn btn-primary w-100 shadow-sm" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'cadastrar-vendas' %}"
+                    hx-target="#addConteudo" 
+                    hx-swap="innerHTML"
+                >
+                    + Nova Venda
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="col-md-9">
+                <form method="get"
+                    hx-get="{% url 'vendas' %}"
+                    hx-target="#bloco-dados"
+                    hx-swap="innerHTML"
+                    hx-trigger="submit">
+                    
+                   
+                    <!-- Filtro por datas -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <input type="date"
+                                    name="inicio"
+                                    value="{{ inicio }}"
+                                    class="form-control shadow-sm {% if inicio %}border-primary border-2{% endif %}">
+
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="date"
+                                    name="fim"
+                                    value="{{ fim }}"
+                                    class="form-control shadow-sm {% if fim %}border-primary border-2{% endif %}">
+
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <button class="btn btn-primary shadow-sm">Filtrar</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Botões rápidos -->
+                    <div class="btn-group flex-wrap w-100 gap-2" role="group">
+
+                        <button
+                            name="periodo"
+                            value="hoje"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'hoje' %}btn-periodo-ativo{% endif %}">
+                            Hoje
+                        </button>
+
+                        <button
+                            name="periodo"
+                            value="ontem"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'ontem' %}btn-periodo-ativo{% endif %}">
+                            Ontem
+                        </button>
+                        
+                        <button
+                            name="periodo"
+                            value="7dias"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == '7dias' %}btn-periodo-ativo{% endif %}">
+                            7 dias
+                        </button>
+
+                        <button
+                            name="periodo"
+                            value="este_mes"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">
+                            Este mês
+                        </button>
+
+                        <button
+                            name="periodo"
+                            value="mes_passado"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">
+                            Mês passado
+                        </button>
+
+                        <button
+                            name="periodo"
+                            value="este_ano"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'este_ano' %}btn-periodo-ativo{% endif %}">
+                            Este ano
+                        </button>
+
+
+                        <!-- Botão LIMPAR automático -->
+                        <button
+                            type="button"
+                            class="btn btn-danger shadow-sm"
+                            hx-get="{% url 'vendas' %}"
+                            hx-target="#bloco-dados"
+                            hx-swap="innerHTML"
+                            onclick="document.getElementById('filtrosForm').reset();"
+                        >
+                            Limpar
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+ </div>   
+ <div id="tabela-vendas" class="table-responsive mt-4">
+        {% include 'vendas/partials/tabela.html' %}
+</div> 
+{% include 'vendas/modal/modal-venda.html' %}
+{% include 'vendas/modal/modal-alerta.html' %}

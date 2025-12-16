@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from django.db import models
 from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
@@ -100,10 +100,24 @@ class Produto(models.Model):
         return(self.quantidade)
     
     def margem_lucro_total_percentual(self):
-        if self.preco == 0:
+
+        try:
+
+            vendatotal = self.vendatotal() or Decimal('0.00')
+            lucrototal = self.lucrototal() or Decimal('0.00')
+
+            vendatotal = Decimal(vendatotal)
+            lucrototal = Decimal(lucrototal)
+
+            if self.preco == 0:
+                return Decimal('0.00')
+            margem = (lucrototal / vendatotal) * 100
+            margem = margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            return margem
+        
+        except (InvalidOperation, ZeroDivisionError, TypeError, ValueError):
             return Decimal('0.00')
-        margem = (self.lucrototal() / self.vendatotal()) * 100
-        return round(margem, 2)
+
     
     
     

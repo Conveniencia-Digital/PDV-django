@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-       
+    
+    'django_htmx',
     # my apps
     'dashboard',
     'produto',
@@ -100,6 +101,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
+
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 
