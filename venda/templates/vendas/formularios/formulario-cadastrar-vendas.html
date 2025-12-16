@@ -108,31 +108,25 @@
 <script>
 
 /* =========================
-   EVENTOS GLOBAIS (HTMX SAFE)
+   EVENTOS GLOBAIS
 ========================= */
-document.addEventListener('input', handleVenda);
-document.addEventListener('change', handleVenda);
-document.body.addEventListener('htmx:afterSwap', handleVenda);
+document.addEventListener('input', calcularVenda);
+document.addEventListener('change', calcularVenda);
+document.body.addEventListener('htmx:afterSwap', calcularVenda);
 
 /* =========================
-   CONTROLLER
+   CONTROLLER PRINCIPAL
 ========================= */
-function handleVenda(e) {
-  if (
-    !e ||
-    e.target?.matches?.(
-      '[data-field="produto"], [data-field="quantidade"], [data-field="preco"], [name$="desconto"]'
-    )
-  ) {
-    atualizarTotal();
-    validarDesconto();
-  }
+function calcularVenda() {
+  const totalBruto = calcularTotalBruto();
+  const desconto   = obterDesconto();
+  aplicarDesconto(totalBruto, desconto);
 }
 
 /* =========================
-   TOTAL
+   TOTAL BRUTO
 ========================= */
-function atualizarTotal() {
+function calcularTotalBruto() {
   let total = 0;
 
   document.querySelectorAll('#venda [id^="item-"]').forEach(row => {
@@ -141,39 +135,52 @@ function atualizarTotal() {
     total += preco * qtd;
   });
 
-  document.querySelector('#totalValue').value = total.toFixed(2);
+  return total;
 }
 
 /* =========================
    DESCONTO
 ========================= */
-function validarDesconto() {
+function obterDesconto() {
   const campo = document.querySelector('[name$="desconto"]');
-  const label = document.querySelector('#label_desconto');
-  const total = parseFloat(document.querySelector('#totalValue').value) || 0;
-  const desconto = parseFloat(campo.value) || 0;
+  return campo ? parseFloat(campo.value) || 0 : 0;
+}
 
-  if (desconto > total) {
+/* =========================
+   TOTAL FINAL
+========================= */
+function aplicarDesconto(totalBruto, desconto) {
+  const campoTotal = document.querySelector('#totalValue');
+  const campoDesc  = document.querySelector('[name$="desconto"]');
+  const label      = document.querySelector('#label_desconto');
+
+  if (desconto > totalBruto) {
+    campoTotal.value = totalBruto.toFixed(2);
+
     label.innerHTML = `
       Desconto maior que o valor da venda
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2">
+      <svg width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86z"/>
         <line x1="12" y1="9" x2="12" y2="13"/>
         <line x1="12" y1="17" x2="12.01" y2="17"/>
       </svg>
     `;
     label.style.color = '#ff0000';
-    campo.classList.add('is-invalid');
-  } else {
-    label.textContent = 'Desconto';
-    label.style.color = '';
-    campo.classList.remove('is-invalid');
+    campoDesc.classList.add('is-invalid');
+    return;
   }
+
+  const totalFinal = totalBruto - desconto;
+
+  campoTotal.value = totalFinal.toFixed(2);
+  label.textContent = 'Desconto';
+  label.style.color = '';
+  campoDesc.classList.remove('is-invalid');
 }
 
 /* =========================
-   READONLY PREÇO (HTMX)
+   PREÇO SEMPRE READONLY
 ========================= */
 document.body.addEventListener('htmx:afterSwap', () => {
   document.querySelectorAll('[data-field="preco"]').forEach(el => {

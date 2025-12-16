@@ -9,6 +9,19 @@ from django.utils.timezone import now
 from datetime import timedelta
 from decimal import Decimal
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
+from datetime import datetime, date, timedelta
+
+
+def inicio_fim_dia(data):
+    inicio = timezone.make_aware(
+        datetime.combine(data, datetime.min.time())
+    )
+    fim = timezone.make_aware(
+        datetime.combine(data, datetime.max.time())
+    )
+    return inicio, fim
+
 
 
 class ListaVendas(LoginRequiredMixin, ListView):
@@ -17,58 +30,109 @@ class ListaVendas(LoginRequiredMixin, ListView):
     context_object_name = "object_list"
 
     def get_queryset(self):
-        qs = Vendas.objects.filter(usuario=self.request.user).order_by('-data_criacao')
+        qs = (
+            Vendas.objects
+            .filter(usuario=self.request.user)
+            .order_by("-data_criacao")
+        )
 
         inicio = self.request.GET.get("inicio")
         fim = self.request.GET.get("fim")
         periodo = self.request.GET.get("periodo")
-        hoje = now().date()
-        
 
-        # 👉 FILTRO PADRÃO: HOJE
+        hoje = timezone.localdate()
+
+        # 🔥 PADRÃO: HOJE
         if not inicio and not fim and not periodo:
             periodo = "hoje"
 
-        if periodo:
-            if periodo == "hoje":
-                qs = qs.filter(data_criacao__date=hoje)
-            elif periodo == "ontem":
-                qs = qs.filter(data_criacao__date=hoje - timedelta(days=1))
-            elif periodo == "7dias":
-                qs = qs.filter(data_criacao__date__gte=hoje - timedelta(days=7))
-            elif periodo == "este_mes":
-                qs = qs.filter(
-                    data_criacao__date__gte=hoje.replace(day=1),
-                    data_criacao__date__lte=hoje
-                )
-            elif periodo == "mes_passado":
-                primeiro_deste_mes = hoje.replace(day=1)
-                ultimo_mes_passado = primeiro_deste_mes - timedelta(days=1)
-                primeiro_mes_passado = ultimo_mes_passado.replace(day=1)
-                qs = qs.filter(
-                    data_criacao__date__gte=primeiro_mes_passado,
-                    data_criacao__date__lte=ultimo_mes_passado
-                )
-            elif periodo == "este_ano":
-                qs = qs.filter(data_criacao__year=hoje.year)
+        # =============================
+        # FILTROS POR PERÍODO
+        # =============================
+        if periodo == "hoje":
+            ini, fim_dt = inicio_fim_dia(hoje)
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        elif periodo == "ontem":
+            data = hoje - timedelta(days=1)
+            ini, fim_dt = inicio_fim_dia(data)
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        elif periodo == "7dias":
+            ini = timezone.make_aware(
+                datetime.combine(hoje - timedelta(days=6), datetime.min.time())
+            )
+            fim_dt = timezone.make_aware(
+                datetime.combine(hoje, datetime.max.time())
+            )
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        elif periodo == "este_mes":
+            primeiro_dia = hoje.replace(day=1)
+            ini = timezone.make_aware(
+                datetime.combine(primeiro_dia, datetime.min.time())
+            )
+            fim_dt = timezone.make_aware(
+                datetime.combine(hoje, datetime.max.time())
+            )
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        elif periodo == "mes_passado":
+            primeiro_deste_mes = hoje.replace(day=1)
+            ultimo_mes_passado = primeiro_deste_mes - timedelta(days=1)
+            primeiro_mes_passado = ultimo_mes_passado.replace(day=1)
+
+            ini = timezone.make_aware(
+                datetime.combine(primeiro_mes_passado, datetime.min.time())
+            )
+            fim_dt = timezone.make_aware(
+                datetime.combine(ultimo_mes_passado, datetime.max.time())
+            )
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        elif periodo == "este_ano":
+            primeiro_dia = hoje.replace(month=1, day=1)
+            ini = timezone.make_aware(
+                datetime.combine(primeiro_dia, datetime.min.time())
+            )
+            fim_dt = timezone.make_aware(
+                datetime.combine(hoje, datetime.max.time())
+            )
+            qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+        # =============================
+        # FILTRO MANUAL (INÍCIO / FIM)
+        # =============================
         else:
-            if inicio:
-                inicio_date = parse_date(inicio)
-                if inicio_date:
-                    qs = qs.filter(data_criacao__date__gte=inicio_date)
-            if fim:
-                fim_date = parse_date(fim)
-                if fim_date:
-                    qs = qs.filter(data_criacao__date__lte=fim_date)
-        context = {
-            "inicio": inicio,
-            "fim": fim,
-            "periodo": periodo,
-            }
-        
+            inicio_date = parse_date(inicio) if inicio else None
+            fim_date = parse_date(fim) if fim else None
+
+            # 🔹 Apenas uma data preenchida → filtra só aquele dia
+            if inicio_date and not fim_date:
+                ini, fim_dt = inicio_fim_dia(inicio_date)
+                qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+            elif fim_date and not inicio_date:
+                ini, fim_dt = inicio_fim_dia(fim_date)
+                qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+            # 🔹 Intervalo completo
+            elif inicio_date and fim_date:
+                ini = timezone.make_aware(
+                    datetime.combine(inicio_date, datetime.min.time())
+                )
+                fim_dt = timezone.make_aware(
+                    datetime.combine(fim_date, datetime.max.time())
+                )
+                qs = qs.filter(data_criacao__range=(ini, fim_dt))
+
+
+        # salva para o context
+        self._inicio = inicio
+        self._fim = fim
+        self._periodo = periodo
+
         return qs
-        
-        
 
 
     def get_context_data(self, **kwargs):
@@ -79,34 +143,35 @@ class ListaVendas(LoginRequiredMixin, ListView):
         lucro_total = sum(v.lucro_total() or 0 for v in qs)
         qtd_vendas = qs.count()
 
-        if total_vendas == 0:
-            margem = Decimal("0.00")
-        else:
-            margem = (lucro_total / total_vendas) * 100
+        margem = (
+            (lucro_total / total_vendas) * 100
+            if total_vendas > 0
+            else Decimal("0.00")
+        )
 
         context.update({
-            
             "total_vendas": total_vendas,
             "lucro_total": lucro_total,
             "qtd_vendas": qtd_vendas,
             "margem_lucro_total_vendas": margem.quantize(Decimal("0.01")),
-            "inicio": self.request.GET.get("inicio", ""),
-            "fim": self.request.GET.get("fim", ""),
-            "periodo": self.request.GET.get("periodo", ""),
-            
+            "inicio": self._inicio or "",
+            "fim": self._fim or "",
+            "periodo": self._periodo or "",
         })
 
         return context
 
+
     def render_to_response(self, context, **response_kwargs):
         if self.request.htmx:
-            return self.response_class(
-                request=self.request,
-                template="vendas/bloco-dados.html",
-                context=context,
-                **response_kwargs
-            )
+         return self.response_class(
+        request=self.request,
+        template="vendas/bloco-dados.html",
+        context=context,
+        **response_kwargs
+    )
         return super().render_to_response(context, **response_kwargs)
+
 
 
 @login_required
