@@ -36,7 +36,7 @@ urlpatterns = [
     path('', include('comunidade.urls')),
     path('', include('suporte.urls')),
     path('', include('pedido.urls')),
-    path('', include('lanhouse.urls')),
+    path('', include('lanhouse.urls')),  
 
 ]
 

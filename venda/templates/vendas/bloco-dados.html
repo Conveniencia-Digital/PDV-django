@@ -1,3 +1,111 @@
+{% block style %}
+<style>
+/* =========================
+   LAYOUT GERAL
+========================= */
+#bloco-dados {
+    background: #f8f9fb;
+    border-radius: 18px;
+    padding: 24px;
+}
+
+/* =========================
+   CARDS / RELATÓRIO
+========================= */
+#cards-relatorio {
+    margin-bottom: 20px;
+}
+
+/* =========================
+   BLOCO FILTROS
+========================= */
+#bloco-completo {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   BOTÃO NOVA VENDA
+========================= */
+.btn-nova-venda {
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.25s ease;
+}
+.btn-nova-venda:hover {
+    transform: translateY(-2px);
+}
+
+/* =========================
+   INPUTS DATA
+========================= */
+input[type="date"] {
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+input[type="date"]:focus {
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+
+/* =========================
+   BOTÕES PERÍODO
+========================= */
+.btn-group button {
+    border-radius: 999px !important;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.btn-periodo-ativo {
+    background: linear-gradient(135deg, #0d6efd, #4f8cff);
+    color: #fff !important;
+    border: none;
+}
+
+.btn-group button:hover {
+    transform: translateY(-1px);
+}
+
+/* =========================
+   BOTÃO LIMPAR
+========================= */
+.btn-danger {
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+
+/* =========================
+   TABELA
+========================= */
+#tabela-vendas {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+@media (max-width: 768px) {
+    #bloco-dados {
+        padding: 16px;
+    }
+    .btn-group {
+        justify-content: center;
+    }
+}
+
+</style>
+
+{% endblock style %}
+
+
 <div id="bloco-dados">
         <div id="cards-relatorio">
                 {% include 'vendas/partials/cards.html' %}
@@ -8,7 +116,7 @@
             <!-- Botão de nova venda -->
             <div class="col-md-3 mb-3">
                 <button 
-                    class="btn btn-primary w-100 shadow-sm" 
+                    class="btn btn-primary w-100 shadow-sm btn-nova-venda" 
                     data-bs-toggle="modal" 
                     data-bs-target="#staticBackdrop"
                     hx-get="{% url 'cadastrar-vendas' %}"
@@ -24,7 +132,8 @@
                 <form method="get"
                     hx-get="{% url 'vendas' %}"
                     hx-target="#bloco-dados"
-                    hx-swap="innerHTML"
+                    hx-swap="outerHTML"
+                    hx-indicator=".htmx-indicator"
                     hx-trigger="submit">
                     
                    
@@ -33,6 +142,7 @@
                         <div class="col-sm-4">
                             <input type="date"
                                     name="inicio"
+                                    aria-label="Data inicial"
                                     value="{{ inicio }}"
                                     class="form-control shadow-sm {% if inicio %}border-primary border-2{% endif %}">
 
@@ -40,12 +150,13 @@
                         <div class="col-sm-4">
                             <input type="date"
                                     name="fim"
+                                    aria-label="Data final"
                                     value="{{ fim }}"
                                     class="form-control shadow-sm {% if fim %}border-primary border-2{% endif %}">
 
                         </div>
                         <div class="col-sm-4 d-grid">
-                            <button class="btn btn-primary shadow-sm">Filtrar</button>
+                            <button class="btn btn-primary w-100 shadow-sm btn-nova-venda">Filtrar</button>
                         </div>
                     </div>
                     
@@ -100,6 +211,14 @@
                             Este ano
                         </button>
 
+                        <button
+                            name="periodo"
+                            value="todas"
+                            class="btn btn-outline-secondary shadow-sm
+                                {% if periodo == 'todas' %}btn-periodo-ativo{% endif %}">
+                            Todas
+                        </button>
+
 
                         <!-- Botão LIMPAR automático -->
                         <button
@@ -122,5 +241,6 @@
  <div id="tabela-vendas" class="table-responsive mt-4">
         {% include 'vendas/partials/tabela.html' %}
 </div> 
+
 {% include 'vendas/modal/modal-venda.html' %}
 {% include 'vendas/modal/modal-alerta.html' %}

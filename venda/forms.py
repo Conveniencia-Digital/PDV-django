@@ -1,5 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory, NumberInput
+from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 from venda.models import Vendas, ItemsVenda
 from produto.models import Produto
@@ -20,6 +22,33 @@ class VendasForm(forms.ModelForm):
             'observacao': forms.TextInput()
 
          }
+    def clean(self):
+        cleaned_data = super().clean()
+        desconto = cleaned_data.get('desconto') or Decimal('0.00')
+
+        total_bruto = Decimal('0.00')
+
+        # percorre os dados POST do formset
+        i = 0
+        while True:
+            preco_key = f'items-{i}-preco'
+            qtd_key = f'items-{i}-quantidade'
+
+            if preco_key not in self.data:
+                break
+
+            preco = Decimal(self.data.get(preco_key) or '0')
+            qtd = int(self.data.get(qtd_key) or 0)
+
+            total_bruto += preco * qtd
+            i += 1
+
+        if desconto > total_bruto:
+            raise ValidationError({
+                'desconto': 'O desconto não pode ser maior que o total bruto da venda.'
+            })
+
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')

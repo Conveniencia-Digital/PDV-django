@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<div id="item-{{ forloop.counter0 }}" class="row g-2">
+
   <style> 
   
 
@@ -26,217 +26,60 @@
     
   }
   </style>
-    {% render_field itemsvendaform.vendas data-field='vendas' %}
-    {% render_field itemsvendaform.id data-field='id'  %}
-   
-    <div class="row g-2" style="display: flex;">
-      <div id="mouse" class="col-md-6 mb-3 form-floating">
-          {% render_field itemsvendaform.produto hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-          <label>Informe o produto </label>
-        </div>
-      <div class="col-md-3 mb-3 form-floating">
-          {% render_field itemsvendaform.preco data-field='preco' value="0.00" readonly="readonly" %}
-          <label>Preço Unitario </label>
-      </div>
-      <div class="col-md-2 mb-2 form-floating">
-          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
-      </div>
-      {% if items_venda_form.id.value %}
-          <div class="col-md-1 mb-1">
-               <span
-                  class="span-is-link no ml-2 remove-row"
-                  hx-delete="{% url 'apagar-item-venda' items_venda_form.id.value %}"
-                  hx-confirm="Deseja mesmo deletar o item {{items_venda_form.id.value}}?"
-                  hx-target="#item-{{ forloop.counter0 }}"
-                  hx-swap="outerHTML">
-                   <i class="fa fa-times fa-lg"></i>
-               </span>
-              {% else %}
-              <div class="col-1" onclick="removeRow()">
-                  <button type="submit" class="btn btn-outline-danger btn-sm" id="remove">X</button>
-              </div>
-          </div>
-    </div>
-    {% endif %}
+    <div id="item-{{ forloop.counter0 }}" class="row g-2">
+  {% render_field itemsvendaform.vendas data-field='vendas' %}
+  {% render_field itemsvendaform.id data-field='id' %}
+
+  <div class="col-md-6 mb-3 form-floating">
+    {% render_field itemsvendaform.produto data-field="produto" hx-get="/produto/preco/" hx-target="#id_items-{{ forloop.counter0 }}-preco" hx-swap="outerHTML" %}
+    <label>Produto</label>
+  </div>
+
+  <div class="col-md-3 mb-3 form-floating">
+    {% render_field itemsvendaform.preco data-field="preco" readonly="readonly" value="0.00" %}
+    <label>Preço</label>
+  </div>
+
+  <div class="col-md-2 mb-3 form-floating">
+    {% render_field itemsvendaform.quantidade data-field="quantidade" value="1" %}
+    <label>Qtd</label>
+  </div>
+
+  <div class="col-md-1 d-flex align-items-center">
+    <button type="button" class="btn btn-outline-danger btn-sm"
+            onclick="marcarParaRemover(this)">✕</button>
+  </div>
 </div>
+
+
 <script>
-  document.getElementById('id_main-desconto').addEventListener('click', Desconto); 
-  document.getElementById('id_main-desconto').addEventListener('keydown', Desconto);
-  document.getElementById('id_main-desconto').addEventListener('keyup', Desconto); 
-  document.getElementById('id_main-desconto').addEventListener('change', Desconto); 
-  document.querySelector('select').addEventListener('click', Desconto);
-  
-  Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"]'))
-    .forEach((item, i) => {
-      item.addEventListener('change', Desconto);
-      item.addEventListener('focus', Desconto);
-      item.addEventListener('mouseover', Desconto);
-      item.addEventListener('click', Desconto);
-      item.addEventListener('mouseout', Desconto);
-      item.addEventListener('blur', Desconto);
-      item.addEventListener('keyup', Desconto);
-      item.addEventListener('keydown', Desconto);
-    });
-  
-  function Desconto () {
-    var desconto = parseFloat(document.querySelector('#id_main-desconto').value);
-    var total = parseFloat(document.querySelector('#totalValue').value);
-    let label_desconto = document.querySelector('#label_desconto')
-    let campo_desconto = document.querySelector('#id_main-desconto')
 
-    if(desconto > total) {
-      label_desconto.innerHTML = 'Desconto maior que o valor da venda <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-      label_desconto.style.color = ' #ff0000';
-      campo_desconto.style.border =  '3px solid #ff0000';
-      campo_desconto.style.color =  '#ff0000';
-    }else {
-      label_desconto.innerHTML = 'Desconto';
-      label_desconto.style.color = '';
-      campo_desconto.style.border = '';
-      campo_desconto.style.color = '';
-
-    }
-
-  };
-
-  
-
-  function verificarDuplicatas() {
-    let produtos = document.querySelectorAll('[data-field="produto"]');
-    let produtosSelecionados = new Set();
-    let duplicatas = false;
-
-    produtos.forEach(produto => {
-        let valor = produto.value;
-        let itemRow = produto.closest('.row'); 
-
-        if (valor !== "Selecione" && valor !== "") {
-            if (produtosSelecionados.has(valor)) {
-                alert("Este produto já foi adicionado! O item será removido.");
-                
-                // Remove a linha do formulário automaticamente
-                if (itemRow) {
-                    itemRow.remove();
-                    reorderItems(); // Atualiza os índices
-                }
-
-                duplicatas = true;
-            } else {
-                produtosSelecionados.add(valor);
-            }
-        }
-    });
-
-    return !duplicatas; // Retorna falso se houver duplicatas
-}
-
-// ✅ Bloqueia o envio do formulário se houver duplicatas
-document.querySelector('form').addEventListener('submit', function(event) {
-    if (!verificarDuplicatas()) {
-        event.preventDefault(); // Impede o envio do formulário
-    }
-});
-
-// ✅ Chama a função quando um novo produto é adicionado
-document.getElementById('addItem').addEventListener('click', function () {
-    setTimeout(() => {
-        verificarDuplicatas();
-        reorderItems();
-    }, 500);
-});
-
-// ✅ Aciona a função sempre que o usuário altera um produto
-document.addEventListener("change", function (event) {
-    if (event.target.matches('[data-field="produto"]')) {
-        verificarDuplicatas();
-    }
-});
-
-// ✅ Reorganiza os índices do formset
 function reorderItems() {
-    var totalValue = 0;
-
     let items = Array.from(document.querySelectorAll("[id^='item-']"));
-    items.forEach((item, i) => {
-        item.setAttribute('id', 'item-' + i);
 
-        let vendasField = item.querySelector('[data-field="vendas"]');
+    items.forEach((item, i) => {
         let produtoField = item.querySelector('[data-field="produto"]');
-        let quantidadeField = item.querySelector('[data-field="quantidade"]');
         let precoField = item.querySelector('[data-field="preco"]');
 
-        if (vendasField) {
-            vendasField.setAttribute('name', `items-${i}-vendas`);
-            vendasField.setAttribute('id', `id_items-${i}-vendas`);
-        }
-
         if (produtoField) {
-            produtoField.setAttribute('name', `items-${i}-produto`);
-            produtoField.setAttribute('id', `id_items-${i}-produto`);
+            produtoField.name = `items-${i}-produto`;
+            produtoField.id   = `id_items-${i}-produto`;
             produtoField.setAttribute('hx-target', `#id_items-${i}-preco`);
         }
 
-        if (quantidadeField) {
-            quantidadeField.setAttribute('name', `items-${i}-quantidade`);
-        }
-
         if (precoField) {
-            precoField.setAttribute('name', `items-${i}-preco`);
-            precoField.setAttribute('id', `id_items-${i}-preco`);
-
-            let preco = parseFloat(precoField.value) || 0;
-            let qtd = parseInt(quantidadeField.value) || 1;
-            totalValue += preco * qtd;
+            precoField.name = `items-${i}-preco`;
+            precoField.id   = `id_items-${i}-preco`;
         }
     });
 
-    // Atualiza o número total de formulários
     document.querySelector('#id_items-TOTAL_FORMS').value = items.length;
 
-    // Processa o htmx para reconhecer os novos elementos
+    // 🔥 ESSENCIAL
     htmx.process(document.querySelector("#venda"));
-
-    // Atualiza o valor total
-    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
 }
-
-// ✅ Remove uma linha corretamente
-function removeRow(event) {
-    const row = event.target.closest('.row');
-    if (row) {
-        row.remove();
-        reorderItems();
-    }
-}
+reorderItems();
 
 
 
-    (function() {
-  // Chama o método pra numerar os objetos ao carregar a página.
-  reorderItems()
-})();
-
-document.querySelector('#addItem').addEventListener('click', function() {
-  setTimeout(() => {
-    reorderItems()
-  }, 500)
-})
-Array.from(document.querySelectorAll('[data-field="produto"], [data-field="quantidade"], #remove'))
-  .forEach((item,i) => {
-    item.addEventListener('click', reorderItems);
-    item.addEventListener('change', reorderItems);
-    item.addEventListener('mouseover', reorderItems);
-    item.addEventListener('mouseout', reorderItems);
-    item.addEventListener('blur', reorderItems);
-  })
-
-
-Array.from(document.querySelectorAll('.remove-row'))
-  .forEach((item, i) => {
-    item.addEventListener('click', function() {
-      document.querySelector('button[type="submit"]').style.display = 'none'
-      document.querySelector('#btn-close').style.display = 'block';
-    })
-  })
 </script>

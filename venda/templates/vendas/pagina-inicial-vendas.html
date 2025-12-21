@@ -5,45 +5,13 @@
 Vendas
 {% endblock titulo %}
 {% block style %}
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 300ms ease-out;
-    }
-
-    .card {
-        max-width: 20rem;
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-
-    }
-
-    .card .card-text {
-        margin: 30px auto;
-    }
-
-    .table {
-        font-size: 20px;
-    }
-
-    .btn {
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        font-size: 20px;
-
-    }
-    .btn-periodo-ativo {
-    background-color: #0d6efd;
-    color: #fff;
-    border-color: #0d6efd;
-    }
-    
-
-
-</style>
 {% endblock style %}
 {% block conteudo %}
 
+        
     {% include 'vendas/bloco-dados.html' %}
+   
     {% include 'vendas/modal/modal-venda.html' %}
     {% include 'vendas/modal/modal-alerta.html' %}
-</div>
+
 {% endblock conteudo %}

@@ -1,0 +1,36 @@
+<tr id="venda-{{ object.pk }}" class="venda-row">
+    <td>
+        <strong>{{ object.data_criacao|date:'d/m/Y' }}</strong><br>
+        <small class="text-muted">{{ object.data_criacao|date:'H:i:s' }}</small>
+    </td>
+
+    <td>
+        <strong>{{ object.cliente.nome_cliente }}</strong><br>
+        <small class="text-muted">{{ object.cliente.telefone_contato }}</small>
+    </td>
+
+    <td>
+        {% if object.status == 'Entregue' %}
+            <span class="badge-status status-entregue">{{ object.status }}</span>
+        {% else %}
+            <span class="badge-status status-outro">{{ object.status }}</span>
+        {% endif %}
+    </td>
+
+    <td class="acoes text-end">
+        <!-- ações -->
+        <a class="toggle-detalhes"
+           data-bs-toggle="collapse"
+           href="#detalhes-{{ object.pk }}">
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </td>
+</tr>
+
+<tr class="collapse" id="detalhes-{{ object.pk }}">
+    <td colspan="4">
+        <div class="detalhes-box">
+            <!-- tabela interna -->
+        </div>
+    </td>
+</tr>

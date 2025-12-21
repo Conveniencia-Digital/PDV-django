@@ -1,96 +1,172 @@
-<div class="modal-header">
-    <h3 class="modal-title" id="staticBackdropLabel">Relatório de Vendas</h3>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal-header border-0 pb-0">
+    <h4 class="modal-title fw-bold">Relatório de Vendas</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
+
 
 <div class="modal-body">
     <div class="contentPrint">
+
         <style>
-            .header {
+            body {
+                font-family: "Segoe UI", Arial, sans-serif;
+                color: #212529;
+            }
+
+            .report-header {
                 display: flex;
                 justify-content: space-between;
-                border-bottom: solid black;
+                align-items: center;
+                border-bottom: 2px solid #dee2e6;
+                padding-bottom: 12px;
+                margin-bottom: 24px;
             }
-            .logo {
-                font-size: 1.75em;
-                align-self: center;
+
+            .report-logo {
+                font-size: 1.6rem;
+                font-weight: 700;
             }
-            .content {
-                margin-top: 30px;
+
+            .report-info {
+                font-size: .75rem;
+                text-align: right;
+                line-height: 1.4;
             }
-            .description {
-                font-size: 0.75em;
+
+            .report-table th {
+                background-color: #f8f9fa;
+                font-size: .8rem;
+                text-transform: uppercase;
+                letter-spacing: .04em;
             }
-            .table th, .table td {
-                font-size: 0.85em;
+
+            .report-table td {
+                font-size: .85rem;
+                vertical-align: middle;
+            }
+
+            .report-summary {
+                margin-top: 20px;
+                padding: 16px;
+                border-radius: 12px;
+                background: #f8f9fa;
+            }
+
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 6px;
+                font-size: .9rem;
+            }
+
+            .summary-row strong {
+                font-weight: 600;
+            }
+
+            .summary-highlight {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+
+            @media print {
+                .modal-footer, .btn-close {
+                    display: none !important;
+                }
             }
         </style>
 
         <!-- Cabeçalho -->
-        <div class="header">
-            <div class="logo">Conveniência Digital</div>
-            <div class="information">
-                <p class="description">
-                    Centro de vendas <br>
-                    CNPJ: 29.216.862/0001-38 <br>
-                    Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
-                    Telefone: 67 9 9664-9605
-                </p>
+        <div class="report-header">
+            <div class="report-logo">Conveniência Digital</div>
+            <div class="report-info">
+                Centro de Vendas<br>
+                CNPJ: 29.216.862/0001-38<br>
+                Rua das Nogueiras, 3360 – Dourados/MS<br>
+                Tel: (67) 99664-9605
             </div>
         </div>
 
-        <!-- Conteúdo da venda -->
-        <div class="content">
-            <table class="table table-bordered">
-                <thead class="bg-light">
-                    <tr>
-                        <th>Produto</th>
-                        <th>Quantidade</th>
-                        <th>Preço Unitário</th>
-                        <th>Subtotal</th>
-                        <th>Desconto</th>
-                        <th>Forma de Pagamento</th>
-                        <th>Lucro (R$)</th>
-                        <th>Lucro (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in object.vendas_items.all %}
-                    <tr>
-                        <td>{{ item.produto }}</td>
-                        <td>{{ item.quantidade }}</td>
-                        <td>R$ {{ item.preco }}</td>
-                        <td>R$ {{ item.subtotal }}</td>
-                        <td>R$ {{ object.desconto|default:"0.00" }}</td>
-                        <td>{{ object.forma_pagamento }}</td>
-                        <td>R$ {{ item.lucro_total_item }}</td>
-                        <td>{{ item.margem_lucro_percentual }}%</td>
-                    </tr>
-                    {% endfor %}
+        <!-- Tabela -->
+        <table class="table table-bordered report-table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th class="text-center">Qtd</th>
+                    <th class="text-end">Preço Unit.</th>
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-end">Custo</th>
+                    <th class="text-end">Lucro (R$)</th>
+                    <th class="text-end">Lucro (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.vendas_items.all %}
+                <tr>
+                    <td>{{ item.produto }}</td>
+                    <td class="text-center">{{ item.quantidade }}</td>
+                    <td class="text-end">R$ {{ item.preco }}</td>
+                    <td class="text-end">R$ {{ item.subtotal }}</td>
+                    <td class="text-end">R$ {{ item.produto.preco_de_custo }}</td>
+                    <td class="text-end">R$ {{ item.lucro_total_item }}</td>
+                    <td class="text-end">{{ item.margem_lucro_percentual }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-                    <!-- Lucro total considerando desconto -->
-                    <tr class="bg-light">
-                        <th colspan="6" class="text-end">Lucro Total (com desconto)</th>
-                        <th colspan="2">R$ {{ object.lucro_total }}</th>
-                    </tr>
-                    <tr class="bg-light">
-                        <th colspan="6" class="text-end">Lucro Total (%)</th>
-                        <th colspan="2">{{ object.margem_lucro_total_percentual }}%</th>
-                    </tr>
+        <!-- Resumo financeiro -->
+             <div class="summary-row">
+                <span>Forma de pagamento</span>
+                <strong>{{ object.forma_pagamento }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Total sem desconto</span>
+                <strong>R$ {{ object.total_sem_desconto }}</strong>
+            </div> 
+            <div class="summary-row">
+                <span>Desconto concedido</span>
+                <strong>R$ {{ object.desconto|default:"0.00" }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <strong>R$ {{ object.total }}</strong>
+            </div> 
+            <div class="report-summary"> 
+            
+            <hr>
+            <div class="summary-row summary-highlight">
+                <span>Custo mercadoria vendida</span>
+                <span>R$ {{ object.cmv }}</span>
+            </div>
+            <div class="summary-row summary-highlight">
+                <span>Lucro líquido</span>
+                <span>R$ {{ object.lucro_total }}</span>
+            </div>
 
-
-                </tbody>
-            </table>
-
-            <p><strong>Observação:</strong> {{ object.observacao }}</p>
+            <div class="summary-row summary-highlight">
+                <span>Margem de lucro</span>
+                <span>{{ object.margem_lucro_total_percentual }}%</span>
+            </div>
         </div>
+
+        {% if object.observacao %}
+        <div class="mt-3">
+            <strong>Observação:</strong><br>
+            {{ object.observacao }}
+        </div>
+        {% endif %}
+
     </div>
 </div>
 
+
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
-    <button id="myBtn" onclick="imprimir('.contentPrint')" type="button" class="btn btn-outline-primary">Imprimir</button>
+    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button onclick="imprimir('.contentPrint')" class="btn btn-primary">
+        Imprimir relatório
+    </button>
 </div>
+
 
 {% block scripts %}
 <script>

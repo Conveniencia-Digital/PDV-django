@@ -4,7 +4,7 @@ from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
-from django.utils.timezone import now
+
 
 
 class Vendas(models.Model):
@@ -44,22 +44,33 @@ class Vendas(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
-    
+
 
     class Meta:
         ordering = ('-pk',)
 
     def __str__(self):
         return self.cliente, self.vendedor
-    
+   
+    """
+     # funcao do regis
     def total(self):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(
             'preco', 'quantidade') or 0
         t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
         desc = t - self.desconto
-        return desc
+        return desc 
+    """
+    def total(self):
+        desconto = self.desconto or Decimal("0.00")
+        qs = self.vendas_items.values_list("preco", "quantidade")
+        total = sum(preco * qtd for preco, qtd in qs)
+        return total - desconto
     
-    
+    def total_sem_desconto(self): 
+        qs = self.vendas_items.values_list("preco", "quantidade")
+        total = sum(preco * qtd for preco, qtd in qs)
+        return total
 
     def valor_a_receber(self):
         qs = self.vendas_items.filter(vendas=self.pk).values_list(
@@ -105,6 +116,22 @@ class Vendas(models.Model):
 
         margem = (lucro_liquido / total_venda) * 100
         return margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    
+    #NOVAS FUNCOES CALCULO
+
+    def custo_total(self):
+        """
+        Retorna o custo total dos produtos da venda
+        """
+        return sum(
+            (item.produto.preco_de_custo or Decimal("0.00")) * item.quantidade
+            for item in self.vendas_items.select_related("produto").all()
+        )
+    
+    def cmv(self):
+        return sum(
+            (item.produto.preco_de_custo or Decimal("0.00")) * item.quantidade
+            for item in self.vendas_items.select_related("produto"))
 
 class ItemsVenda(models.Model):
     vendas = models.ForeignKey(Vendas,
@@ -146,6 +173,8 @@ class ItemsVenda(models.Model):
             return margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         except:
             return Decimal('0.00')
+    
+    
         
 
 

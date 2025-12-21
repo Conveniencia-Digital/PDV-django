@@ -1,0 +1,12 @@
+<!-- templates/taxas/form_taxas.html -->
+<h4>Configurar taxas de pagamento</h4>
+
+<form method="post" class="row g-3">
+  {% csrf_token %}
+
+  <h4>Configurar taxas de pagamento</h4>
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <button>Salvar</button>
+</form>
