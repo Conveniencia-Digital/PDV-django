@@ -1,26 +1,50 @@
-<tr id="trProduto{{ object.pk }}">
-    {% if object.quantidade == 0 %}
-    <td style="color: gray; text-decoration:line-through">{{ object.quantidade }}</td>
-    <td style="color: gray; text-decoration:line-through">{{ object.nome_produto }}</td>
-    <td style="color: gray; text-decoration:line-through">R$ {{ object.preco|default:'---' }}</td>
-    {% else %}
-    <td>{{ object.quantidade }}</td>
-    <td>{{ object.nome_produto }}</td>
-    <td>R$ {{ object.preco|default:'---' }}</td>
-    {% endif %}
+<tr id="trProduto{{ object.pk }}" class="erp-row {% if object.quantidade == 0 %}text-muted{% endif %}">
     <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-            hx-get="{% url 'editar-produtos' object.pk %}" 
-            hx-target="#adicionar-conteudo"> 
+        <span class="erp-primary-text {% if object.quantidade == 0 %}text-decoration-line-through{% endif %}">
+            {{ object.quantidade }}
+        </span>
+    </td>
+    <td>
+        <span class="erp-primary-text {% if object.quantidade == 0 %}text-decoration-line-through{% endif %}">
+            {{ object.nome_produto }}
+        </span>
+        {% if object.codigo_de_barras %}
+            <span class="erp-muted-line">Codigo: {{ object.codigo_de_barras }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if object.categoria %}
+            <span class="erp-badge erp-badge-neutral">{{ object.categoria.nome }}</span>
+        {% elif object.categoria_produtos %}
+            <span class="erp-badge erp-badge-neutral">{{ object.categoria_produtos }}</span>
+        {% else %}
+            <span class="erp-muted-line">Sem categoria</span>
+        {% endif %}
+    </td>
+    <td>R$ {{ object.preco|default:'---' }}</td>
+    <td class="erp-actions">
+        <span data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+              hx-get="{% url 'editar-produtos' object.pk %}"
+              hx-target="#adicionar-conteudo"
+              title="Editar produto">
             <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
         </span>
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" 
-            hx-get="{% url 'apagar-produtos' object.pk %}" hx-confirm="Deseja mesmo apagar {{ object.nome_produto }} ?"
-            hx-target="closest tr" hx-swap="outerHTML swap:300ms">
+        <span data-bs-toggle="modal"
+              data-bs-target="#success_tic_delete"
+              hx-get="{% url 'apagar-produtos' object.pk %}"
+              hx-confirm="Deseja mesmo apagar {{ object.nome_produto }} ?"
+              hx-target="closest tr"
+              hx-swap="outerHTML swap:300ms"
+              title="Apagar produto">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop1"
-              hx-get="{% url 'detalhe-produto' object.pk %}" hx-target="#detalhes-produtos" hx-swap="innerHTML">
+        <span data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop1"
+              hx-get="{% url 'detalhe-produto' object.pk %}"
+              hx-target="#detalhes-produtos"
+              hx-swap="innerHTML"
+              title="Detalhes do produto">
             <i class="fa-regular fa-eye" style="color: rgb(40, 18, 237);"></i>
         </span>
     </td>

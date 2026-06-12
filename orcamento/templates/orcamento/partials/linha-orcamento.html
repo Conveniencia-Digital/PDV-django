@@ -1,0 +1,124 @@
+<tr id="orcamento-{{ object.pk }}" class="orcamento-row">
+    <td>
+        <strong>{{ object.data_criacao|date:'d/m/Y' }}</strong><br>
+        <small class="text-muted">{{ object.data_criacao|date:'H:i:s' }}</small>
+    </td>
+    <td>
+        <strong>{{ object.cliente.nome_cliente }}</strong><br>
+        <small class="text-muted">{{ object.cliente.telefone_contato }}</small>
+    </td>
+    <td>
+        {% if object.status == 'Finalizado' or object.status == 'Finalizado e entregue' or object.status == 'Garantia encerrada' %}
+            <span class="badge-status status-finalizado">{{ object.status }}</span>
+        {% elif object.status == 'Cancelado' or object.status == 'Cancelado e entregue' %}
+            <span class="badge-status status-cancelado">{{ object.status }}</span>
+        {% else %}
+            <span class="badge-status status-outro">{{ object.status }}</span>
+        {% endif %}
+    </td>
+    <td>
+        <strong>R$ {{ object.total|floatformat:2 }}</strong>
+    </td>
+    <td class="acoes text-end">
+        <a hx-get="{% url 'detalhe-orcamento' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo"
+           title="Imprimir">
+            <i class="fa-solid fa-print"></i>
+        </a>
+        <a hx-get="{% url 'relatorio-lucro-orcamento' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo"
+           title="Custos e lucros">
+            <i class="fa-solid fa-chart-simple"></i>
+        </a>
+        <a hx-get="{% url 'editar-orcamento' object.pk %}"
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo"
+           title="Editar">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <a hx-get="{% url 'apagar-orcamento' object.pk %}"
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+           hx-confirm="Deseja mesmo apagar este orçamento?"
+           hx-target="#bloco-dados"
+           hx-swap="outerHTML"
+           title="Apagar">
+            <i class="fa-regular fa-trash-can" style="color: red;"></i>
+        </a>
+        <button class="toggle-detalhes btn btn-link btn-sm p-0 border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#detalhes-orcamento-{{ object.pk }}"
+                aria-controls="detalhes-orcamento-{{ object.pk }}"
+                aria-expanded="false"
+                title="Detalhes">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+    </td>
+</tr>
+
+<tr class="collapse orcamento-details-row" id="detalhes-orcamento-{{ object.pk }}">
+    <td colspan="5">
+        <div class="detalhes-box">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Item</th>
+                        <th>Qtd</th>
+                        <th>Preço</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in object.orcamento_items.all %}
+                    <tr>
+                        <td>{% if item.servico_id %}Serviço{% else %}Peça{% endif %}</td>
+                        <td>
+                            {% if item.servico_id %}{{ item.servico }}{% else %}{{ item.peca }}{% endif %}
+                        </td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.preco_orcamento|floatformat:2 }}</td>
+                        <td class="text-end">R$ {{ item.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="text-danger">
+                        <td colspan="3"></td>
+                        <th>Total sem desconto</th>
+                        <th class="text-end">R$ {{ object.total_sem_desconto|floatformat:2 }}</th>
+                    </tr>
+                    <tr class="text-danger">
+                        <td colspan="3"></td>
+                        <th>Desconto</th>
+                        <th class="text-end">R$ {{ object.desconto|default:'0.00' }}</th>
+                    </tr>
+                    <tr class="text-success">
+                        <th>Pagamento</th>
+                        <td colspan="2">{{ object.forma_pagamento }}</td>
+                        <th>Total</th>
+                        <th class="text-end">R$ {{ object.total|floatformat:2 }}</th>
+                    </tr>
+                    {% if object.card_payment_type %}
+                    <tr>
+                        <th>Máquina</th>
+                        <td colspan="2">{{ object.card_machine }}</td>
+                        <th>Taxa da maquininha</th>
+                        <td class="text-end">{{ object.card_fee_percentage }}% / {{ object.card_fee_amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>Repassada ao cliente</th>
+                        <td colspan="2">{% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</td>
+                        <th>Valor base</th>
+                        <td class="text-end">{{ object.card_base_amount }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </td>
+</tr>

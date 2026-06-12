@@ -1,0 +1,137 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+
+{% block titulo %}Maquininhas de cartão{% endblock titulo %}
+
+{% block style %}
+<style>
+  .card-machine-page {
+    color: #202124;
+  }
+
+  .card-machine-header,
+  .card-machine-panel {
+    background: #fff;
+    border: 1px solid #e7eaef;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(20, 25, 34, 0.07);
+  }
+
+  .card-machine-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 18px;
+  }
+
+  .card-machine-header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .card-machine-panel {
+    overflow: hidden;
+  }
+
+  .card-machine-table {
+    margin: 0;
+  }
+
+  .card-machine-table th {
+    color: #667085;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .fee-chip {
+    background: #f1f6ff;
+    border-radius: 999px;
+    color: #1849a9;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 2px;
+    padding: 5px 8px;
+  }
+
+  @media (max-width: 767.98px) {
+    .card-machine-header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock style %}
+
+{% block conteudo %}
+<div class="card-machine-page">
+  <div class="card-machine-header">
+    <div>
+      <h1>Maquininhas de cartão</h1>
+      <div class="text-muted">Cadastre taxas de débito e crédito parcelado para uso no Lan House.</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a class="btn btn-outline-secondary" href="{% url 'dashboard-financeiro' %}">Dashboard</a>
+      <a class="btn btn-primary" href="{% url 'cadastrar-maquininha-cartao' %}">+ Nova maquininha</a>
+    </div>
+  </div>
+
+  <div class="card-machine-panel">
+    <table class="table table-hover card-machine-table">
+      <thead>
+        <tr>
+          <th>Máquina</th>
+          <th>Status</th>
+          <th>Taxas cadastradas</th>
+          <th class="text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for machine in maquininhas %}
+          <tr>
+            <td>
+              <strong>{{ machine.name }}</strong><br>
+              <small class="text-muted">Atualizada em {{ machine.updated_at|date:'d/m/Y H:i' }}</small>
+            </td>
+            <td>
+              {% if machine.is_active %}
+                <span class="badge bg-success">Ativa</span>
+              {% else %}
+                <span class="badge bg-secondary">Inativa</span>
+              {% endif %}
+            </td>
+            <td>
+              {% for fee in machine.fees.all %}
+                <span class="fee-chip">
+                  {% if fee.payment_type == 'debit' %}
+                    Débito {{ fee.fee_percentage }}%
+                  {% else %}
+                    Crédito {{ fee.installments }}x {{ fee.fee_percentage }}%
+                  {% endif %}
+                </span>
+              {% empty %}
+                <span class="text-muted">Sem taxas cadastradas.</span>
+              {% endfor %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'editar-maquininha-cartao' machine.pk %}">Editar</a>
+              <form class="d-inline" method="post" action="{% url 'status-maquininha-cartao' machine.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-secondary" type="submit">
+                  {% if machine.is_active %}Desativar{% else %}Ativar{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">Nenhuma maquininha cadastrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock conteudo %}

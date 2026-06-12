@@ -1,88 +1,3 @@
-{% block style %}
-<style>
-/* Linha principal */
-.venda-row {
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-.venda-row:hover {
-    background: #f8f9fa;
-}
-
-/* Cabeçalho fake (mais leve) */
-.venda-header th {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #6c757d;
-    border: none;
-}
-
-/* Status */
-.badge-status {
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-}
-.status-entregue {
-    background: #e6f4ea;
-    color: #1e7e34;
-}
-.status-outro {
-    background: #e9ecef;
-    color: #495057;
-}
-
-/* Ações */
-.acoes a {
-    margin-left: 10px;
-    color: #6c757d;
-    transition: transform 0.15s ease, color 0.15s ease;
-}
-.acoes a:hover {
-    transform: translateY(-2px);
-    color: #0d6efd;
-}
-
-/* Collapse */
-.toggle-detalhes i {
-    transition: transform 0.3s ease;
-}
-.toggle-detalhes[aria-expanded="true"] i {
-    transform: rotate(180deg);
-}
-
-/* Detalhes */
-.detalhes-box {
-    background: #f9fafb;
-    border-radius: 10px;
-    padding: 15px;
-}
-
-/* Tabela interna */
-.detalhes-box table th {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #6c757d;
-    border-bottom: 1px solid #dee2e6;
-}
-.detalhes-box table td {
-    vertical-align: middle;
-}
-
-</style>
-{% endblock %}
-
-
-<!-- Linha principal da venda -->
-
-<tr class="venda-header">
-    <th>Data</th>
-    <th>Cliente</th>
-    <th>Status</th>
-    <th class="text-end">Ações</th>
-</tr>
-
-
 <tr id="venda-{{ object.pk }}" class="venda-row">
     <td>
         <strong>{{ object.data_criacao|date:'d/m/Y' }}</strong><br>
@@ -115,6 +30,7 @@
         </a>
 
         <a hx-get="{% url 'editar-vendas' object.pk %}"
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
            data-bs-toggle="modal"
            data-bs-target="#staticBackdrop"
            hx-target="#addConteudo"
@@ -130,19 +46,29 @@
             <i class="fa-solid fa-chart-simple"></i>
         </a>
 
-        <a class="toggle-detalhes"
-           data-bs-toggle="collapse"
-           href="#detalhes-{{ object.pk }}"
-           aria-expanded="false"
-           title="Detalhes">
-            <i class="fa-solid fa-chevron-down"></i>
+        <a hx-post="{% url 'apagar-vendas' object.pk %}"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+           hx-confirm="Deseja mesmo apagar esta venda?"
+           hx-target="#bloco-dados"
+           hx-swap="outerHTML"
+           title="Apagar">
+            <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </a>
+
+        <button class="toggle-detalhes btn btn-link btn-sm p-0 border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#detalhes-{{ object.pk }}"
+                aria-controls="detalhes-{{ object.pk }}"
+                aria-expanded="false"
+                title="Detalhes">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
     </td>
 </tr>
 
-
-<!-- Detalhes da venda -->
-<tr class="collapse" id="detalhes-{{ object.pk }}">
+<tr class="collapse venda-details-row" id="detalhes-{{ object.pk }}">
     <td colspan="4">
         <div class="detalhes-box">
             <table class="table table-sm mb-0">
@@ -172,7 +98,7 @@
                     <tr class="text-danger">
                         <td colspan="2"></td>
                         <th>Desconto</th>
-                        <th class="text-end">{{ object.desconto }}</th>
+                        <th class="text-end">{{ object.desconto|default:'0.00' }}</th>
                     </tr>
 
                     <tr class="text-success">
@@ -181,6 +107,20 @@
                         <th>Total</th>
                         <th class="text-end">{{ object.total }}</th>
                     </tr>
+                    {% if object.card_payment_type %}
+                    <tr>
+                        <th>Máquina</th>
+                        <td>{{ object.card_machine }}</td>
+                        <th>Taxa da maquininha</th>
+                        <td class="text-end">{{ object.card_fee_percentage }}% / {{ object.card_fee_amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>Repassada ao cliente</th>
+                        <td>{% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</td>
+                        <th>Valor base</th>
+                        <td class="text-end">{{ object.card_base_amount }}</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>

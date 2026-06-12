@@ -1,5 +1,6 @@
 {% extends 'dashboard/pagina-inicial.html' %}
 {% load relatorio_pecas %}
+{% load static %}
 {% block style %}
 <style>
     tr.htmx-swapping td {
@@ -65,9 +66,30 @@
 {% include 'peca/offcanvas/off-canvas.html' %}
 {% endblock conteudo%}
 {% block scripts %}
+<script src="{% static 'js/pricing-margin.js' %}"></script>
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();
+    });
+
+    function getPecaModal(id) {
+        const element = document.getElementById(id);
+        if (!element || !window.bootstrap) return null;
+        return window.bootstrap.Modal.getInstance(element) || new window.bootstrap.Modal(element);
+    }
+
+    document.body.addEventListener('pecaSalva', function () {
+        const modal = getPecaModal('staticBackdrop');
+        if (modal) modal.hide();
+        const successModal = getPecaModal('success_tic');
+        if (successModal) window.setTimeout(function () { successModal.show(); }, 250);
+    });
+
+    document.body.addEventListener('pecaEditada', function () {
+        const modal = getPecaModal('staticBackdrop');
+        if (modal) modal.hide();
+        const successModal = getPecaModal('success_tic_editar');
+        if (successModal) window.setTimeout(function () { successModal.show(); }, 250);
     });
 </script>
 {% endblock scripts %}

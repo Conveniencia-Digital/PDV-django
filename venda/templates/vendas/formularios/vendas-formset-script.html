@@ -1,0 +1,270 @@
+<script>
+(function () {
+  if (window._vendasFormsetGlobalInit) return;
+  window._vendasFormsetGlobalInit = true;
+
+  function getFormFromEventTarget(target) {
+    return target.closest('form[hx-post*="vendas"]');
+  }
+
+  function getContainer(form) {
+    return form.querySelector('#venda');
+  }
+
+  function todasLinhas(form) {
+    const container = getContainer(form);
+    if (!container) return [];
+    return Array.from(container.querySelectorAll('[data-linha-item]'));
+  }
+
+  function renomearCampoFormset(field, index) {
+    const dataField = field.getAttribute('data-field');
+    if (!dataField) return;
+    field.name = 'items-' + index + '-' + dataField;
+    field.id = 'id_items-' + index + '-' + dataField;
+  }
+
+  function parseDecimal(value) {
+    const parsed = parseFloat(String(value || '0').replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function calcularVenda(form) {
+    let totalBruto = 0;
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      const preco = parseDecimal(row.querySelector('[data-field="preco"]')?.value);
+      const qtd = parseInt(row.querySelector('[data-field="quantidade"]')?.value, 10) || 0;
+      totalBruto += preco * qtd;
+    });
+
+    form.dataset.vendaGrossTotal = totalBruto.toFixed(2);
+    const desconto = parseDecimal(form.querySelector('[name$="desconto"]')?.value);
+    const total = Math.max(totalBruto - desconto, 0);
+
+    const totalBrutoInput = form.querySelector('#totalBrutoValue');
+    const totalInput = form.querySelector('#totalValue');
+    const lucroInput = form.querySelector('#lucroValue');
+    const margemInput = form.querySelector('#margemValue');
+
+    if (totalBrutoInput) totalBrutoInput.value = totalBruto.toFixed(2);
+    if (totalInput) totalInput.value = total.toFixed(2);
+    if (lucroInput) lucroInput.value = total.toFixed(2);
+    if (margemInput) margemInput.value = totalBruto > 0 ? ((total / totalBruto) * 100).toFixed(2) + '%' : '0.00%';
+
+    validarDescontoVenda(form);
+    if (window.CardFeePreview) window.CardFeePreview.recalculate(form);
+  }
+
+  function validarDescontoVenda(form) {
+    const campoDesconto = form.querySelector('[name$="desconto"]');
+    const labelDesconto = form.querySelector('#label_desconto');
+    if (!campoDesconto || !labelDesconto) return true;
+
+    const desconto = parseDecimal(campoDesconto.value);
+    const total = parseDecimal(form.dataset.vendaGrossTotal);
+    const invalido = desconto > total && total > 0;
+
+    labelDesconto.textContent = invalido ? 'Desconto maior que o total' : 'Desconto';
+    labelDesconto.style.color = invalido ? '#ff0000' : '';
+    campoDesconto.classList.toggle('is-invalid', invalido);
+    return !invalido;
+  }
+
+  function removerLinhasVaziasVenda(form) {
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      const idField = row.querySelector('[data-field="id"]');
+      if (idField && idField.value) return;
+
+      const produto = row.querySelector('[data-field="produto"]');
+      if (!produto || !produto.value) row.remove();
+    });
+  }
+
+  function verificarDuplicatasVenda(form) {
+    const selecionados = new Set();
+    let valido = true;
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      const produto = row.querySelector('[data-field="produto"]');
+      if (!produto || !produto.value) return;
+      if (selecionados.has(produto.value)) {
+        valido = false;
+      }
+      selecionados.add(produto.value);
+    });
+    if (!valido) alert('Este produto já foi adicionado nesta venda.');
+    return valido;
+  }
+
+  function atualizarCamposFiadoVenda(form) {
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    const fiadoRow = form.querySelector('.lanhouse-fiado-row');
+    if (!formaPagamento || !fiadoRow) return;
+
+    const isFiado = formaPagamento.value === 'Fiado a receber';
+    fiadoRow.hidden = !isFiado;
+    fiadoRow.setAttribute('aria-hidden', isFiado ? 'false' : 'true');
+
+    ['qtd_parcela', 'valor_entrada'].forEach(function (name) {
+      const el = form.querySelector('[name$="' + name + '"]');
+      if (el) el.type = isFiado ? 'number' : 'hidden';
+    });
+
+    const vencimento = form.querySelector('[name$="data_vencimento"]');
+    if (vencimento) vencimento.type = isFiado ? 'date' : 'hidden';
+  }
+
+  function setSubmitLoading(form, loading) {
+    const button = form.querySelector('button[type="submit"]');
+    if (!button) return;
+    if (!button.dataset.submitLabel) {
+      button.dataset.submitLabel = button.textContent.trim() || 'Salvar';
+    }
+    button.disabled = Boolean(loading);
+    button.textContent = loading ? 'Salvando...' : button.dataset.submitLabel;
+  }
+
+  function reorderItemsVenda(form, reprocessHtmx) {
+    if (!form) return;
+    const rows = todasLinhas(form).filter(function (row) {
+      return row.style.display !== 'none';
+    });
+
+    const totalInput = form.querySelector('#id_items-TOTAL_FORMS');
+    if (totalInput) totalInput.value = rows.length;
+
+    rows.forEach(function (row, i) {
+      row.setAttribute('id', 'item-' + i);
+      row.querySelectorAll('input, select, textarea').forEach(function (field) {
+        renomearCampoFormset(field, i);
+        if (field.matches('[data-field="produto"]')) {
+          field.setAttribute('hx-target', '#id_items-' + i + '-preco');
+        }
+      });
+    });
+
+    if (reprocessHtmx && typeof htmx !== 'undefined') {
+      const container = getContainer(form);
+      if (container) htmx.process(container);
+    }
+    calcularVenda(form);
+  }
+
+  window.reorderItemsVenda = reorderItemsVenda;
+  window.removerLinhasVaziasVenda = removerLinhasVaziasVenda;
+
+  window.removerLinhaVenda = function (button) {
+    const form = getFormFromEventTarget(button);
+    const row = button.closest('[data-linha-item]');
+    if (!row || !form) return;
+    row.remove();
+    reorderItemsVenda(form, false);
+    calcularVenda(form);
+  };
+
+  window.initVendasFormset = function (form) {
+    if (!form || form.dataset.vendasFormsetInit === '1') return;
+    form.dataset.vendasFormsetInit = '1';
+
+    form.addEventListener('submit', function (event) {
+      window.removerLinhasVaziasVenda(form);
+      reorderItemsVenda(form, false);
+      if (!validarDescontoVenda(form) || !verificarDuplicatasVenda(form)) {
+        event.preventDefault();
+      }
+    });
+
+    form.addEventListener('input', function (event) {
+      if (event.target.closest('#venda') || event.target.matches('[name$="desconto"]')) {
+        calcularVenda(form);
+      }
+    });
+
+    form.addEventListener('change', function (event) {
+      if (event.target.closest('#venda') || event.target.matches('[name$="desconto"]')) {
+        calcularVenda(form);
+      }
+      if (
+        event.target.matches('[name$="forma_pagamento"]') ||
+        event.target.matches('[name$="card_machine"]') ||
+        event.target.matches('[name$="card_installments"]') ||
+        event.target.matches('[name$="pass_card_fee_to_customer"]')
+      ) {
+        atualizarCamposFiadoVenda(form);
+        if (window.CardFeePreview) window.CardFeePreview.updateVisibility(form);
+      }
+    });
+
+    atualizarCamposFiadoVenda(form);
+    if (window.CardFeePreview) window.CardFeePreview.updateVisibility(form);
+
+    form.addEventListener('htmx:afterSwap', function (event) {
+      if (event.target.id === 'venda') {
+        reorderItemsVenda(form, true);
+      }
+    });
+
+    reorderItemsVenda(form, true);
+  };
+
+  document.body.addEventListener('htmx:afterSwap', function (event) {
+    const root = event.target.id === 'addConteudo'
+      ? event.target
+      : event.target.closest('#addConteudo');
+    if (!root) return;
+
+    const form = root.querySelector('form[hx-post*="vendas"]');
+    if (form) initVendasFormset(form);
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (event) {
+    const xhr = event.detail.xhr;
+    const path = event.detail.pathInfo?.requestPath || xhr.responseURL || '';
+    if (!path.includes('/produto/preco/')) return;
+
+    const form = getFormFromEventTarget(event.detail.elt) || document.querySelector('#addConteudo form[hx-post*="vendas"]');
+    if (form) calcularVenda(form);
+  });
+
+  document.body.addEventListener('htmx:beforeRequest', function (event) {
+    const form = getFormFromEventTarget(event.detail.elt);
+    if (!form) return;
+    const method = (event.detail.requestConfig?.verb || '').toUpperCase();
+    if (method !== 'POST') return;
+
+    if (form.dataset.submitting === '1') {
+      event.preventDefault();
+      return;
+    }
+    form.dataset.submitting = '1';
+    setSubmitLoading(form, true);
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (event) {
+    const form = getFormFromEventTarget(event.detail.elt);
+    if (!form) return;
+    form.dataset.submitting = '0';
+    setSubmitLoading(form, false);
+  });
+
+  function getBootstrapModal(id) {
+    const element = document.getElementById(id);
+    if (!element || !window.bootstrap) return null;
+    return window.bootstrap.Modal.getInstance(element) || new window.bootstrap.Modal(element);
+  }
+
+  document.body.addEventListener('vendaSalva', function () {
+    const modal = getBootstrapModal('staticBackdrop');
+    if (modal) modal.hide();
+
+    const successModal = getBootstrapModal('success_tic');
+    if (successModal) {
+      window.setTimeout(function () {
+        successModal.show();
+      }, 250);
+    }
+  });
+})();
+</script>

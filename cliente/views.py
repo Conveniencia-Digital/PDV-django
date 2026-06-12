@@ -1,3 +1,7 @@
+import json
+
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
@@ -17,18 +21,55 @@ class ListaCliente(ListView):
 
 
 
+def _cliente_payload(cliente):
+    return {
+        'id': cliente.pk,
+        'text': cliente.nome_cliente,
+        'name': cliente.nome_cliente,
+        'phone': cliente.telefone_contato or '',
+        'phone_secondary': cliente.telefone_contato_2 or '',
+        'cpf': cliente.cpf or '',
+    }
+
+
+@login_required
+def buscarclientes(request):
+    termo = request.GET.get('q', '').strip()
+    clientes = Cliente.objects.filter(usuario=request.user)
+
+    if termo:
+        clientes = clientes.filter(
+            Q(nome_cliente__icontains=termo)
+            | Q(telefone_contato__icontains=termo)
+            | Q(telefone_contato_2__icontains=termo)
+            | Q(cpf__icontains=termo)
+        )
+
+    clientes = clientes.order_by('nome_cliente')[:30]
+    return JsonResponse({'results': [_cliente_payload(cliente) for cliente in clientes]})
+
+
 @login_required
 def cadastrarcliente(request):
     template_name = 'cliente/formularios/formulario-cadastrar-cliente.html' 
+    client_picker_mode = request.GET.get('picker') == '1' or request.POST.get('client_picker') == '1'
     form = ClienteForm(request.POST or None, initial={'usuario': request.user})
     if request.method == 'POST':
         if form.is_valid():
-            cliente = form.save()
+            cliente = form.save(commit=False)
+            cliente.usuario = request.user
+            cliente.save()
+
+            if client_picker_mode:
+                response = HttpResponse('')
+                response['HX-Trigger'] = json.dumps({'clienteCriado': _cliente_payload(cliente)})
+                return response
+
             template_name = 'cliente/tabela/linhas-tabela-cliente.html'
             context = {'object': cliente}
             return render(request, template_name, context)
 
-    context = {'form': form}
+    context = {'form': form, 'client_picker_mode': client_picker_mode}
     return render(request, template_name, context)
 
 

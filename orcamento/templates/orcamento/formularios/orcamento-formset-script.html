@@ -1,0 +1,295 @@
+<script>
+(function () {
+  if (window._orcamentoFormsetGlobalInit) return;
+  window._orcamentoFormsetGlobalInit = true;
+
+  function getFormFromEventTarget(target) {
+    return target.closest('form[hx-post*="orcamento"]');
+  }
+
+  function getContainers(form) {
+    return {
+      pecas: form.querySelector('#orcamento-pecas'),
+      servicos: form.querySelector('#orcamento-servicos'),
+    };
+  }
+
+  function todasLinhas(form) {
+    const { pecas, servicos } = getContainers(form);
+    if (!pecas || !servicos) return [];
+    return Array.from(pecas.querySelectorAll('[data-linha-item]'))
+      .concat(Array.from(servicos.querySelectorAll('[data-linha-item]')));
+  }
+
+  function renomearCampoFormset(field, index) {
+    const dataField = field.getAttribute('data-field');
+    if (!dataField) return;
+    field.name = 'items-' + index + '-' + dataField;
+    field.id = 'id_items-' + index + '-' + dataField;
+  }
+
+  function parseDecimal(value) {
+    const parsed = parseFloat(String(value || '0').replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function calcularTotalOrcamento(form) {
+    let totalBruto = 0;
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      if (row.querySelector('[data-field="DELETE"]')?.checked) return;
+      const preco = parseDecimal(row.querySelector('[data-field="preco_orcamento"]')?.value);
+      const qtd = parseInt(row.querySelector('[data-field="quantidade"]')?.value, 10) || 0;
+      totalBruto += preco * qtd;
+    });
+    form.dataset.orcamentoGrossTotal = totalBruto.toFixed(2);
+    const desconto = parseDecimal(form.querySelector('[name$="desconto"]')?.value);
+    const total = Math.max(totalBruto - desconto, 0);
+    const totalInput = form.querySelector('#totalValue');
+    if (totalInput) totalInput.value = total.toFixed(2);
+    validarDescontoOrcamento(form);
+    if (window.CardFeePreview) window.CardFeePreview.recalculate(form);
+  }
+
+  function validarDescontoOrcamento(form) {
+    const campoDesconto = form.querySelector('[name$="desconto"]');
+    const labelDesconto = form.querySelector('#label_desconto');
+    if (!campoDesconto || !labelDesconto) return;
+
+    const desconto = parseDecimal(campoDesconto.value);
+    const total = parseDecimal(form.dataset.orcamentoGrossTotal);
+
+    if (desconto > total && total > 0) {
+      labelDesconto.innerHTML = 'Desconto maior que o valor do orçamento';
+      labelDesconto.style.color = '#ff0000';
+      campoDesconto.style.border = '3px solid #ff0000';
+      campoDesconto.style.color = '#ff0000';
+    } else {
+      labelDesconto.textContent = 'Desconto';
+      labelDesconto.style.color = '';
+      campoDesconto.style.border = '';
+      campoDesconto.style.color = '';
+    }
+  }
+
+  function atualizarCamposFiadoOrcamento(form) {
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    const fiadoRow = form.querySelector('.lanhouse-fiado-row');
+    if (!formaPagamento || !fiadoRow) return;
+
+    const isFiado = formaPagamento.value === 'Fiado a receber';
+    fiadoRow.hidden = !isFiado;
+    fiadoRow.setAttribute('aria-hidden', isFiado ? 'false' : 'true');
+
+    ['qtd_parcela', 'valor_entrada'].forEach(function (name) {
+      const el = form.querySelector('[name$="' + name + '"]');
+      if (el) el.type = isFiado ? 'number' : 'hidden';
+    });
+
+    const vencimento = form.querySelector('[name$="data_vencimento"]');
+    if (vencimento) vencimento.type = isFiado ? 'date' : 'hidden';
+  }
+
+  function setSubmitLoading(form, loading) {
+    const button = form.querySelector('button[type="submit"]');
+    if (!button) return;
+    if (!button.dataset.submitLabel) {
+      button.dataset.submitLabel = button.textContent.trim() || 'Salvar';
+    }
+    button.disabled = Boolean(loading);
+    button.textContent = loading ? 'Salvando...' : button.dataset.submitLabel;
+  }
+
+  function removerLinhasVaziasOrcamento(form) {
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      const tipo = row.getAttribute('data-tipo');
+      const idField = row.querySelector('[data-field="id"]');
+      if (idField && idField.value) return;
+
+      if (tipo === 'peca') {
+        const peca = row.querySelector('[data-field="peca"]');
+        if (!peca || !peca.value) row.remove();
+      } else if (tipo === 'servico') {
+        const servico = row.querySelector('[data-field="servico"]');
+        if (!servico || !servico.value) row.remove();
+      }
+    });
+  }
+
+  function reorderItemsOrcamento(form, reprocessHtmx) {
+    if (!form) return;
+    const rows = todasLinhas(form).filter(function (row) {
+      return row.style.display !== 'none';
+    });
+
+    const totalInput = form.querySelector('#id_items-TOTAL_FORMS');
+    if (totalInput) totalInput.value = rows.length;
+
+    rows.forEach(function (row, i) {
+      row.querySelectorAll('input, select, textarea').forEach(function (field) {
+        renomearCampoFormset(field, i);
+        if (field.matches('[data-field="peca"]')) {
+          field.setAttribute('hx-target', '#id_items-' + i + '-preco_orcamento');
+        }
+      });
+    });
+
+    if (reprocessHtmx && typeof htmx !== 'undefined') {
+      const { pecas, servicos } = getContainers(form);
+      if (pecas) htmx.process(pecas);
+      if (servicos) htmx.process(servicos);
+    }
+    calcularTotalOrcamento(form);
+  }
+
+  window.reorderItemsOrcamento = reorderItemsOrcamento;
+  window.removerLinhasVaziasOrcamento = removerLinhasVaziasOrcamento;
+
+  window.removerLinhaOrcamento = function (button) {
+    const form = getFormFromEventTarget(button);
+    const row = button.closest('[data-linha-item]');
+    if (!row || !form) return;
+
+    const deleteField = row.querySelector('[data-field="DELETE"]');
+    if (deleteField) {
+      deleteField.checked = true;
+      row.style.display = 'none';
+      row.querySelectorAll('input, select, textarea').forEach(function (field) {
+        field.required = false;
+      });
+    } else {
+      row.remove();
+    }
+    reorderItemsOrcamento(form, false);
+    calcularTotalOrcamento(form);
+    validarDescontoOrcamento(form);
+  };
+
+  window.initOrcamentoFormset = function (form) {
+    if (!form || form.dataset.orcamentoFormsetInit === '1') return;
+    form.dataset.orcamentoFormsetInit = '1';
+
+    form.addEventListener('submit', function () {
+      window.removerLinhasVaziasOrcamento(form);
+      reorderItemsOrcamento(form, false);
+    });
+
+    form.addEventListener('input', function (e) {
+      if (
+        e.target.closest('#orcamento-pecas') ||
+        e.target.closest('#orcamento-servicos') ||
+        e.target.matches('[name$="desconto"]')
+      ) {
+        calcularTotalOrcamento(form);
+      }
+    });
+
+    form.addEventListener('change', function (e) {
+      if (
+        e.target.closest('#orcamento-pecas') ||
+        e.target.closest('#orcamento-servicos') ||
+        e.target.matches('[name$="desconto"]')
+      ) {
+        calcularTotalOrcamento(form);
+      }
+      if (
+        e.target.matches('[name$="forma_pagamento"]') ||
+        e.target.matches('[name$="card_machine"]') ||
+        e.target.matches('[name$="card_installments"]') ||
+        e.target.matches('[name$="pass_card_fee_to_customer"]')
+      ) {
+        atualizarCamposFiadoOrcamento(form);
+        if (window.CardFeePreview) window.CardFeePreview.updateVisibility(form);
+      }
+    });
+
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    if (formaPagamento && !formaPagamento.dataset.orcamentoFiadoInit) {
+      formaPagamento.dataset.orcamentoFiadoInit = '1';
+      formaPagamento.addEventListener('change', function () {
+        atualizarCamposFiadoOrcamento(form);
+        if (window.CardFeePreview) window.CardFeePreview.updateVisibility(form);
+      });
+    }
+
+    atualizarCamposFiadoOrcamento(form);
+    if (window.CardFeePreview) window.CardFeePreview.updateVisibility(form);
+
+    form.addEventListener('htmx:afterSwap', function (e) {
+      if (e.target.id === 'orcamento-pecas' || e.target.id === 'orcamento-servicos') {
+        reorderItemsOrcamento(form, true);
+      }
+    });
+
+    reorderItemsOrcamento(form, true);
+  };
+
+  document.body.addEventListener('htmx:afterSwap', function (e) {
+    const root = e.target.id === 'addConteudo'
+      ? e.target
+      : e.target.closest('#addConteudo');
+    if (!root) return;
+
+    const form = root.querySelector('form[hx-post*="orcamento"]');
+    if (form) initOrcamentoFormset(form);
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (e) {
+    const xhr = e.detail.xhr;
+    const path = e.detail.pathInfo?.requestPath || xhr.responseURL || '';
+    if (!path.includes('/peca/preco/')) return;
+
+    try {
+      const data = JSON.parse(xhr.responseText);
+      const form = getFormFromEventTarget(e.detail.elt) || document.querySelector('#addConteudo form[hx-post*="orcamento"]');
+      const field = document.getElementById('id_items-' + data.index + '-preco_orcamento');
+      if (field) {
+        field.value = data.preco;
+        if (form) calcularTotalOrcamento(form);
+      }
+    } catch (err) {
+      console.error('Erro ao aplicar preço da peça:', err);
+    }
+  });
+
+  document.body.addEventListener('htmx:beforeRequest', function (e) {
+    const form = getFormFromEventTarget(e.detail.elt);
+    if (!form) return;
+    const method = (e.detail.requestConfig?.verb || '').toUpperCase();
+    if (method !== 'POST') return;
+
+    if (form.dataset.submitting === '1') {
+      e.preventDefault();
+      return;
+    }
+    form.dataset.submitting = '1';
+    setSubmitLoading(form, true);
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (e) {
+    const form = getFormFromEventTarget(e.detail.elt);
+    if (!form) return;
+    form.dataset.submitting = '0';
+    setSubmitLoading(form, false);
+  });
+
+  function getBootstrapModal(id) {
+    const element = document.getElementById(id);
+    if (!element || !window.bootstrap) return null;
+    return window.bootstrap.Modal.getInstance(element) || new window.bootstrap.Modal(element);
+  }
+
+  document.body.addEventListener('orcamentoSalvo', function () {
+    const modal = getBootstrapModal('staticBackdrop');
+    if (modal) modal.hide();
+
+    const successModal = getBootstrapModal('success_tic');
+    if (successModal) {
+      window.setTimeout(function () {
+        successModal.show();
+      }, 250);
+    }
+  });
+})();
+</script>

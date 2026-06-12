@@ -1,184 +1,158 @@
 {% load widget_tweaks %}
+
 <div class="modal-header">
-  <h5 class="modal-title" id="staticBackdropLabel"> Cadastro de produto </h5>
+  <h5 class="modal-title" id="staticBackdropLabel">Cadastro de produto</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form hx-post="{% url 'criar-produtos' %}" hx-target="#produto-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
 
+<form hx-post="{% url 'criar-produtos' %}"
+      hx-target="#adicionar-conteudo"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+      data-produto-form
+      data-profit-margin-calculator>
   <div class="modal-body">
     {% csrf_token %}
-    <div class="row g-2">
-      <div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            {% render_field form.usuario class="form-control" %}
-            {% render_field form.nome_produto type="text" class="form-control" %}
-            <label for="floatingInput">Digite o nome do produto, descrição, marca e
-              modelo </label>
-          </div>
-        </div>
-        <div class="col-md">
-          <div class="form-floating">
-            {% render_field form.categoria_produtos class="form-select" id="floatingSelectGrid" %}
-            <label for="floatingSelectGrid">Escolha a categoria</label>
-          </div>
-        </div>
+    {% render_field form.usuario %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
       </div>
-    </div>
-    <div class="row g-2">
-      <div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            {% render_field form.codigo_de_barras %}
-            <label for="floatingSelectGrid">Digite o codigo de barras(opcional)</label>
-          </div>
+    {% endif %}
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-7">
+        <div class="form-floating">
+          {% render_field form.nome_produto type="text" class="form-control" placeholder="Nome, descricao, marca e modelo" %}
+          <label for="{{ form.nome_produto.id_for_label }}">Nome, descricao, marca e modelo</label>
         </div>
-        <div class="col-md">
-          <div class="form-floating">
-            {% render_field form.fornecedor %}
-            <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
-          </div>
+        {% for error in form.nome_produto.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-5">
+        {% include 'produto/componentes/seletor-categoria-produto.html' with field=form.categoria label='Categoria' %}
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="form-floating">
+          {% render_field form.codigo_de_barras class="form-control" placeholder="Codigo de barras" %}
+          <label for="{{ form.codigo_de_barras.id_for_label }}">Codigo de barras (opcional)</label>
         </div>
+        {% for error in form.codigo_de_barras.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="form-floating">
+          {% render_field form.fornecedor class="form-select" %}
+          <label for="{{ form.fornecedor.id_for_label }}">Fornecedor (opcional)</label>
+        </div>
+        {% for error in form.fornecedor.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="form-floating">
+          {% render_field form.quantidade class="form-control" value="1" placeholder="Quantidade" %}
+          <label for="{{ form.quantidade.id_for_label }}">Quantidade</label>
+        </div>
+        {% for error in form.quantidade.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="form-floating">
+          {% render_field form.preco_de_custo class="form-control" value="0.00" step="0.01" data-pricing-field="cost" placeholder="Preco de custo" %}
+          <label for="{{ form.preco_de_custo.id_for_label }}">Preco de custo</label>
+        </div>
+        {% for error in form.preco_de_custo.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="form-floating">
+          {% render_field form.margem_de_lucro class="form-control" value="0" step="0.01" data-pricing-field="margin" placeholder="Margem de lucro" %}
+          <label for="{{ form.margem_de_lucro.id_for_label }}">Margem de lucro (%)</label>
+        </div>
+        {% for error in form.margem_de_lucro.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="form-floating">
+          {% render_field form.preco class="form-control" value="0.00" step="0.01" data-pricing-field="price" placeholder="Preco de venda" %}
+          <label for="{{ form.preco.id_for_label }}">Preco de venda</label>
+        </div>
+        {% for error in form.preco.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="form-floating">
+          {% render_field form.forma_pagamento class="form-select" data-produto-payment="true" %}
+          <label for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+        </div>
+        {% for error in form.forma_pagamento.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="form-floating">
+          {% render_field form.observacao class="form-control" placeholder="Observacao" %}
+          <label for="{{ form.observacao.id_for_label }}">Observacao</label>
+        </div>
+        {% for error in form.observacao.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
     </div>
 
-    <div class="row g-2">
-      <div class="row g-2">
-        <div class="col-md-3">
-          <div class="form-floating">
-            {% render_field form.quantidade value="01" %}
-            <label for="floatingSelectGrid">Informe a quantidade</label>
-          </div>
+    <div class="row g-3 mt-1" data-produto-fiado-fields hidden>
+      <div class="col-12 col-md-6">
+        <div class="form-floating">
+          {% render_field form.valor_entrada class="form-control" value="0.00" type="number" step="0.01" placeholder="Valor de entrada" %}
+          <label for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
         </div>
-        <div class="col-md-3">
-          <div class="form-floating">
-            {% render_field form.preco_de_custo value="0.00" %}
-            <label for="floatingSelectGrid">Preço custo(unidade)</label>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-floating">
-            {% render_field form.margem_de_lucro value="0" %}
-            <label for="floatingSelectGrid">Margem de lucro %</label>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-floating">
-            {% render_field form.preco value="0.00" %}
-            <label for="floatingSelectGrid">Preço venda(unidade)</label>
-          </div>
-        </div>
-      </div>
-      <div class="row g-2">
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.forma_pagamento class="form-control" %}
-          <label>Forma de pagamento</label>
-        </div>
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.observacao class="form-control" %}
-          <label>Observaçāo</label>
-        </div>
-      </div>
-      <div class="row g-2" style="color: #FFFFFF;">
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.valor_entrada class="form-control" value="0.00" %}
-          <label id="label_valor_entrada">Valor de entrada</label>
-        </div>
-        <div class="col-md-3 mb-3 form-floating">
-          {% render_field form.qtd_parcela class="form-control" value="01" %}
-          <label id="label_qtd_parcela">Qtd. parcela</label>
-        </div>
-        <div class="col-md-3 mb-3 form-floating">
-          {% render_field form.data_vencimento class="form-control" %}
-          <label id="label_data_vencimento">Data vencimento</label>
-        </div>
-      </div>
-      <div class="modal-footer" style="margin-top: 15px;">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+        {% for error in form.valor_entrada.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
 
+      <div class="col-12 col-md-3">
+        <div class="form-floating">
+          {% render_field form.qtd_parcela class="form-control" value="1" type="number" placeholder="Parcelas" %}
+          <label for="{{ form.qtd_parcela.id_for_label }}">Qtd. parcela</label>
+        </div>
+        {% for error in form.qtd_parcela.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="form-floating">
+          {% render_field form.data_vencimento class="form-control" type="date" placeholder="Data vencimento" %}
+          <label for="{{ form.data_vencimento.id_for_label }}">Data vencimento</label>
+        </div>
+        {% for error in form.data_vencimento.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <span class="htmx-indicator spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
-<script>
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, "500");
-  });
-
-  document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
-    var valor_entrada = document.querySelector('#id_valor_entrada');
-    var data_vencimento = document.querySelector('#id_data_vencimento');
-    var qtd_parcela = document.querySelector('#id_qtd_parcela');
-    var label_valor_entrada = document.querySelector('#label_valor_entrada');
-    var label_data_vencimento = document.querySelector('#label_data_vencimento')
-    var label_qtd_parcela = document.querySelector('#label_qtd_parcela')
-
-
-
-    if (this.value === "Fiado a pagar") {
-      valor_entrada.setAttribute('type', 'Number');
-      data_vencimento.setAttribute('type', 'Date');
-      qtd_parcela.setAttribute('type', 'Number');
-      label_valor_entrada.style.color  = "rgb(67, 67, 67)";
-      label_data_vencimento.style.color = "rgb(67, 67, 67)";
-      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
-    }
-    else {
-      valor_entrada.setAttribute('type', 'Hidden');
-      data_vencimento.setAttribute('type', 'Hidden');
-      qtd_parcela.setAttribute('type', 'Hidden');
-      label_valor_entrada.style.color  = "#FFFFFF";
-      label_data_vencimento.style.color = "#FFFFFF";
-      label_qtd_parcela.style.color = "#FFFFFF";
-    }
-
-
-  });
-  document.querySelector("#staticBackdrop").addEventListener("shown.bs.modal", function() {
-    let precoDeCusto = document.querySelector("#id_preco_de_custo");
-    let margemDeLucro = document.querySelector("#id_margem_de_lucro");
-    let preco = document.querySelector("#id_preco");
-
-    function calcularValores() {
-        let custo = parseFloat(precoDeCusto.value) || 0;
-        let venda = parseFloat(preco.value) || 0;
-        let margem = parseFloat(margemDeLucro.value) || 0;
-
-        if (precoDeCusto.value !== "" && margemDeLucro.value !== "") {
-            // Calcular preço de venda com base no custo e margem
-            if (document.activeElement === margemDeLucro || document.activeElement === precoDeCusto) {
-                if (margem < 100) {
-                    preco.value = (custo / (1 - margem / 100)).toFixed(2);
-                } else {
-                    preco.value = "0.00"; // Evita erro caso margem seja 100% ou maior
-                }
-            }
-        }
-
-        if (preco.value !== "" && precoDeCusto.value !== "") {
-            // Calcular margem de lucro com base no preço de venda
-            if (document.activeElement === preco) {
-                if (venda > custo) {
-                    margemDeLucro.value = ((1 - (custo / venda)) * 100).toFixed(2);
-                } else {
-                    margemDeLucro.value = "0"; // Evita erro caso venda seja menor ou igual ao custo
-                }
-            }
-        }
-    }
-
-    // Adiciona evento de input nos campos para recalcular
-    precoDeCusto.addEventListener("input", calcularValores);
-    margemDeLucro.addEventListener("input", calcularValores);
-    preco.addEventListener("input", calcularValores);
-});
-
-
-
-
-
-
-</script>

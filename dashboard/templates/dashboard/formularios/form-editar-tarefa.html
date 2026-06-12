@@ -14,6 +14,13 @@
               {% render_field form.tarefa class='form-control' %}
                 <label for="">O que tem pra fazer ?</label>
             </div>
+            <div class="col-12 col-md-4 form-floating">
+              {% render_field form.custo class='form-control' step='0.01' min='0' placeholder='0,00' %}
+                <label for="{{ form.custo.id_for_label }}">Custo</label>
+                {% for error in form.custo.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
         </div>
         <div class="row g-2" style="margin-bottom: 10px;">
           <div class="col form-floating">

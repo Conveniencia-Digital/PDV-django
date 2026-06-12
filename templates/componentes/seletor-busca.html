@@ -1,0 +1,97 @@
+{% load widget_tweaks %}
+
+{% if search_url_name %}
+  {% url search_url_name as selector_search_url %}
+{% endif %}
+{% if create_url_name %}
+  {% url create_url_name as selector_create_url %}
+{% endif %}
+
+<div class="client-picker searchable-selector {% if field.errors %}is-invalid{% endif %}"
+     data-client-picker
+     data-searchable-selector
+     data-selector-kind="{{ selector_kind|default:'item' }}"
+     data-search-url="{{ search_url|default:selector_search_url }}"
+     data-placeholder="{{ placeholder|default:'Selecione uma opção' }}"
+     data-meta-placeholder="{{ meta_placeholder|default:'Busque pelo texto desejado' }}"
+     data-empty-text="{{ empty_text|default:'Nenhum resultado encontrado.' }}"
+     data-child-modal-id="{{ child_modal_id|default:'selectorCreateModal' }}"
+     {% if price_target %}data-price-target="{{ price_target }}"{% endif %}>
+  {% if hide_label %}
+    <div class="form-label client-picker-label searchable-selector-label-spacer" aria-hidden="true">&nbsp;</div>
+  {% else %}
+    <label class="form-label client-picker-label" for="{{ field.auto_id }}-trigger">
+      {{ label|default:field.label }}
+    </label>
+  {% endif %}
+
+  <div class="client-picker-native-wrap">
+    {% if data_field %}
+      {% render_field field class+="client-picker-native" data-client-picker-native="true" data-searchable-selector-native="true" data-field=data_field aria-hidden="true" %}
+    {% else %}
+      {% render_field field class+="client-picker-native" data-client-picker-native="true" data-searchable-selector-native="true" aria-hidden="true" %}
+    {% endif %}
+  </div>
+
+  <button type="button"
+          id="{{ field.auto_id }}-trigger"
+          class="client-picker-trigger"
+          data-client-picker-trigger
+          data-searchable-selector-trigger
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="{{ field.auto_id }}-searchable-selector-list">
+    <span class="client-picker-trigger-main">
+      <span class="client-picker-selected-name" data-client-picker-selected-name>
+        {{ placeholder|default:'Selecione uma opção' }}
+      </span>
+      <span class="client-picker-selected-meta" data-client-picker-selected-meta>
+        {{ meta_placeholder|default:'Busque pelo texto desejado' }}
+      </span>
+    </span>
+    <span class="client-picker-trigger-icon" aria-hidden="true">
+      <i class="fa-solid fa-chevron-down"></i>
+    </span>
+  </button>
+
+  <div class="client-picker-dropdown" data-client-picker-dropdown hidden>
+    <div class="client-picker-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search"
+             class="client-picker-search-input"
+             data-client-picker-search
+             autocomplete="off"
+             placeholder="{{ search_placeholder|default:'Buscar' }}">
+    </div>
+
+    <div id="{{ field.auto_id }}-searchable-selector-list"
+         class="client-picker-results"
+         data-client-picker-results
+         role="listbox"
+         aria-label="{{ label|default:field.label }}"></div>
+
+    {% if create_url_name or create_url %}
+      <div class="client-picker-footer">
+        <button type="button"
+                class="client-picker-create"
+                data-client-picker-create
+                data-bs-toggle="modal"
+                data-bs-target="#{{ child_modal_id|default:'selectorCreateModal' }}"
+                hx-get="{{ create_url|default:selector_create_url }}{% if create_query %}?{{ create_query }}{% endif %}"
+                hx-target="#{{ child_modal_content_id|default:'selectorCreateModalConteudo' }}"
+                hx-swap="innerHTML">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          <span>{{ create_text|default:'Create New' }}</span>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if field.errors %}
+    <div class="client-picker-errors">
+      {% for error in field.errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

@@ -1,18 +1,40 @@
-<tr id="despesaTr{{ object.pk }}">   
-    <td>{{ object.nome_despesa }}</td>  
-    <td>R${{ object.preco_despesa }}</td>
-    <td>{{object.forma_pagamento}}</td>
+<tr id="despesaTr{{ object.pk }}" class="erp-row">
     <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-despesa' object.pk %}"
-            hx-target="#adicionar-conteudo">
-            <i class="fa-solid fa-pen-to-square" style="color: rgb(5, 180, 84);"></i>
+        <strong>{{ object.data_cadastro|date:'d/m/Y' }}</strong>
+        <span class="erp-muted-line">{{ object.data_cadastro|date:'H:i' }}</span>
+    </td>
+    <td>
+        <span class="erp-primary-text">{{ object.nome_despesa }}</span>
+        {% if object.fornecedor %}
+            <span class="erp-muted-line">{{ object.fornecedor }}</span>
+        {% endif %}
+    </td>
+    <td>
+        <span class="erp-badge erp-badge-neutral">{{ object.categoria_despesa|default:'Sem categoria' }}</span>
+    </td>
+    <td class="erp-primary-text">R$ {{ object.preco_despesa|floatformat:2 }}</td>
+    <td><span class="badge-status status-outro">{{ object.forma_pagamento }}</span></td>
+    <td class="acoes text-end">
+        <span
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+            hx-get="{% url 'editar-despesa' object.pk %}"
+            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
+            hx-target="#adicionar-conteudo"
+            hx-swap="innerHTML"
+            title="Editar">
+            <i class="fa-solid fa-pen-to-square"></i>
         </span>
-        <span data-bs-toggle="modal" data-bs-target="#success_tic_delete" hx-get="{% url 'apagar-despesa' object.pk %}"
-            hx-confirm="Deseja mesmo apagar {{ object.nome_despesa }}" hx-target="closest tr"
-            hx-swap="outerHTML swap:300ms">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
+        <span
+            hx-get="{% url 'apagar-despesa' object.pk %}"
+            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
+            hx-confirm="Deseja mesmo apagar {{ object.nome_despesa }}"
+            hx-target="#bloco-dados"
+            hx-swap="outerHTML"
+            title="Apagar">
+            <i class="fa-regular fa-trash-can"></i>
         </span>
         <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-despesa' object.pk %}"
-        hx-target="#detalhe-despesa" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
+        hx-target="#detalhe-despesa" hx-swap="innerHTML" title="Detalhes"><i class="fa fa-eye"></i></span>
     </td>
 </tr>

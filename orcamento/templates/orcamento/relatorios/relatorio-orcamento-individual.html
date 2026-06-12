@@ -1,0 +1,242 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="staticBackdropLabel">Relatório de orçamento</h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="contentPrint">
+        <style>
+            .header {
+                display: flex;
+                justify-content: space-between;
+                gap: 24px;
+                border-bottom: solid black;
+                padding-bottom: 12px;
+            }
+
+            .logo {
+                font-size: 1.75em;
+                align-self: center;
+                font-weight: 700;
+            }
+
+            .information {
+                text-align: right;
+            }
+
+            .content {
+                margin-top: 30px;
+            }
+
+            .description {
+                font-size: 0.75em;
+                margin-bottom: 0;
+            }
+
+            .report-meta {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px 20px;
+                margin: 18px 0;
+                font-size: 0.9em;
+            }
+
+            .report-section-title {
+                margin-top: 24px;
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+
+            .totals-table {
+                margin-top: 14px;
+                max-width: 420px;
+                margin-left: auto;
+            }
+
+            .totals-table th,
+            .totals-table td {
+                text-align: right;
+            }
+
+            @media print {
+                .modal-header,
+                .modal-footer {
+                    display: none !important;
+                }
+
+                .contentPrint {
+                    font-size: 12px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .header,
+                .report-meta {
+                    display: block;
+                }
+
+                .information {
+                    text-align: left;
+                    margin-top: 12px;
+                }
+            }
+        </style>
+
+        <div class="header">
+            <div class="logo">Conveniência Digital</div>
+            <div class="information">
+                <p class="description">
+                    Centro de reparo<br>
+                    CNPJ: 29.216.862/0001-38<br>
+                    Rua das Nogueiras 3360 Dourados - MS 79839043<br>
+                    Telefone: 67 9 9664 -9605
+                </p>
+            </div>
+        </div>
+
+        <div class="content">
+            <p>
+                Prezado(a),
+                {% if object.cliente %}
+                    {{ object.cliente.nome_cliente }}
+                {% else %}
+                    cliente não informado
+                {% endif %}
+            </p>
+            <p>Conforme solicitado, segue o relatório individual do orçamento disponibilizado pela área técnica.</p>
+
+            <div class="report-meta">
+                <div><strong>Orçamento:</strong> #{{ object.id }}</div>
+                <div><strong>Data:</strong> {{ object.data_criacao|date:'d/m/Y - H:i:s' }}</div>
+                <div>
+                    <strong>Cliente:</strong>
+                    {% if object.cliente %}
+                        {{ object.cliente.nome_cliente }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>Telefone:</strong>
+                    {% if object.cliente and object.cliente.telefone_contato %}
+                        {{ object.cliente.telefone_contato }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </div>
+                <div><strong>Aparelho:</strong> {{ object.celular|default:'Não informado' }}</div>
+                <div><strong>Status:</strong> {{ object.status }}</div>
+                <div><strong>Técnico:</strong> {{ object.tecnico|default:'Não informado' }}</div>
+                <div><strong>Usuário:</strong> {{ object.usuario.get_full_name|default:object.usuario.username }}</div>
+                {% if object.data_entrega %}
+                    <div><strong>Data de entrega:</strong> {{ object.data_entrega|date:'d/m/Y' }}</div>
+                {% endif %}
+            </div>
+
+            <div class="report-section-title">Itens do orçamento</div>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        <tr class="bg-light" style="font-size: 15px;">
+                            <th>Tipo</th>
+                            <th>Item</th>
+                            <th>Quantidade</th>
+                            <th>Preço unitário</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                        {% for item in object.orcamento_items.all %}
+                            <tr>
+                                <td>{% if item.servico_id %}Serviço{% else %}Peça{% endif %}</td>
+                                <td>
+                                    {% if item.servico_id %}
+                                        {{ item.servico }}
+                                    {% elif item.peca_id %}
+                                        {{ item.peca }}
+                                    {% else %}
+                                        Item não informado
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.quantidade }}</td>
+                                <td>R$ {{ item.preco_orcamento|floatformat:2 }}</td>
+                                <td class="text-end">R$ {{ item.subtotal|floatformat:2 }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Nenhum item informado.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="table totals-table">
+                <tbody>
+                    <tr>
+                        <th>Total sem desconto</th>
+                        <td>R$ {{ object.total_sem_desconto|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Desconto</th>
+                        <td>R$ {{ object.desconto|default:'0.00' }}</td>
+                    </tr>
+                    {% if object.card_payment_type and object.pass_card_fee_to_customer %}
+                        <tr>
+                            <th>Taxa de cartão repassada</th>
+                            <td>R$ {{ object.card_fee_amount|default:'0.00' }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr class="bg-light">
+                        <th>Total</th>
+                        <td><strong>R$ {{ object.total|floatformat:2 }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="report-section-title">Pagamento</div>
+            <div class="report-meta">
+                <div><strong>Forma de pagamento:</strong> {{ object.forma_pagamento }}</div>
+                {% if object.valor_entrada %}
+                    <div><strong>Valor de entrada:</strong> R$ {{ object.valor_entrada|floatformat:2 }}</div>
+                {% endif %}
+                {% if object.qtd_parcela %}
+                    <div><strong>Parcelas:</strong> {{ object.qtd_parcela }}</div>
+                {% endif %}
+                {% if object.data_vencimento %}
+                    <div><strong>Vencimento:</strong> {{ object.data_vencimento|date:'d/m/Y' }}</div>
+                {% endif %}
+                {% if object.card_payment_type %}
+                    <div><strong>Máquina:</strong> {{ object.card_machine|default:'Não informada' }}</div>
+                    <div><strong>Tipo cartão:</strong> {{ object.card_payment_type }}</div>
+                    {% if object.card_installments %}
+                        <div><strong>Parcelas cartão:</strong> {{ object.card_installments }}x</div>
+                    {% endif %}
+                    <div><strong>Taxa:</strong> {{ object.card_fee_percentage|default:'0.00' }}%</div>
+                    <div><strong>Valor da taxa:</strong> R$ {{ object.card_fee_amount|default:'0.00' }}</div>
+                    <div><strong>Taxa repassada ao cliente:</strong> {% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</div>
+                {% endif %}
+            </div>
+
+            <p><strong>Observação:</strong> {{ object.observacao|default:'Sem observações.' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Voltar</button>
+    <button id="myBtn" onclick="imprimirOrcamento('.contentPrint')" type="button" class="btn btn-outline-primary">Imprimir</button>
+</div>
+
+{% block scripts %}
+<script>
+    function imprimirOrcamento(divName) {
+        var content = document.querySelector(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = content;
+        window.print();
+        document.body.innerHTML = originalContents;
+        setTimeout(function () {
+            window.location.reload();
+        }, 500);
+    }
+</script>
+{% endblock scripts %}

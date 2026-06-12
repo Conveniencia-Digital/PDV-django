@@ -1,0 +1,195 @@
+{% block style %}
+<style>
+#bloco-dados {
+    background: #f8f9fb;
+    border-radius: 18px;
+    padding: 24px;
+}
+#cards-relatorio { margin-bottom: 20px; }
+#bloco-completo {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.btn-novo-lanhouse {
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.25s ease;
+}
+.btn-novo-lanhouse:hover { transform: translateY(-2px); }
+input[type="date"] { border-radius: 12px; font-size: 0.85rem; }
+input[type="date"]:focus { box-shadow: 0 0 0 3px rgba(13,110,253,0.15); }
+.btn-group button {
+    border-radius: 999px !important;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+.btn-periodo-ativo {
+    background: linear-gradient(135deg, #0d6efd, #4f8cff);
+    color: #fff !important;
+    border: none;
+}
+.btn-group button:hover { transform: translateY(-1px); }
+.btn-danger { border-radius: 999px; font-size: 0.75rem; }
+#tabela-lanhouse {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+.lanhouse-dashboard .finance-grid-2 {
+    margin-top: 20px;
+}
+.lanhouse-dashboard .finance-panel {
+    border-radius: 16px;
+}
+.lanhouse-dashboard .ranking-row {
+    grid-template-columns: 34px minmax(0, 1fr) minmax(90px, auto);
+}
+.lanhouse-dashboard .lanhouse-service-summary {
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+}
+@media (max-width: 768px) {
+    #bloco-dados { padding: 16px; }
+    .btn-group { justify-content: center; }
+}
+</style>
+{% endblock style %}
+
+<div id="bloco-dados" class="finance-dashboard lanhouse-dashboard">
+    <div id="bloco-completo">
+        <div class="row align-items-center mt-4">
+            <div class="col-md-3 mb-3">
+                <button
+                    class="btn btn-primary w-100 shadow-sm btn-novo-lanhouse"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'cadastrar-lanhouse' %}"
+                    hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+                    hx-target="#addConteudo"
+                    hx-swap="innerHTML">
+                    + Novo serviço lanhouse
+                </button>
+            </div>
+
+            <div class="col-md-9">
+                <form method="get"
+                    hx-get="{% url 'lanhouse' %}"
+                    hx-target="#bloco-dados"
+                    hx-swap="outerHTML"
+                    hx-indicator=".htmx-indicator"
+                    hx-trigger="submit">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <input type="date" name="inicio" aria-label="Data inicial"
+                                value="{{ inicio }}"
+                                class="form-control shadow-sm {% if inicio %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="date" name="fim" aria-label="Data final"
+                                value="{{ fim }}"
+                                class="form-control shadow-sm {% if fim %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <button class="btn btn-primary w-100 shadow-sm btn-novo-lanhouse">Filtrar</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group flex-wrap w-100 gap-2" role="group">
+                        <button name="periodo" value="hoje"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'hoje' %}btn-periodo-ativo{% endif %}">Hoje</button>
+                        <button name="periodo" value="ontem"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'ontem' %}btn-periodo-ativo{% endif %}">Ontem</button>
+                        <button name="periodo" value="7dias"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == '7dias' %}btn-periodo-ativo{% endif %}">7 dias</button>
+                        <button name="periodo" value="este_mes"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">Este mês</button>
+                        <button name="periodo" value="mes_passado"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">Mês passado</button>
+                        <button name="periodo" value="este_ano"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'este_ano' %}btn-periodo-ativo{% endif %}">Este ano</button>
+                        <button name="periodo" value="todas"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'todas' %}btn-periodo-ativo{% endif %}">Todas</button>
+                        <button type="button" class="btn btn-danger shadow-sm"
+                            hx-get="{% url 'lanhouse' %}"
+                            hx-target="#bloco-dados"
+                            hx-swap="outerHTML">Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'cadastrar-servico-lanhouse' %}"
+                    hx-target="#addConteudo" hx-swap="innerHTML">
+                    Cadastrar serviço
+                </button>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'lista-servico-lanhouse' %}"
+                    hx-target="#addConteudo" hx-swap="innerHTML">
+                    Lista de serviços
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cards-relatorio">
+        {% include 'lanhouse/partials/cards.html' %}
+    </div>
+
+    <div class="finance-grid-2" id="lanhouse-chart-section">
+        <section class="finance-panel">
+            <h2>Receita Lan House</h2>
+            {% if lanhouse_revenue_has_data %}
+                <div class="finance-chart">
+                    <canvas id="lanhouseRevenueChart"></canvas>
+                </div>
+            {% else %}
+                <div class="empty-state">Nenhuma receita de Lan House no período.</div>
+            {% endif %}
+        </section>
+
+        <section class="finance-panel">
+            <h2>Serviços mais realizados</h2>
+            {% if lanhouse_service_has_data %}
+                <div class="finance-chart compact" style="height: {{ lanhouse_service_chart_height }}px;">
+                    <canvas id="lanhouseServiceChart"></canvas>
+                </div>
+                <div class="lanhouse-service-summary mt-3">
+                    {% for item in lanhouse_service_ranking %}
+                        <div class="ranking-row">
+                            <div class="ranking-index">{{ forloop.counter }}</div>
+                            <div>
+                                <div class="ranking-title">{{ item.service }}</div>
+                                <div class="ranking-share">{{ item.quantity }} realizados · {{ item.transactions }} vendas</div>
+                            </div>
+                            <div class="ranking-amount">
+                                <sup>R$</sup> {{ item.revenue }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">Nenhum serviço realizado no período.</div>
+            {% endif %}
+        </section>
+    </div>
+
+    {% include 'lanhouse/partials/tabela.html' %}
+    {% include 'cliente/componentes/modal-cliente-picker.html' %}
+    {% include 'lanhouse/componentes/modal-servico-picker.html' %}
+    {{ lanhouse_charts|json_script:"lanhouseChartsData" }}
+</div>

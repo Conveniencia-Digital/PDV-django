@@ -1,5 +1,5 @@
 from django.urls import path
-from despesa.views import ListaDespesa, cadastrardespesa, editardespesa, apagardespesa, cadastrarcategoriadespesa, ListaCategoriaDespesa, \
+from despesa.views import ListaDespesa, cadastrardespesa, editardespesa, apagardespesa, cadastrarcategoriadespesa, buscarcategoriasdespesa, ListaCategoriaDespesa, \
                          apagarcategoriadespesa, editarcatergoriadespesa, DetalheDespesaProduto, DetalheDespesaPeca, DetalheDespesa
 from django.contrib.auth.decorators import login_required
 
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('despesa/', login_required(ListaDespesa.as_view()), name='despesa'),
     path('categoriadespesa/', login_required(cadastrarcategoriadespesa), name='categoria-despesa'),
+    path('despesa/categorias/buscar/', login_required(buscarcategoriasdespesa), name='buscar-categorias-despesa'),
     path('cadastrardespesa/', login_required(cadastrardespesa), name='cadastrar-despesa'),
     path('editardespesa/<int:pk>/', login_required(editardespesa), name='editar-despesa'),
     path('apagardespesa/<int:pk>/', login_required(apagardespesa), name='apagar-despesa'),

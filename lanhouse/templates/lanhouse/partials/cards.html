@@ -1,0 +1,151 @@
+<style>
+  .dashboard-card {
+    transition: all .25s ease;
+    background: linear-gradient(180deg, #ffffff, #f8f9fa);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08);
+  }
+
+  .metric-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+  }
+
+  .metric-value-sm {
+    font-size: 1.65rem;
+  }
+
+  .metric-label {
+    font-size: .75rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #6c757d;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #dee2e6, transparent);
+    margin: 1rem 0;
+  }
+</style>
+
+<div class="row g-4 mt-4" id="relatorio-lanhouse">
+
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <span class="badge bg-primary-subtle text-primary mb-3">
+          {% if periodo == 'hoje' %}Hoje
+          {% elif periodo == 'ontem' %}Ontem
+          {% elif periodo == '7dias' %}Últimos 7 dias
+          {% elif periodo == 'este_mes' %}Este mês
+          {% elif periodo == 'mes_passado' %}Mês passado
+          {% elif periodo == 'este_ano' %}Este ano
+          {% elif periodo == 'todas' %}Todo período
+          {% elif inicio or fim %}Período de {{ inicio }} até {{ fim }}
+          {% endif %}
+        </span>
+
+        <div class="metric-label">Receita líquida</div>
+        <div class="metric-value text-primary">
+          <sup>R$</sup> {{ total_lanhouse }}
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric-label fw-bold">
+          {{ qtd_lanhouse }} atendimentos no período
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <div class="metric-label">Custo de serviços</div>
+        <div class="metric-value text-danger">
+          <sup>R$</sup> {{ custo_mercadoria }}
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric-label">Descontos concedidos</div>
+        <div class="metric-value text-warning">
+          <sup>R$</sup> {{ total_descontos }}
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric-label">Taxas de maquininha</div>
+        <div class="metric-value text-danger">
+          <sup>R$</sup> {{ taxas_maquininha_absorvidas }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <div class="metric-label">Lucro líquido</div>
+        <div class="metric-value text-success">
+          <sup>R$</sup> {{ lucro_total }}
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric-label">Margem de lucro</div>
+        <div class="metric-value text-success">
+          {{ margem_lucro_lanhouse }}%
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <div class="metric-label">Ticket médio por atendimento</div>
+        <div class="metric-value metric-value-sm text-primary">
+          <sup>R$</sup> {{ ticket_medio_atendimento|floatformat:2 }}
+        </div>
+        <div class="divider"></div>
+        <div class="metric-label">{{ qtd_lanhouse }} atendimentos considerados</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <div class="metric-label">Quantidade total de serviços</div>
+        <div class="metric-value metric-value-sm text-success">
+          {{ quantidade_total_servicos }}
+        </div>
+        <div class="divider"></div>
+        <div class="metric-label">Itens/quantidades realizados no período</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card dashboard-card border-0 rounded-4 h-100">
+      <div class="card-body text-center p-4">
+        <div class="metric-label">Clientes atendidos</div>
+        <div class="metric-value metric-value-sm text-info">
+          {{ quantidade_total_clientes_atendidos }}
+        </div>
+        <div class="divider"></div>
+        <div class="metric-label">Clientes únicos no período</div>
+      </div>
+    </div>
+  </div>
+</div>

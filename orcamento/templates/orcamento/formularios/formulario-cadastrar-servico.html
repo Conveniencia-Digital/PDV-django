@@ -4,15 +4,23 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form
-    hx-post="{% url 'cadastrar-servico' %}">
+    hx-post="{% url 'cadastrar-servico' %}{% if service_picker_mode %}?picker=1{% endif %}"
+    hx-target="{% if service_picker_mode %}#orcamentoServicoPickerModalConteudo{% else %}#addConteudo{% endif %}"
+    hx-swap="innerHTML">
         
     <div class="modal-body">
         {% csrf_token %}
+        {% if service_picker_mode %}
+          <input type="hidden" name="service_picker" value="1">
+        {% endif %}
         <div class="row g-2" style="margin-bottom: 10px;">
             <div class="col form-floating">
                 {% render_field form.usuario class='form-control' %}
                 {% render_field form.servico class='form-control' %}
                 <label for="">Informe o servico</label>
+                {% for error in form.servico.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -22,12 +30,3 @@
         <button type="submit" class="btn btn-outline-primary">Cadastrar</button>
     </div>
 </form>
-
-<script>
-    $('form').on('submit', function () {
-      $('#staticBackdrop').modal('toggle');
-      setTimeout(() => {
-        $('#success_tic_servico').modal('toggle'); 
-      }, "500");
-    });
-  </script>

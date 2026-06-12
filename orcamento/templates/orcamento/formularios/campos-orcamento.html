@@ -1,0 +1,129 @@
+{% load widget_tweaks %}
+
+<div class="modal-body lanhouse-modal-body orcamento-modal-body">
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <section class="lanhouse-form-section orcamento-form-section">
+    <h2 class="lanhouse-section-title orcamento-section-title">Informações do cliente</h2>
+    <div class="row g-3 align-items-end">
+      <div class="col-lg-6">
+        {% render_field form.usuario class='form-control' %}
+        {% include 'cliente/componentes/seletor-cliente.html' with field=form.cliente label='Cliente' placeholder='Selecione o cliente' %}
+      </div>
+      <div class="col-lg-6">
+        <label class="form-label client-picker-label" for="{{ form.celular.id_for_label }}">Celular</label>
+        {% render_field form.celular class='form-control selector-standard-control' placeholder='Informe a marca e modelo do celular' %}
+      </div>
+    </div>
+  </section>
+
+  <section class="lanhouse-form-section orcamento-form-section">
+    <div class="orcamento-section-header">
+      <h2 class="lanhouse-section-title orcamento-section-title">Peças</h2>
+      <button type="button"
+              class="btn btn-outline-primary btn-sm orcamento-add-button"
+              hx-get="{% url 'adicionar-linhas' %}"
+              hx-target="#orcamento-pecas"
+              hx-swap="beforeend settle:1s">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        <span>Adicionar peça</span>
+      </button>
+    </div>
+    {{ formset.management_form }}
+    <div id="orcamento-pecas" class="lanhouse-items orcamento-items">
+      {% for items_orcamento_form in formset %}
+        {% if not items_orcamento_form.instance.servico_id %}
+          {% include 'orcamento/formularios/linha-peca-orcamento.html' %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="lanhouse-form-section orcamento-form-section">
+    <div class="orcamento-section-header">
+      <h2 class="lanhouse-section-title orcamento-section-title">Serviços</h2>
+      <button type="button"
+              class="btn btn-outline-primary btn-sm orcamento-add-button"
+              hx-get="{% url 'adicionar-linha-servico' %}"
+              hx-target="#orcamento-servicos"
+              hx-swap="beforeend settle:1s">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        <span>Adicionar serviço</span>
+      </button>
+    </div>
+    <div id="orcamento-servicos" class="lanhouse-items orcamento-items">
+      {% for items_orcamento_form in formset %}
+        {% if items_orcamento_form.instance.servico_id %}
+          {% include 'orcamento/formularios/linha-servico-orcamento.html' %}
+        {% endif %}
+      {% endfor %}
+      {% if exibir_linha_servico_inicial %}
+        {% with items_orcamento_form=formset.empty_form %}
+          {% include 'orcamento/formularios/linha-servico-orcamento.html' %}
+        {% endwith %}
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="lanhouse-form-section orcamento-form-section">
+    <h2 class="lanhouse-section-title orcamento-section-title">Informações de pagamento</h2>
+    <div class="row g-3 align-items-end">
+      <div class="col-lg-6">
+        <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+        {% render_field form.forma_pagamento class='form-select selector-standard-control' %}
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label client-picker-label" id="label_desconto" for="{{ form.desconto.id_for_label }}">Desconto</label>
+        {% render_field form.desconto class='form-control selector-standard-control' value='0.00' %}
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label client-picker-label" for="totalValue">Valor total</label>
+        <input id="totalValue" type="Number" class="form-control selector-standard-control" readonly>
+      </div>
+    </div>
+
+    {% include 'componentes/card-fee-fields.html' with form=form %}
+
+    <div class="row g-3 lanhouse-fiado-row" hidden>
+      <div class="col-lg-6">
+        <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
+        {% render_field form.qtd_parcela class='form-control selector-standard-control' value='01' type='hidden' %}
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
+        {% render_field form.valor_entrada class='form-control selector-standard-control' value='0.00' type='hidden' %}
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Dia vencimento</label>
+        {% render_field form.data_vencimento class='form-control selector-standard-control' type='hidden' %}
+      </div>
+    </div>
+  </section>
+
+  <section class="lanhouse-form-section orcamento-form-section">
+    <h2 class="lanhouse-section-title orcamento-section-title">Informações do orçamento</h2>
+    <div class="row g-3 align-items-end">
+      <div class="col-lg-4 col-md-6">
+        <label class="form-label client-picker-label" for="{{ form.status.id_for_label }}">Status</label>
+        {% render_field form.status class='form-select selector-standard-control' %}
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <label class="form-label client-picker-label" for="{{ form.data_entrega.id_for_label }}">Data de entrega</label>
+        {% render_field form.data_entrega class='form-control selector-standard-control' type='date' %}
+      </div>
+      <div class="col-lg-4">
+        {% include 'colaborador/componentes/seletor-vendedor.html' with field=form.tecnico label='Técnico' placeholder='Selecione o técnico' %}
+      </div>
+      <div class="col-12">
+        <label class="form-label client-picker-label" for="{{ form.observacao.id_for_label }}">Observação</label>
+        {% render_field form.observacao class='form-control lanhouse-textarea orcamento-textarea' placeholder='Observações do orçamento' %}
+      </div>
+    </div>
+  </section>
+</div>

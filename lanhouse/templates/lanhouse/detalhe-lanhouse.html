@@ -1,0 +1,128 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel"> Detalhe </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+</div>
+<div class="modal-body">
+    <div class="contentPrint">
+        <style>
+            .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: solid black;
+    }
+    .logo {
+        font-size: 1.75em;
+        align-self: center;
+    }
+    .content {
+        margin-top: 30px;
+    }
+    .description {
+        font-size: 0.75em;
+    }
+        </style>
+        <div class="header">
+            <div class="logo">Conveniência Digital</div>
+            <div class="information">
+                <p class="description">Centro de reparo <br>
+                    CNPJ: 29.216.862/0001-38 <br>
+                    Rua das Nogueiras 3360 Dourados - MS 79839043 <br>
+                    Telefone: 67 9 9664 -9605
+                </p>
+            </div>
+        </div>
+        <div class="content">
+            <p>Prezado(a), {{ object.cliente }}</p>
+            <p>Conforme solicitado segue comprovante de serviço lanhouse.</p>
+            <p>Ordem de serviço: {{ object.id }} <br></p>
+            {% for items in object.lanhouse_items.all %}
+            <p>Serviço realizado: {{ items.servico }} <br></p>
+            {% endfor %}
+            <p>Vendedor responsavel: {{ object.vendedor }} <br></p>
+            <p>Data e hora: {{ object.data_criacao|date:'d/m/y - H:i:s' }} <br></p>
+            
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                    <tr class="bg-light">
+                        <th>Serviços</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                        <th>Sub Total</th>
+                    </tr>
+                    {% for items in object.lanhouse_items.all %}
+                    <tr>
+                        <td>{{ items.servico }}</td>
+                        <td>{{ items.quantidade }}</td>
+                        <td>{{ items.preco }}</td>
+                        <td>{{ items.subtotal }}</td>
+                       
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Desconto</td>
+                        <td>{{ object.desconto }}</td>
+                    </tr>
+                    <tr class="bg-default table-borderless">
+                        <td></td>
+                        <td></td>
+                        <th>Total</th>
+                        <th>{{ object.total }}</th>
+                    </tr>
+                    {% if object.card_payment_type %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Máquina de cartão</td>
+                        <td>{{ object.card_machine }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Taxa da maquininha</td>
+                        <td>{{ object.card_fee_percentage }}% / {{ object.card_fee_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Taxa repassada</td>
+                        <td>{% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Forma de pagamento</td>
+                        <td>{{ object.forma_pagamento }}</td>
+                    </tr>
+                
+                </tbody>
+            </table>           
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button id="myBtn" onclick="imprimir('.contentPrint')" type="button" class="btn btn-primary">Imprimir</button>
+</div>
+
+
+{% block scripts %}
+<script>
+    function imprimir(divName) {
+        content = document.querySelector('.contentPrint').innerHTML;
+        originalContents = document.body.innerHTML;
+        document.body.innerHTML = content;
+
+        window.print();
+        document.body.innerHTML = originalContents;
+        setTimeout(function() {
+            window.location.reload();
+        }, 500)
+    }
+</script>
+
+{% endblock scripts %}

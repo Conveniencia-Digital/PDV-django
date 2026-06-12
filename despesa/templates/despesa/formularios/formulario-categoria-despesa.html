@@ -1,28 +1,38 @@
+{% load widget_tweaks %}
 
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalToggle"> Cadastrar Categoria </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        
-    </button>
+  <h5 class="modal-title" id="exampleModalToggle">Cadastrar categoria</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form
-        hx-post="{% url 'categoria-despesa' %}"
-        hx-indicator=".htmx-indicator">
-        
-    <div class="modal-body">
-        {% csrf_token %}
-        {{ form }}
-    </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+<form hx-post="{% url 'categoria-despesa' %}{% if category_picker_mode %}?picker=1{% endif %}"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+      {% if category_picker_mode %}hx-target="#despesaCategoriaPickerModalConteudo"{% endif %}>
+  <div class="modal-body">
+    {% csrf_token %}
+    {% if category_picker_mode %}
+      <input type="hidden" name="category_picker" value="1">
+    {% endif %}
+    {% render_field form.usuario %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="form-floating">
+      {% render_field form.nome_categoria_despesa class="form-control" placeholder="Nome da categoria" %}
+      <label for="{{ form.nome_categoria_despesa.id_for_label }}">Nome da categoria</label>
     </div>
+    {% for error in form.nome_categoria_despesa.errors %}
+      <div class="invalid-feedback d-block">{{ error }}</div>
+    {% endfor %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
-
-
-    <script>
-      $('form').on('submit', function() {
-        $('#staticBackdrop').modal('toggle')
-      });
-    </script>

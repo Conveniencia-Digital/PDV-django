@@ -1,0 +1,326 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
+
+{% block titulo %}Dashboard Financeiro{% endblock titulo %}
+
+{% block style %}
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<style>
+    .financeiro-dashboard {
+        background: #f8f9fb;
+        border-radius: 18px;
+        padding: 24px;
+    }
+
+    .financeiro-dashboard #bloco-completo {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .financeiro-dashboard .btn-financeiro-principal {
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 12px;
+        padding: 12px;
+        transition: all 0.25s ease;
+    }
+
+    .financeiro-dashboard .btn-financeiro-principal:hover {
+        transform: translateY(-2px);
+    }
+
+    .financeiro-dashboard input[type="date"] {
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+
+    .financeiro-dashboard input[type="date"]:focus {
+        box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+    }
+
+    .financeiro-dashboard .btn-group .btn {
+        border-radius: 999px !important;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .financeiro-dashboard .btn-periodo-ativo {
+        background: linear-gradient(135deg, #0d6efd, #4f8cff);
+        color: #fff !important;
+        border: none;
+    }
+
+    .financeiro-dashboard .btn-group .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .financeiro-dashboard .btn-danger {
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+        .financeiro-dashboard {
+            padding: 16px;
+        }
+
+        .financeiro-dashboard .btn-group {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock style %}
+
+{% block conteudo %}
+<div class="finance-dashboard financeiro-dashboard">
+    <div id="bloco-completo">
+        <div class="row align-items-center mt-4">
+            <div class="col-md-3 mb-3">
+                <a class="btn btn-primary w-100 shadow-sm btn-financeiro-principal" href="{% url 'financeiro' %}">
+                    Contas a receber
+                </a>
+            </div>
+
+            <div class="col-md-9">
+                <form method="get">
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <input
+                                class="form-control shadow-sm {% if filters.inicio %}border-primary border-2{% endif %}"
+                                type="date"
+                                name="inicio"
+                                aria-label="Data inicial"
+                                value="{{ filters.inicio }}">
+                        </div>
+                        <div class="col-sm-4">
+                            <input
+                                class="form-control shadow-sm {% if filters.fim %}border-primary border-2{% endif %}"
+                                type="date"
+                                name="fim"
+                                aria-label="Data final"
+                                value="{{ filters.fim }}">
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <button class="btn btn-primary w-100 shadow-sm btn-financeiro-principal" type="submit">Filtrar</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group flex-wrap w-100 gap-2" role="group">
+                        <button name="periodo" value="hoje"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'hoje' %}btn-periodo-ativo{% endif %}">Hoje</button>
+                        <button name="periodo" value="ontem"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'ontem' %}btn-periodo-ativo{% endif %}">Ontem</button>
+                        <button name="periodo" value="7dias"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == '7dias' %}btn-periodo-ativo{% endif %}">7 dias</button>
+                        <button name="periodo" value="este_mes"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">Este mês</button>
+                        <button name="periodo" value="mes_passado"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">Mês passado</button>
+                        <button name="periodo" value="este_ano"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'este_ano' %}btn-periodo-ativo{% endif %}">Este ano</button>
+                        <button name="periodo" value="todas"
+                            class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'todas' %}btn-periodo-ativo{% endif %}">Todas</button>
+                        <a class="btn btn-danger shadow-sm" href="{% url 'dashboard-financeiro' %}">Limpar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-auto">
+                <a class="btn btn-outline-primary btn-sm" href="{% url 'maquininhas-cartao' %}">
+                    <span data-feather="credit-card" class="align-text-bottom"></span>
+                    Maquininhas
+                </a>
+            </div>
+            <div class="col-auto">
+                <a class="btn btn-outline-primary btn-sm" href="{% url 'fechamento-caixa' %}">
+                    <span data-feather="archive" class="align-text-bottom"></span>
+                    Fechamento de Caixa
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="finance-kpi-grid">
+        {% for card in cards %}
+            <article class="finance-kpi {{ card.tone }}">
+                <div>
+                    <div class="finance-kpi-title">
+                        <span>{{ card.title }}</span>
+                        <span data-feather="{{ card.icon }}"></span>
+                    </div>
+                    <div class="finance-kpi-value">R$ {{ card.value|floatformat:2 }}</div>
+                </div>
+                <div class="finance-kpi-meta">
+                    {% if card.growth != None %}
+                        {% if card.change >= 0 %}
+                            <span class="positive">+{{ card.growth|floatformat:2 }}%</span>
+                        {% else %}
+                            <span class="negative">{{ card.growth|floatformat:2 }}%</span>
+                        {% endif %}
+                        vs. periodo anterior
+                    {% else %}
+                        {{ period.label }}: {{ period.start|date:"d/m/Y" }} a {{ period.end|date:"d/m/Y" }}
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div class="indicator-grid">
+        <div class="finance-indicator">
+            <span>Transacoes de receita</span>
+            <strong>{{ indicators.revenue_count }}</strong>
+        </div>
+        <div class="finance-indicator">
+            <span>Transacoes de despesa</span>
+            <strong>{{ indicators.expense_count }}</strong>
+        </div>
+        <div class="finance-indicator">
+            <span>Ticket medio</span>
+            <strong>R$ {{ indicators.average_ticket|floatformat:2 }}</strong>
+        </div>
+        <div class="finance-indicator">
+            <span>Maior fonte de receita</span>
+            <strong>{{ indicators.top_revenue_source }}</strong>
+        </div>
+    </div>
+
+    <div class="finance-grid-2">
+        <section class="finance-panel">
+            <h2>Receitas vs Despesas</h2>
+            <div class="finance-chart">
+                <canvas id="revenueExpenseChart"></canvas>
+            </div>
+        </section>
+
+        <section class="finance-panel">
+            <h2>Composicao da Receita</h2>
+            {% if revenue_composition %}
+                <div class="finance-chart compact">
+                    <canvas id="revenueCompositionChart"></canvas>
+                </div>
+            {% else %}
+                <div class="empty-state">Sem receitas no periodo selecionado</div>
+            {% endif %}
+        </section>
+    </div>
+
+    <div class="finance-grid-2">
+        <section class="finance-panel">
+            <h2>Ranking de Despesas por Categoria</h2>
+            {% if category_ranking %}
+                <div class="finance-chart">
+                    <canvas id="expenseRankingChart"></canvas>
+                </div>
+            {% else %}
+                <div class="empty-state">Sem despesas no periodo selecionado</div>
+            {% endif %}
+        </section>
+
+        <section class="finance-panel">
+            <h2>Participacao por Categoria</h2>
+            {% if category_ranking %}
+                {% for item in category_ranking %}
+                    <div class="ranking-row">
+                        <div class="ranking-index">{{ forloop.counter }}</div>
+                        <div>
+                            <div class="ranking-title">{{ item.category }}</div>
+                            <div class="ranking-share">{{ item.percentage|floatformat:2 }}% das despesas</div>
+                        </div>
+                        <div class="ranking-amount">R$ {{ item.amount|floatformat:2 }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">Nenhuma categoria com movimento</div>
+            {% endif %}
+        </section>
+    </div>
+
+    <div class="finance-grid-2">
+        <section class="finance-panel">
+            <h2>Tendencia de Resultado Diario</h2>
+            <div class="finance-chart">
+                <canvas id="profitTrendChart"></canvas>
+            </div>
+        </section>
+
+        <section class="finance-panel">
+            <h2>Resultado Mensal</h2>
+            <div class="finance-chart">
+                <canvas id="monthlyProfitTrendChart"></canvas>
+            </div>
+        </section>
+    </div>
+</div>
+
+{{ charts|json_script:"financeChartsData" }}
+{% endblock conteudo %}
+
+{% block scripts %}
+<script src="{% static 'js/finance-charts.js' %}"></script>
+<script>
+    (function () {
+        var charts = JSON.parse(document.getElementById('financeChartsData').textContent);
+
+        FinanceCharts.barChart(document.getElementById('revenueExpenseChart'), charts.revenue_vs_expenses.labels, [
+            {
+                label: 'Receitas',
+                backgroundColor: '#198754',
+                borderColor: '#198754',
+                data: charts.revenue_vs_expenses.revenue
+            },
+            {
+                label: 'Despesas',
+                backgroundColor: '#dc3545',
+                borderColor: '#dc3545',
+                data: charts.revenue_vs_expenses.expenses
+            }
+        ]);
+
+        if (document.getElementById('expenseRankingChart')) {
+            FinanceCharts.barChart(document.getElementById('expenseRankingChart'), charts.expense_ranking.labels, [{
+                label: 'Despesas por categoria',
+                backgroundColor: '#f0ad4e',
+                borderColor: '#c47f10',
+                data: charts.expense_ranking.values
+            }]);
+        }
+
+        FinanceCharts.lineChart(document.getElementById('profitTrendChart'), charts.profit_trend.labels, {
+            label: 'Resultado diario',
+            borderColor: '#2470dc',
+            backgroundColor: 'rgba(36, 112, 220, 0.12)',
+            pointRadius: 3,
+            lineTension: 0.2,
+            data: charts.profit_trend.values
+        });
+
+        FinanceCharts.lineChart(document.getElementById('monthlyProfitTrendChart'), charts.monthly_profit_trend.labels, {
+            label: 'Resultado mensal',
+            borderColor: '#6f42c1',
+            backgroundColor: 'rgba(111, 66, 193, 0.10)',
+            pointRadius: 3,
+            lineTension: 0.2,
+            data: charts.monthly_profit_trend.values
+        });
+
+        if (document.getElementById('revenueCompositionChart')) {
+            FinanceCharts.doughnutChart(
+                document.getElementById('revenueCompositionChart'),
+                charts.revenue_composition.labels,
+                charts.revenue_composition.values
+            );
+        }
+
+        if (window.feather) {
+            window.feather.replace();
+        }
+    })();
+</script>
+{% endblock scripts %}

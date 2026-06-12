@@ -1,0 +1,201 @@
+{% block style %}
+<style>
+#bloco-dados {
+    background: #f8f9fb;
+    border-radius: 18px;
+    padding: 24px;
+}
+#cards-relatorio { margin-bottom: 20px; }
+#bloco-completo {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.btn-novo-orcamento {
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.25s ease;
+}
+.btn-novo-orcamento:hover { transform: translateY(-2px); }
+input[type="date"] { border-radius: 12px; font-size: 0.85rem; }
+input[type="date"]:focus { box-shadow: 0 0 0 3px rgba(13,110,253,0.15); }
+.btn-group button {
+    border-radius: 999px !important;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+.btn-periodo-ativo {
+    background: linear-gradient(135deg, #0d6efd, #4f8cff);
+    color: #fff !important;
+    border: none;
+}
+.btn-group button:hover { transform: translateY(-1px); }
+.btn-danger { border-radius: 999px; font-size: 0.75rem; }
+#tabela-orcamentos {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+.orcamento-dashboard .finance-grid-2 {
+    margin-top: 20px;
+}
+.orcamento-dashboard .finance-panel {
+    border-radius: 16px;
+}
+.orcamento-dashboard .ranking-row {
+    grid-template-columns: 34px minmax(0, 1fr) minmax(90px, auto);
+}
+.orcamento-dashboard .orcamento-item-summary {
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+}
+.orcamento-dashboard .chart-empty-note {
+    margin-top: 10px;
+    color: #667085;
+    font-size: 0.85rem;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    #bloco-dados { padding: 16px; }
+    .btn-group { justify-content: center; }
+}
+</style>
+{% endblock style %}
+
+<div id="bloco-dados" class="finance-dashboard orcamento-dashboard">
+    <div id="bloco-completo">
+        <div class="row align-items-center mt-4">
+            <div class="col-md-3 mb-3">
+                <button
+                    class="btn btn-primary w-100 shadow-sm btn-novo-orcamento"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'cadastrar-orcamento' %}"
+                    hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+                    hx-target="#addConteudo"
+                    hx-swap="innerHTML">
+                    + Novo orçamento
+                </button>
+            </div>
+
+            <div class="col-md-9">
+                <form method="get"
+                    hx-get="{% url 'orcamento' %}"
+                    hx-target="#bloco-dados"
+                    hx-swap="outerHTML"
+                    hx-indicator=".htmx-indicator"
+                    hx-trigger="submit">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <input type="date" name="inicio" aria-label="Data inicial"
+                                value="{{ inicio }}"
+                                class="form-control shadow-sm {% if inicio %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="date" name="fim" aria-label="Data final"
+                                value="{{ fim }}"
+                                class="form-control shadow-sm {% if fim %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <button class="btn btn-primary w-100 shadow-sm btn-novo-orcamento">Filtrar</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group flex-wrap w-100 gap-2" role="group">
+                        <button name="periodo" value="hoje"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'hoje' %}btn-periodo-ativo{% endif %}">Hoje</button>
+                        <button name="periodo" value="ontem"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'ontem' %}btn-periodo-ativo{% endif %}">Ontem</button>
+                        <button name="periodo" value="7dias"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == '7dias' %}btn-periodo-ativo{% endif %}">7 dias</button>
+                        <button name="periodo" value="este_mes"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">Este mês</button>
+                        <button name="periodo" value="mes_passado"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">Mês passado</button>
+                        <button name="periodo" value="este_ano"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'este_ano' %}btn-periodo-ativo{% endif %}">Este ano</button>
+                        <button name="periodo" value="todas"
+                            class="btn btn-outline-secondary shadow-sm {% if periodo == 'todas' %}btn-periodo-ativo{% endif %}">Todas</button>
+                        <button type="button" class="btn btn-danger shadow-sm"
+                            hx-get="{% url 'orcamento' %}"
+                            hx-target="#bloco-dados"
+                            hx-swap="outerHTML">Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'cadastrar-servico' %}"
+                    hx-target="#addConteudo" hx-swap="innerHTML">
+                    Cadastrar serviço
+                </button>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    hx-get="{% url 'servico' %}"
+                    hx-target="#addConteudo" hx-swap="innerHTML">
+                    Lista de serviços
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cards-relatorio">
+        {% include 'orcamento/partials/cards.html' %}
+    </div>
+
+    <div class="finance-grid-2" id="orcamento-chart-section">
+        <section class="finance-panel">
+            <h2>Receita de orçamentos finalizados</h2>
+            <div class="finance-chart">
+                <canvas id="orcamentoRevenueChart"></canvas>
+            </div>
+            {% if not orcamento_revenue_has_data %}
+                <div class="chart-empty-note">Nenhuma receita finalizada no período selecionado.</div>
+            {% endif %}
+        </section>
+
+        <section class="finance-panel">
+            <h2>Itens mais solicitados</h2>
+            <div class="finance-chart compact" style="height: {{ orcamento_items_chart_height }}px;">
+                <canvas id="orcamentoItemsChart"></canvas>
+            </div>
+            {% if orcamento_items_has_data %}
+                <div class="orcamento-item-summary mt-3">
+                    {% for item in orcamento_item_ranking %}
+                        <div class="ranking-row">
+                            <div class="ranking-index">{{ forloop.counter }}</div>
+                            <div>
+                                <div class="ranking-title">{{ item.name }}</div>
+                                <div class="ranking-share">{{ item.kind }} · {{ item.quantity }} solicitados · {{ item.transactions }} orçamentos</div>
+                            </div>
+                            <div class="ranking-amount">
+                                <sup>R$</sup> {{ item.revenue }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="chart-empty-note">Nenhum item solicitado no período selecionado.</div>
+            {% endif %}
+        </section>
+    </div>
+
+    {% include 'orcamento/partials/tabela.html' %}
+    {% include 'cliente/componentes/modal-cliente-picker.html' %}
+    {% include 'orcamento/componentes/modal-servico-picker.html' %}
+    {% include 'orcamento/componentes/modal-peca-picker.html' %}
+    {{ orcamento_charts|json_script:"orcamentoChartsData" }}
+</div>

@@ -1,17 +1,27 @@
 {% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
 {% load relatoriovenda %}
 
 {% block titulo %}
 Vendas
 {% endblock titulo %}
 {% block style %}
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/client-picker.css' %}" rel="stylesheet">
+<link href="{% static 'css/erp-table.css' %}" rel="stylesheet">
 {% endblock style %}
 {% block conteudo %}
 
         
     {% include 'vendas/bloco-dados.html' %}
    
-    {% include 'vendas/modal/modal-venda.html' %}
-    {% include 'vendas/modal/modal-alerta.html' %}
-
 {% endblock conteudo %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'js/finance-charts.js' %}"></script>
+<script src="{% static 'js/venda-dashboard.js' %}"></script>
+<script src="{% static 'js/client-picker.js' %}"></script>
+<script src="{% static 'js/card-fee-preview.js' %}"></script>
+{% include 'vendas/formularios/vendas-formset-script.html' %}
+{% endblock scripts %}

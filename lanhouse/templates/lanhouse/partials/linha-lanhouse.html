@@ -1,0 +1,105 @@
+<tr id="lanhouse-{{ object.pk }}" class="lanhouse-row">
+    <td>
+        <strong>{{ object.data_criacao|date:'d/m/Y' }}</strong><br>
+        <small class="text-muted">{{ object.data_criacao|date:'H:i:s' }}</small>
+    </td>
+    <td>
+        <strong>{{ object.cliente.nome_cliente }}</strong><br>
+        <small class="text-muted">{{ object.cliente.telefone_contato }}</small>
+    </td>
+    <td>
+        <strong>R$ {{ object.total|floatformat:2 }}</strong>
+    </td>
+    <td class="acoes text-end">
+        <a hx-get="{% url 'detalhe-lanhouse' object.pk %}"
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo"
+           title="Detalhe">
+            <i class="fa-solid fa-print"></i>
+        </a>
+        <a hx-get="{% url 'editar-lanhouse' object.pk %}"
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+           data-bs-toggle="modal"
+           data-bs-target="#staticBackdrop"
+           hx-target="#addConteudo"
+           title="Editar">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <a data-bs-toggle="modal" data-bs-target="#success_tic_delete"
+           hx-get="{% url 'apagar-lanhouse' object.pk %}"
+           hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
+           hx-confirm="Deseja mesmo apagar este registro Lan House?"
+           hx-target="#bloco-dados"
+           hx-swap="outerHTML"
+           title="Apagar">
+            <i class="fa-regular fa-trash-can" style="color: red;"></i>
+        </a>
+        <button class="toggle-detalhes btn btn-link btn-sm p-0 border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#detalhes-{{ object.pk }}"
+                aria-controls="detalhes-{{ object.pk }}"
+                aria-expanded="false"
+                title="Detalhes">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+    </td>
+</tr>
+
+<tr class="collapse lanhouse-details-row" id="detalhes-{{ object.pk }}">
+    <td colspan="4">
+        <div class="detalhes-box">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Qtd</th>
+                        <th>Preço</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in object.lanhouse_items.all %}
+                    <tr>
+                        <td>{{ item.servico }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>{{ item.preco }}</td>
+                        <td class="text-end">{{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="text-danger">
+                        <td colspan="2"></td>
+                        <th>Total sem desconto</th>
+                        <th class="text-end">{{ object.total_sem_desconto }}</th>
+                    </tr>
+                    <tr class="text-danger">
+                        <td colspan="2"></td>
+                        <th>Desconto</th>
+                        <th class="text-end">{{ object.desconto|default:'0.00' }}</th>
+                    </tr>
+                    <tr class="text-success">
+                        <th>Pagamento</th>
+                        <td>{{ object.forma_pagamento }}</td>
+                        <th>Total</th>
+                        <th class="text-end">R$ {{ object.total|floatformat:2 }}</th>
+                    </tr>
+                    {% if object.card_payment_type %}
+                    <tr>
+                        <th>Máquina</th>
+                        <td>{{ object.card_machine }}</td>
+                        <th>Taxa da maquininha</th>
+                        <td class="text-end">{{ object.card_fee_percentage }}% / {{ object.card_fee_amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>Repassada ao cliente</th>
+                        <td>{% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</td>
+                        <th>Valor base</th>
+                        <td class="text-end">{{ object.card_base_amount }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </td>
+</tr>

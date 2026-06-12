@@ -5,10 +5,26 @@
 
   </button>
 </div>
-<form hx-post="{% url 'cadastrar-peca' %}" hx-target="#peca-Tbody" hx-indicator=".htmx-indicator" hx-swap="afterbegin">
+<form
+  hx-post="{% url 'cadastrar-peca' %}{% if piece_picker_mode %}?picker=1{% endif %}"
+  hx-target="{% if piece_picker_mode %}#orcamentoPecaPickerModalConteudo{% else %}#peca-Tbody{% endif %}"
+  hx-indicator=".htmx-indicator"
+  hx-swap="{% if piece_picker_mode %}innerHTML{% else %}afterbegin{% endif %}"
+  data-profit-margin-calculator>
 
   <div class="modal-body">
     {% csrf_token %}
+    {% render_field form.pricing_last_edited data-pricing-last-edited='true' %}
+    {% if piece_picker_mode %}
+      <input type="hidden" name="piece_picker" value="1">
+    {% endif %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
     <div class="row g-2">
       <div class="row g-2">
         <div class="col-md">
@@ -47,17 +63,29 @@
       <div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            {% render_field form.preco_de_custo value="0.00" id="preco_de_custo" type="Number" %}
+            {% render_field form.preco_de_custo value="0.00" id="preco_de_custo" type="Number" data-pricing-field="cost" %}
             <label for="floatingSelectGrid">Preço custo(unidade)</label>
           </div>
         </div>
         <div class="col-md">
           <div class="form-floating">
-            {% render_field form.preco_peca value="0.00" %}
-            <label for="floatingSelectGrid">Preço venda (instalada)</label>
+            {% render_field form.margem_de_lucro data-pricing-field="margin" %}
+            <label for="floatingSelectGrid">Margem de lucro (%)</label>
+            {% for error in form.margem_de_lucro.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md">
+          <div class="form-floating">
+            {% render_field form.preco_peca value="0.00" data-pricing-field="price" %}
+            <label for="floatingSelectGrid">Preço venda (instalada)</label>
+            {% for error in form.preco_peca.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md">
           <div class="form-floating">
             {% render_field form.fornecedor %}
             <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
@@ -98,6 +126,7 @@
 </form>
 
 
+{% if not piece_picker_mode %}
 <script>
   
   document.getElementById('id_forma_pagamento').addEventListener('change', function () {
@@ -125,12 +154,5 @@
 
     }
   });
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, "500");
-  });
-
-
 </script>
+{% endif %}

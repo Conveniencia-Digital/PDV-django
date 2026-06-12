@@ -199,9 +199,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'financeiro' %}">
+                        <a class="nav-link" href="{% url 'dashboard-financeiro' %}">
                             <span data-feather="activity" class="align-text-bottom"></span>
                             Financeiro
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fechamento-caixa' %}">
+                            <span data-feather="archive" class="align-text-bottom"></span>
+                            Fechamento de Caixa
                         </a>
                     </li>
                     <li class="nav-item">
@@ -301,6 +307,7 @@
                         <tr>
                             <th>Tarefas</th>
                             <th>Funcionario</th>
+                            <th>Custo</th>
                             <th>Status</th>
                             <th>Ações</th>
                         </tr>

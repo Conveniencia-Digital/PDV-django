@@ -2,6 +2,7 @@
 <tr class="fade-me-out" id="tarefaTr{{ object.pk }}">
    <td>{{ object.tarefa }}</td>
    <td>{{ object.colaborador|default:"---" }}</td>
+   <td>R$ {{ object.custo|floatformat:2 }}</td>
    <td>{{ object.status }}</td>
    <td>
     <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-tarefa' object.pk %}"

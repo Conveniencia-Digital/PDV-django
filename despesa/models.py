@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
@@ -35,10 +37,31 @@ class Despesa(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    lanhouse_card_fee = models.OneToOneField(
+        'lanhouse.LanhouseModel',
+        on_delete=models.CASCADE,
+        related_name='despesa_taxa_maquininha',
+        null=True,
+        blank=True,
+    )
+    venda_card_fee = models.OneToOneField(
+        'venda.Vendas',
+        on_delete=models.CASCADE,
+        related_name='despesa_taxa_maquininha',
+        null=True,
+        blank=True,
+    )
+    orcamento_card_fee = models.OneToOneField(
+        'orcamento.Orcamento',
+        on_delete=models.CASCADE,
+        related_name='despesa_taxa_maquininha',
+        null=True,
+        blank=True,
+    )
 
 
 
     def saldodespesa(self):
-        return self.preco_despesa - self.valor_entrada
+        return (self.preco_despesa or Decimal('0.00')) - (self.valor_entrada or Decimal('0.00'))
     
    

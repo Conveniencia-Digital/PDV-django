@@ -1,3 +1,6 @@
 from django.contrib import admin
+from financeiro.models import CardMachine, CardMachineFee, ContasAReceber
 
-# Register your models here.
+admin.site.register(ContasAReceber)
+admin.site.register(CardMachine)
+admin.site.register(CardMachineFee)

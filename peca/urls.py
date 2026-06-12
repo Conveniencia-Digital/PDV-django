@@ -1,9 +1,10 @@
 from django.urls import path
-from peca.views import Peca, cadastrarpeca, apagarpeca, editarpeca, relatoriopeca, DetalhePeca
+from peca.views import Peca, cadastrarpeca, apagarpeca, editarpeca, relatoriopeca, DetalhePeca, buscarpecas
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('pecas/', login_required(Peca.as_view()), name='pecas'),
+    path('pecas/buscar/', login_required(buscarpecas), name='buscar-pecas'),
     path('cadastrarpeca/', login_required(cadastrarpeca), name='cadastrar-peca'),
     path('editarpeca/<int:pk>/', login_required(editarpeca), name='editar-peca'),
     path('detalhepeca/<int:pk>/', login_required(DetalhePeca.as_view()), name='detalhe-peca'),
@@ -12,4 +13,3 @@ urlpatterns = [
    
 
 ]
-

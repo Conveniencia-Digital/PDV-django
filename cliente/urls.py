@@ -1,10 +1,19 @@
 from django.urls import path
-from cliente.views import ListaCliente, cadastrarcliente, editarcliente, apagarcliente, total_clientes, DetalheClienteView
+from cliente.views import (
+    DetalheClienteView,
+    ListaCliente,
+    apagarcliente,
+    buscarclientes,
+    cadastrarcliente,
+    editarcliente,
+    total_clientes,
+)
 from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
     path('cliente/', login_required(ListaCliente.as_view()), name='cliente'),
+    path('cliente/buscar/', buscarclientes, name='buscar-clientes'),
     path('cadastrarcliente/', login_required(cadastrarcliente), name='cadastrar-cliente'),
     path('editarcliente/<int:pk>', login_required(editarcliente), name='editar-cliente'),
     path('apagarcliente/<int:pk>/', login_required(apagarcliente), name='apagar-cliente'),

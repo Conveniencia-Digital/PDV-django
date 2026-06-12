@@ -167,7 +167,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-      <a class="close" href="#" data-bs-dismiss="modal" hx-get="{% url 'total-vendas' %}" hx-target="#bloco-dados"
+      <a class="close" href="{% url 'vendas' %}" data-bs-dismiss="modal" hx-get="{% url 'vendas' %}" hx-target="#bloco-dados"
         hx-swap="outerHTML">&times;</a>
       <div class="page-body">
         <div class="head">

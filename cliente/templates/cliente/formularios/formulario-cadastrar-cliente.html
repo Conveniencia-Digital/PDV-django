@@ -20,16 +20,29 @@
    
   </button>
 </div>
-<form hx-post="{% url 'cadastrar-cliente' %}" hx-target="#cliente-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+<form id="{% if client_picker_mode %}cliente-picker-form{% else %}cliente-form{% endif %}"
+  hx-post="{% url 'cadastrar-cliente' %}{% if client_picker_mode %}?picker=1{% endif %}"
+  hx-target="{% if client_picker_mode %}#clientePickerModalConteudo{% else %}#cliente-Tbody{% endif %}"
+  hx-indicator=".htmx-indicator"
+  hx-swap="{% if client_picker_mode %}innerHTML{% else %}afterbegin{% endif %}"
+  data-client-picker-form="{% if client_picker_mode %}true{% else %}false{% endif %}">
 
   <div class="modal-body">
     {% csrf_token %}
+    {% if client_picker_mode %}
+      <input type="hidden" name="client_picker" value="1">
+    {% endif %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger py-2">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.nome_cliente class="form-control" %}
         {% render_field form.usuario class="form-control" %}
         <label for="">Escreva o nome do cliente</label>
+        {{ form.nome_cliente.errors }}
       </div>
     </div>
     <!---->
@@ -37,10 +50,12 @@
       <div class="col-6 form-floating">
         {% render_field form.cpf class="form-control" id="cpf" %}
         <label for="" id="error-cpf">Informe o CPF (opcional)</label>
+        {{ form.cpf.errors }}
       </div>
       <div class="col-6 form-floating">
         {% render_field form.data_nascimento class="form-control" %}
         <label for="">Data de nascimento (opcional)</label>
+        {{ form.data_nascimento.errors }}
       </div>
     </div>
     <!---->
@@ -48,10 +63,12 @@
       <div class="col-6 form-floating">
         {% render_field form.telefone_contato class="form-control" id="telefone" %}
         <label for="telefone" id="error-message">Telefone para contato</label>
+        {{ form.telefone_contato.errors }}
       </div>
       <div class="col-6 form-floating">
         {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
         <label for="" id="error-message2">Outro telefone de contato (opcional)</label>
+        {{ form.telefone_contato_2.errors }}
       </div>
     </div>
     <!---->
@@ -59,16 +76,19 @@
       <div class="col-6 form-floating">
         {% render_field form.rua class="form-control" %}
         <label for="">Endereço (opcional)</label>
+        {{ form.rua.errors }}
       </div>
       <div class="col-6 form-floating">
         {% render_field form.bairro class="form-control" %}
         <label for="">Bairro (opcional</label>
+        {{ form.bairro.errors }}
       </div>
     </div>
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.observacao class="form-control" %}
         <label for="">Observaçāo</label>
+        {{ form.observacao.errors }}
       </div>
     </div>
   </div>
@@ -80,92 +100,98 @@
 </form>
 
 <script>
+(function () {
+  var script = document.currentScript;
+  var container = script.closest('#clientePickerModalConteudo') || script.closest('#adicionar-conteudo') || document;
+  var form = container.querySelector('form[data-client-picker-form]');
+  if (!form || form.dataset.clienteFormScriptInit === '1') return;
+  form.dataset.clienteFormScriptInit = '1';
 
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle');    
-    }, "500");
-  });
-  $(document).ready(function () {
-    $('#cpf').mask('000.000.000-00', { reverse: false });
-    $('#telefone').mask('(00) 00000-0000');
-    $('#telefone2').mask('(00) 00000-0000');
-  });
+  var pickerMode = form.dataset.clientPickerForm === 'true';
+  var cpf = container.querySelector('#cpf');
+  var telefone = container.querySelector('#telefone');
+  var telefone2 = container.querySelector('#telefone2');
+  var finalizar = container.querySelector('#finalizar');
 
-  document.querySelector('#telefone').addEventListener('change', erroformulario); 
-  document.querySelector('#telefone').addEventListener('mouseout', erroformulario); 
-  document.querySelector('#telefone').addEventListener('click', erroformulario);
-  
-  
-  document.querySelector('#telefone2').addEventListener('change', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('mouseout', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('click', erroformulario2);
-  
-  
-  document.querySelector('#cpf').addEventListener('change', errocpf); 
-  document.querySelector('#cpf').addEventListener('mouseout', errocpf); 
-  document.querySelector('#cpf').addEventListener('click', errocpf);
-  
-  function erroformulario () {
-    let telefone = document.querySelector('#telefone');cpf
-    let error_tel =  document.querySelector('#error-message');
-    let qtd = telefone.value;
-    
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone.style.border = '1px solid #ff0000';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '#ff0000';
-      error_tel.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone.style.border = '';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '';
-      error_tel.innerHTML = 'Telefone para contato';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
+  if (!pickerMode && window.jQuery) {
+    window.jQuery(form).off('submit.clienteForm').on('submit.clienteForm', function () {
+      window.jQuery('#staticBackdrop').modal('toggle');
+      setTimeout(function () {
+        window.jQuery('#success_tic').modal('toggle');
+      }, 500);
+    });
+  }
+
+  if (window.jQuery && window.jQuery.fn.mask) {
+    if (cpf) window.jQuery(cpf).mask('000.000.000-00', { reverse: false });
+    if (telefone) window.jQuery(telefone).mask('(00) 00000-0000');
+    if (telefone2) window.jQuery(telefone2).mask('(00) 00000-0000');
+  }
+
+  function setSubmitEnabled(enabled) {
+    if (finalizar) finalizar.setAttribute('type', enabled ? 'submit' : 'button');
+  }
+
+  function validarMascara(input, label, tamanho, mensagemPadrao) {
+    if (!input || !label) return true;
+    var invalido = input.value.length >= 1 && input.value.length < tamanho;
+
+    if (invalido) {
+      input.style.border = '1px solid #ff0000';
+      label.style.display = 'block';
+      label.style.color = '#ff0000';
+      label.innerHTML = 'Numero invalido';
+      setSubmitEnabled(false);
+      return false;
     }
 
-  };
-  function erroformulario2 () {
-    let telefone2 = document.querySelector('#telefone2');
-    let error_tel2 =  document.querySelector('#error-message2');
-    let qtd = telefone2.value;
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone2.style.border = '1px solid #ff0000';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '#ff0000';
-      error_tel2.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone2.style.border = '';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '';
-      error_tel2.innerHTML = 'Telefone para contato';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
-    }
+    input.style.border = '';
+    label.style.display = 'block';
+    label.style.color = '';
+    label.innerHTML = mensagemPadrao;
+    setSubmitEnabled(true);
+    return true;
+  }
 
-  };
+  function erroformulario() {
+    validarMascara(telefone, container.querySelector('#error-message'), 15, 'Telefone para contato');
+  }
 
-  function errocpf () {
-    let cpf = document.querySelector('#cpf');
-    let error_cpf =  document.querySelector('#error-cpf');
-    let qtd = cpf.value;
-    if(qtd.length >= 1 && qtd.length < 14){
+  function erroformulario2() {
+    validarMascara(telefone2, container.querySelector('#error-message2'), 15, 'Outro telefone de contato (opcional)');
+  }
+
+  function errocpf() {
+    var label = container.querySelector('#error-cpf');
+    if (!cpf || !label) return;
+    var invalido = cpf.value.length >= 1 && cpf.value.length < 14;
+
+    if (invalido) {
       cpf.style.border = '1px solid #ff0000';
-      error_cpf.style.display = 'block' ; 
-      error_cpf.style.color = '#ff0000';
-      error_cpf.innerHTML = 'CPF invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
+      label.style.display = 'block';
+      label.style.color = '#ff0000';
+      label.innerHTML = 'CPF invalido';
+      setSubmitEnabled(false);
+    } else {
       cpf.style.border = '';
-      error_cpf.style.display = 'block' ; 
-      error_cpf.style.color = '';
-      error_cpf.innerHTML = 'Informe o CPF (opcional)';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
+      label.style.display = 'block';
+      label.style.color = '';
+      label.innerHTML = 'Informe o CPF (opcional)';
+      setSubmitEnabled(true);
     }
+  }
 
-  };
-  
-  
+  [
+    [telefone, erroformulario],
+    [telefone2, erroformulario2],
+    [cpf, errocpf]
+  ].forEach(function (entry) {
+    var input = entry[0];
+    var handler = entry[1];
+    if (!input) return;
+    input.addEventListener('change', handler);
+    input.addEventListener('mouseout', handler);
+    input.addEventListener('click', handler);
+  });
+})();
 </script>

@@ -1,17 +1,25 @@
 
-<tr id="pecaTr{{ object.pk }}"> 
-    <td>{{ peca.nome_peca }}</td>
-    <td>R$ {{ peca.saldodespesa }}</td>
-    <td>{{peca.forma_pagamento}}</td>
+<tr id="pecaTr{{ peca.pk }}" class="erp-row"> 
     <td>
-        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-target="#adicionar-conteudo">
-            <i class="fa-solid fa-pen-to-square" style="color: rgb(5, 180, 84);"></i>
+        <strong>{{ peca.data_criacao|date:'d/m/Y' }}</strong>
+        <span class="erp-muted-line">{{ peca.data_criacao|date:'H:i' }}</span>
+    </td>
+    <td>
+        <span class="erp-primary-text">{{ peca.nome_peca }}</span>
+        <span class="erp-muted-line">Peça em aberto</span>
+    </td>
+    <td><span class="erp-badge erp-badge-warning">Estoque</span></td>
+    <td class="erp-primary-text">R$ {{ peca.saldodespesa|floatformat:2 }}</td>
+    <td><span class="badge-status status-outro">{{ peca.forma_pagamento }}</span></td>
+    <td class="acoes text-end">
+        <span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-target="#adicionar-conteudo" title="Editar">
+            <i class="fa-solid fa-pen-to-square"></i>
         </span>
         <span data-toggle="modal" data-target="#success_tic_delete"
-            hx-confirm="Deseja mesmo apagar {{ peca.nome_peca }}" hx-target="closest tr" hx-swap="outerHTML swap:300ms">
-            <i class="fa-regular fa-trash-can" style="color: red;"></i>
+            hx-confirm="Deseja mesmo apagar {{ peca.nome_peca }}" hx-target="closest tr" hx-swap="outerHTML swap:300ms" title="Apagar">
+            <i class="fa-regular fa-trash-can"></i>
         </span>
         <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" hx-get="{% url 'detalhe-despesa-peca' peca.pk %}"
-        hx-target="#detalhe-despesa" hx-swap="innerHTML"><i class="fa fa-eye"></i></span>
+        hx-target="#detalhe-despesa" hx-swap="innerHTML" title="Detalhes"><i class="fa fa-eye"></i></span>
     </td>
 </tr>

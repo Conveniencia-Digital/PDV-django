@@ -1,0 +1,38 @@
+{% load widget_tweaks %}
+
+<div class="modal-header">
+  <h5 class="modal-title" id="produtoCategoriaPickerModalLabel">Nova categoria</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form hx-post="{% url 'criar-categoria-produto' %}{% if category_picker_mode %}?picker=1{% endif %}"
+      hx-target="#produtoCategoriaPickerModalConteudo"
+      hx-swap="innerHTML"
+      data-client-picker-form="{% if category_picker_mode %}true{% else %}false{% endif %}">
+  <div class="modal-body">
+    {% csrf_token %}
+    {% if category_picker_mode %}
+      <input type="hidden" name="category_picker" value="1">
+    {% endif %}
+    {% render_field form.usuario %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="form-floating">
+      {% render_field form.nome class="form-control" placeholder="Nome da categoria" %}
+      <label for="{{ form.nome.id_for_label }}">Nome da categoria</label>
+      {% for error in form.nome.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Salvar</button>
+  </div>
+</form>

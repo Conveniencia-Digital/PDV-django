@@ -1,85 +1,23 @@
 {% load widget_tweaks %}
 
-
-  <style> 
-  
-
-    @media (max-width:760px) {
-    #remove {
-      width: 80vw;
-      height: 20px; 
-      font-size:15px;
-      margin-bottom: 30px;
-      margin-left: 2px;
-      
-    }
-
-  }
-  @media (min-width: 900px){
-    #remove {
-      width: 60px; 
-      height: 25px; 
-      font-size: 10px; 
-      margin-top: 12px;
-      margin-left: 2px;
-    }
-    
-  }
-  </style>
-    <div id="item-{{ forloop.counter0 }}" class="row g-2">
+<div id="item-{{ forloop.counter0 }}" class="row g-3 align-items-end lanhouse-service-row" data-linha-item data-tipo="produto">
   {% render_field itemsvendaform.vendas data-field='vendas' %}
   {% render_field itemsvendaform.id data-field='id' %}
 
-  <div class="col-md-6 mb-3 form-floating">
-    {% render_field itemsvendaform.produto data-field="produto" hx-get="/produto/preco/" hx-target="#id_items-{{ forloop.counter0 }}-preco" hx-swap="outerHTML" %}
-    <label>Produto</label>
+  <div class="col-lg-6">
+    {% include 'produto/componentes/seletor-produto.html' with field=itemsvendaform.produto label='Produto' placeholder='Selecione o produto' %}
   </div>
-
-  <div class="col-md-3 mb-3 form-floating">
-    {% render_field itemsvendaform.preco data-field="preco" readonly="readonly" value="0.00" %}
-    <label>Preço</label>
+  <div class="col-lg-3 col-md-5">
+    <label class="form-label client-picker-label" for="{{ itemsvendaform.preco.id_for_label }}">Preço unitário</label>
+    {% render_field itemsvendaform.preco data-field='preco' readonly='readonly' value='0.00' class='form-control selector-standard-control' %}
   </div>
-
-  <div class="col-md-2 mb-3 form-floating">
-    {% render_field itemsvendaform.quantidade data-field="quantidade" value="1" %}
-    <label>Qtd</label>
+  <div class="col-lg-2 col-md-5">
+    <label class="form-label client-picker-label" for="{{ itemsvendaform.quantidade.id_for_label }}">Quantidade</label>
+    {% render_field itemsvendaform.quantidade data-field='quantidade' value='1' class='form-control selector-standard-control' %}
   </div>
-
-  <div class="col-md-1 d-flex align-items-center">
-    <button type="button" class="btn btn-outline-danger btn-sm"
-            onclick="marcarParaRemover(this)">✕</button>
+  <div class="col-lg-1 col-md-2 d-grid">
+    <button type="button" class="btn btn-outline-danger selector-row-action" onclick="removerLinhaVenda(this)" aria-label="Remover produto">
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
   </div>
 </div>
-
-
-<script>
-
-function reorderItems() {
-    let items = Array.from(document.querySelectorAll("[id^='item-']"));
-
-    items.forEach((item, i) => {
-        let produtoField = item.querySelector('[data-field="produto"]');
-        let precoField = item.querySelector('[data-field="preco"]');
-
-        if (produtoField) {
-            produtoField.name = `items-${i}-produto`;
-            produtoField.id   = `id_items-${i}-produto`;
-            produtoField.setAttribute('hx-target', `#id_items-${i}-preco`);
-        }
-
-        if (precoField) {
-            precoField.name = `items-${i}-preco`;
-            precoField.id   = `id_items-${i}-preco`;
-        }
-    });
-
-    document.querySelector('#id_items-TOTAL_FORMS').value = items.length;
-
-    // 🔥 ESSENCIAL
-    htmx.process(document.querySelector("#venda"));
-}
-reorderItems();
-
-
-
-</script>

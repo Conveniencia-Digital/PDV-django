@@ -89,6 +89,24 @@ input[type="date"]:focus {
     box-shadow: 0 8px 20px rgba(0,0,0,0.04);
 }
 
+.vendas-dashboard .finance-grid-2 {
+    margin-top: 20px;
+}
+
+.vendas-dashboard .finance-panel {
+    border-radius: 16px;
+}
+
+.vendas-dashboard .ranking-row {
+    grid-template-columns: 34px minmax(0, 1fr) minmax(90px, auto);
+}
+
+.vendas-dashboard .vendas-product-summary {
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+}
+
 /* =========================
    RESPONSIVO
 ========================= */
@@ -106,10 +124,7 @@ input[type="date"]:focus {
 {% endblock style %}
 
 
-<div id="bloco-dados">
-        <div id="cards-relatorio">
-                {% include 'vendas/partials/cards.html' %}
-        </div>
+<div id="bloco-dados" class="finance-dashboard vendas-dashboard">
   <div id="bloco-completo">            
         <div class="row align-items-center mt-4">
 
@@ -120,6 +135,7 @@ input[type="date"]:focus {
                     data-bs-toggle="modal" 
                     data-bs-target="#staticBackdrop"
                     hx-get="{% url 'cadastrar-vendas' %}"
+                    hx-vals='{"dashboard_periodo": "{{ periodo|default:'' }}", "dashboard_inicio": "{{ inicio|default:'' }}", "dashboard_fim": "{{ fim|default:'' }}"}'
                     hx-target="#addConteudo" 
                     hx-swap="innerHTML"
                 >
@@ -226,8 +242,7 @@ input[type="date"]:focus {
                             class="btn btn-danger shadow-sm"
                             hx-get="{% url 'vendas' %}"
                             hx-target="#bloco-dados"
-                            hx-swap="innerHTML"
-                            onclick="document.getElementById('filtrosForm').reset();"
+                            hx-swap="outerHTML"
                         >
                             Limpar
                         </button>
@@ -237,10 +252,56 @@ input[type="date"]:focus {
             </div>
 
         </div>
- </div>   
+ </div>
+
+ <div id="cards-relatorio">
+        {% include 'vendas/partials/cards.html' %}
+ </div>
+
+ <div class="finance-grid-2" id="vendas-chart-section">
+    <section class="finance-panel">
+        <h2>Receita de vendas</h2>
+        {% if vendas_revenue_has_data %}
+            <div class="finance-chart">
+                <canvas id="vendasRevenueChart"></canvas>
+            </div>
+        {% else %}
+            <div class="empty-state">Nenhuma venda entregue no período.</div>
+        {% endif %}
+    </section>
+
+    <section class="finance-panel">
+        <h2>Produtos mais vendidos</h2>
+        {% if vendas_product_has_data %}
+            <div class="finance-chart compact" style="height: {{ vendas_product_chart_height }}px;">
+                <canvas id="vendasProductChart"></canvas>
+            </div>
+            <div class="vendas-product-summary mt-3">
+                {% for item in vendas_product_ranking %}
+                    <div class="ranking-row">
+                        <div class="ranking-index">{{ forloop.counter }}</div>
+                        <div>
+                            <div class="ranking-title">{{ item.product }}</div>
+                            <div class="ranking-share">{{ item.quantity }} vendidos · {{ item.transactions }} vendas</div>
+                        </div>
+                        <div class="ranking-amount">
+                            <sup>R$</sup> {{ item.revenue|floatformat:2 }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">Nenhum produto vendido no período.</div>
+        {% endif %}
+    </section>
+ </div>
+
  <div id="tabela-vendas" class="table-responsive mt-4">
         {% include 'vendas/partials/tabela.html' %}
 </div> 
 
 {% include 'vendas/modal/modal-venda.html' %}
 {% include 'vendas/modal/modal-alerta.html' %}
+{% include 'cliente/componentes/modal-cliente-picker.html' %}
+{{ vendas_charts|json_script:"vendasChartsData" }}
+</div>

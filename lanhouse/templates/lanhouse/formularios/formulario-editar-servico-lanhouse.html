@@ -5,42 +5,55 @@
   <h5 class="modal-title fs-5" id="staticBackdropLabel">Editar servico Lan House</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form   hx-post="{% url 'editar-servico-lanhouse' object.pk %}" 
+<form class="lanhouse-servico-form"
+        hx-post="{% url 'editar-servico-lanhouse' object.pk %}" 
         hx-target="#tr-ServicoLanhouse{{ object.pk }}"  
         hx-swap = "outerHTML"
-        hx-indicator=".htmx-indicator">
+        hx-indicator="#lanhouse-servico-spinner"
+        data-profit-margin-calculator>
   
     <div class="modal-body">
     {% csrf_token %}
+    {% render_field form.pricing_last_edited data-pricing-last-edited='true' %}
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.usuario class='form-control' %}
         {% render_field form.servico class='form-control' %}
         <label for="">Informe o servico</label>
+        {% for error in form.servico.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
     </div>
     <div class="row g-2">
-      <div class="col form-floating">
-        {% render_field form.preco_custo class='form-control' value="0.00" %}
+      <div class="col-md-4 form-floating">
+        {% render_field form.preco_custo class='form-control' data-pricing-field='cost' %}
         <label for="">Preco de custo</label>
+        {% for error in form.preco_custo.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
-      <div class="col form-floating">
-        {% render_field form.preco class='form-control' value="0.00" %}
+      <div class="col-md-4 form-floating">
+        {% render_field form.margem_de_lucro class='form-control' data-pricing-field='margin' %}
+        <label for="">Margem de lucro (%)</label>
+        {% for error in form.margem_de_lucro.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-4 form-floating">
+        {% render_field form.preco class='form-control' data-pricing-field='price' %}
         <label for="">Preco de venda</label>
+        {% for error in form.preco.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
     </div>
   </div>
   <div class="modal-footer">
+    <span id="lanhouse-servico-spinner" class="htmx-indicator spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" class="btn btn-outline-primary" data-bs-target="#staticBackdrop" data-bs-toggle="modal">Salvar</button>
+    <button type="submit" class="btn btn-outline-primary" data-submit-label="Salvar">
+      <span class="submit-text">Salvar</span>
+    </button>
   </div>
 </form>
-
-<script>
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle');
-    setTimeout(() => {
-      $('#success_tic').modal('toggle'); 
-    }, "500");
-  });
-</script>

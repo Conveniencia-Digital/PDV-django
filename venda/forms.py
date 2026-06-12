@@ -1,12 +1,14 @@
 from django import forms
 from django.forms import inlineformset_factory, NumberInput
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from decimal import Decimal
 
 from venda.models import Vendas, ItemsVenda
 from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
+from financeiro.form_fields import configure_card_fee_fields
 
 
 
@@ -61,11 +63,12 @@ class VendasForm(forms.ModelForm):
         self.fields['valor_entrada'].widget = forms.HiddenInput()
         self.fields['cliente'].queryset = Cliente.objects.filter(usuario=user)
         self.fields['vendedor'].queryset = Colaborador.objects.filter(usuario=user)
+        configure_card_fee_fields(self, user)
 
 
 class ItemsVendaForm(forms.ModelForm):
     required_css_class = 'required'
-    id = forms.IntegerField()
+    id = forms.IntegerField(required=False)
     #produto = forms.ModelChoiceField(queryset=Produto.objects.all(), empty_label='Selecione o produto')
 
     class Meta:
@@ -89,7 +92,12 @@ class ItemsVendaForm(forms.ModelForm):
         self.fields['vendas'].widget = forms.HiddenInput()
         self.fields['preco'].widget.attrs['step'] = 0.01
 
-        self.fields['produto'].queryset = Produto.objects.filter(quantidade__gt=0, usuario=user)
+        produtos = Produto.objects.filter(usuario=user)
+        if self.instance and self.instance.pk and self.instance.produto_id:
+            produtos = produtos.filter(Q(quantidade__gt=0) | Q(pk=self.instance.produto_id))
+        else:
+            produtos = produtos.filter(quantidade__gt=0)
+        self.fields['produto'].queryset = produtos
 
 
 VendasItemsFormset = inlineformset_factory(

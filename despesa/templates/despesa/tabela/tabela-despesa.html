@@ -1,9 +1,15 @@
-{% for object in object_list %}
-    {% include 'despesa/tabela/linhas-tabela-despesa.html' %}
-{% endfor %}
-{% for peca in peca %}
-{% include 'despesa/tabela/linhas-tabela-despesa-peca.html' %}
-{% endfor %}
-{% for produto in produto %}
-{% include 'despesa/tabela/linhas-tabela-despesa-produto.html' %}
-{% endfor %}
+{% if object_list or peca or produto %}
+    {% for object in object_list %}
+        {% include 'despesa/tabela/linhas-tabela-despesa.html' %}
+    {% endfor %}
+    {% for peca in peca %}
+        {% include 'despesa/tabela/linhas-tabela-despesa-peca.html' %}
+    {% endfor %}
+    {% for produto in produto %}
+        {% include 'despesa/tabela/linhas-tabela-despesa-produto.html' %}
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="6" class="text-center text-muted py-4">Nenhum resultado encontrado.</td>
+    </tr>
+{% endif %}

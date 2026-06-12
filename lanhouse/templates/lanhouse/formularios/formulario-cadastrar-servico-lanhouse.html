@@ -1,42 +1,74 @@
 {% load widget_tweaks %}
 
-
 <div class="modal-header">
-  <h5 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar servico</h5>
+  <h5 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar serviço Lan House</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form hx-post="{% url 'cadastrar-servico-lanhouse' %}">
+
+<form class="lanhouse-servico-form"
+      hx-post="{% url 'cadastrar-servico-lanhouse' %}{% if service_picker_mode %}?picker=1{% endif %}"
+      hx-target="{% if service_picker_mode %}#lanhouseServicoPickerModalConteudo{% else %}#addConteudo{% endif %}"
+      hx-swap="innerHTML"
+      hx-indicator="#lanhouse-servico-spinner"
+      data-service-picker-form="{% if service_picker_mode %}true{% else %}false{% endif %}"
+      data-profit-margin-calculator>
   <div class="modal-body">
     {% csrf_token %}
-    <div class="row g-2" style="margin-bottom: 10px;">
+    {% if service_picker_mode %}
+      <input type="hidden" name="service_picker" value="1">
+    {% endif %}
+    {% if submission_token %}
+      <input type="hidden" name="submission_token" value="{{ submission_token }}">
+    {% endif %}
+    {% render_field form.usuario %}
+    {% render_field form.pricing_last_edited data-pricing-last-edited='true' %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="row g-2 mb-3">
       <div class="col form-floating">
-        {% render_field form.usuario class='form-control' %}
         {% render_field form.servico class='form-control' %}
-        <label for="">Informe o servico</label>
+        <label for="{{ form.servico.id_for_label }}">Informe o serviço</label>
+        {% for error in form.servico.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
     </div>
+
     <div class="row g-2">
-      <div class="col form-floating">
-        {% render_field form.preco_custo class='form-control' value="0.00" %}
-        <label for="">Preco de custo</label>
+      <div class="col-md-4 form-floating">
+        {% render_field form.preco_custo class='form-control' step='0.01' data-pricing-field='cost' %}
+        <label for="{{ form.preco_custo.id_for_label }}">Preço de custo</label>
+        {% for error in form.preco_custo.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
-      <div class="col form-floating">
-        {% render_field form.preco class='form-control' value="0.00" %}
-        <label for="">Preco de venda</label>
+      <div class="col-md-4 form-floating">
+        {% render_field form.margem_de_lucro class='form-control' step='0.01' data-pricing-field='margin' %}
+        <label for="{{ form.margem_de_lucro.id_for_label }}">Margem de lucro (%)</label>
+        {% for error in form.margem_de_lucro.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-4 form-floating">
+        {% render_field form.preco class='form-control' step='0.01' data-pricing-field='price' %}
+        <label for="{{ form.preco.id_for_label }}">Preço de venda</label>
+        {% for error in form.preco.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
       </div>
     </div>
   </div>
+
   <div class="modal-footer">
+    <span id="lanhouse-servico-spinner" class="htmx-indicator spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" class="btn btn-outline-primary">Salvar</button>
+    <button type="submit" class="btn btn-outline-primary" data-submit-label="Salvar">
+      <span class="submit-text">Salvar</span>
+    </button>
   </div>
 </form>
-
-<script>
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle');
-    setTimeout(() => {
-      $('#success_tic').modal('toggle'); 
-    }, "500");
-  });
-</script>

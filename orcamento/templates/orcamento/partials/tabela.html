@@ -1,0 +1,84 @@
+<div id="tabela-orcamentos" class="table-responsive mt-4">
+    <style>
+    .orcamento-row { transition: background 0.2s ease, box-shadow 0.2s ease; }
+    .orcamento-row:hover { background: #f8f9fa; }
+    .orcamento-header th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6c757d;
+        border: none;
+    }
+    .badge-status {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+    .status-finalizado {
+        background: #e6f4ea;
+        color: #1e7e34;
+    }
+    .status-cancelado {
+        background: #fde8e8;
+        color: #b42318;
+    }
+    .status-outro {
+        background: #e9ecef;
+        color: #495057;
+    }
+    .acoes a,
+    .acoes button {
+        margin-left: 10px;
+        color: #6c757d;
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .acoes a:hover,
+    .acoes button:hover {
+        transform: translateY(-2px);
+        color: #0d6efd;
+    }
+    .toggle-detalhes i { transition: transform 0.3s ease; }
+    .toggle-detalhes[aria-expanded="true"] i { transform: rotate(180deg); }
+    .detalhes-box {
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 15px;
+    }
+    .detalhes-box table th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #6c757d;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .orcamento-details-row.collapse.show {
+        display: table-row;
+    }
+    .orcamento-details-row.collapsing {
+        display: table-row;
+        height: auto !important;
+        overflow: hidden;
+        opacity: 0.35;
+        transition: opacity 0.2s ease;
+    }
+    </style>
+    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
+        <thead>
+            <tr class="orcamento-header">
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Valor Total</th>
+                <th class="text-end">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="orcamento-Tbody">
+            {% for object in object_list %}
+                {% include 'orcamento/partials/linha-orcamento.html' %}
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Nenhum orçamento encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

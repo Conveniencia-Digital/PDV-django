@@ -1,8 +1,11 @@
+from decimal import Decimal
+
 from django.db import models
 from peca.models import Pecas
 from cliente.models import Cliente
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
+from financeiro.models import CardMachine
 
 
 class Orcamento(models.Model):
@@ -59,6 +62,14 @@ class Orcamento(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_machine = models.ForeignKey(CardMachine, on_delete=models.PROTECT, null=True, blank=True)
+    card_payment_type = models.CharField(max_length=10, null=True, blank=True)
+    card_installments = models.PositiveSmallIntegerField(null=True, blank=True)
+    card_fee_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    card_fee_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_base_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_final_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    pass_card_fee_to_customer = models.BooleanField(default=False)
 
 
     
@@ -69,20 +80,53 @@ class Orcamento(models.Model):
         return self.cliente
 
     def total(self):
-        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
-            'preco_orcamento', 'quantidade') or 0
-        t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
-        desc = t - self.desconto 
-        return desc
-    
+        if self.card_final_amount is not None:
+            return self.card_final_amount
+        desconto = self.desconto or Decimal('0.00')
+        itens = self.orcamento_items.values_list('preco_orcamento', 'quantidade')
+        total = sum(preco * qtd for preco, qtd in itens)
+        return total - desconto
 
+    def total_sem_desconto(self):
+        itens = self.orcamento_items.values_list('preco_orcamento', 'quantidade')
+        return sum(preco * qtd for preco, qtd in itens)
+
+    def custo_total(self):
+        return sum(
+            (item.peca.preco_de_custo or Decimal('0.00')) * item.quantidade
+            for item in self.orcamento_items.select_related('peca').all()
+            if item.peca_id
+        )
+
+    def lucro_total(self):
+        desconto = self.desconto or Decimal('0.00')
+        lucro_itens = Decimal('0.00')
+
+        for item in self.orcamento_items.select_related('peca').all():
+            if item.peca_id:
+                custo = item.peca.preco_de_custo or Decimal('0.00')
+                lucro_itens += (item.preco_orcamento - custo) * item.quantidade
+            else:
+                lucro_itens += item.preco_orcamento * item.quantidade
+
+        return Decimal(lucro_itens - desconto).quantize(Decimal('0.01'))
 
     def valor_a_receber(self):
-        qs = self.orcamento_items.filter(orcamento=self.pk).values_list(
-            'preco_orcamento', 'quantidade') or 0
-        t = 0 if isinstance(qs, int) else sum(map(lambda q: q[0] * q[1], qs))
-        desc = t - self.desconto
-        return desc - self.valor_entrada
+        entrada = self.valor_entrada or Decimal('0.00')
+        return self.total() - entrada
+
+
+class OrcamentoSubmissionToken(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=64, unique=True)
+    finalidade = models.CharField(max_length=40)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    usado_em = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['usuario', 'finalidade', 'usado_em']),
+        ]
 
 
 class Servico(models.Model):
@@ -108,6 +152,8 @@ class ItemsOrcamento(models.Model):
     peca = models.ForeignKey(
         Pecas,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     servico = models.ForeignKey(
         Servico, 
@@ -131,8 +177,8 @@ class ItemsOrcamento(models.Model):
         return self.preco_orcamento * (self.quantidade or 0)
     
     def save(self, *args, **kwargs):
-        self.peca.quantidade -= self.quantidade
-        self.peca.save()
+        if self.peca_id and self.peca:
+            self.peca.quantidade -= self.quantidade
+            self.peca.save()
         super(ItemsOrcamento, self).save(*args, **kwargs)
-
 

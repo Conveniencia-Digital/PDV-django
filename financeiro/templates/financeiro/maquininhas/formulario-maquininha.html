@@ -1,0 +1,124 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+
+{% block titulo %}{{ titulo }}{% endblock titulo %}
+
+{% block style %}
+<style>
+  .card-machine-form-page {
+    color: #202124;
+  }
+
+  .card-machine-form-shell {
+    background: #fff;
+    border: 1px solid #e7eaef;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(20, 25, 34, 0.07);
+    margin: 0 auto;
+    max-width: 920px;
+    padding: 22px;
+  }
+
+  .card-machine-form-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .card-machine-form-title h1 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .fee-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .fee-section-title {
+    border-top: 1px solid #edf0f4;
+    font-size: 15px;
+    font-weight: 800;
+    margin: 20px 0 14px;
+    padding-top: 18px;
+  }
+
+  .form-label {
+    color: #343a40;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 767.98px) {
+    .fee-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-machine-form-title {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock style %}
+
+{% block conteudo %}
+<div class="card-machine-form-page">
+  <form class="card-machine-form-shell" method="post">
+    {% csrf_token %}
+    <div class="card-machine-form-title">
+      <div>
+        <h1>{{ titulo }}</h1>
+        <div class="text-muted">Informe as taxas usadas no cálculo automático do Lan House.</div>
+      </div>
+      <a class="btn btn-outline-secondary" href="{% url 'maquininhas-cartao' %}">Voltar</a>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="row g-3">
+      <div class="col-md-8">
+        <label class="form-label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {{ form.name.errors }}
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <div class="form-check mb-2">
+          {{ form.is_active }}
+          <label class="form-check-label" for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="fee-section-title">Débito</div>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label" for="{{ form.debit_fee.id_for_label }}">Taxa débito (%)</label>
+        {{ form.debit_fee }}
+        {{ form.debit_fee.errors }}
+      </div>
+    </div>
+
+    <div class="fee-section-title">Crédito parcelado</div>
+    <div class="fee-grid">
+      {% for field in form.credit_fee_fields %}
+        <div>
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }} (%)</label>
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <a class="btn btn-outline-secondary" href="{% url 'maquininhas-cartao' %}">Cancelar</a>
+      <button class="btn btn-primary" type="submit">Salvar taxas</button>
+    </div>
+  </form>
+</div>
+{% endblock conteudo %}

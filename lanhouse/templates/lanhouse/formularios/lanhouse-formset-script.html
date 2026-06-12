@@ -1,0 +1,407 @@
+<script>
+(function () {
+  if (window._lanhouseFormsetGlobalInit) return;
+  window._lanhouseFormsetGlobalInit = true;
+
+  function getFormFromEventTarget(target) {
+    return target.closest('form[hx-post*="lanhouse"]');
+  }
+
+  function getContainers(form) {
+    return {
+      servicos: form.querySelector('#lanhouse-servicos') || form.querySelector('#lanhouse'),
+    };
+  }
+
+  function todasLinhas(form) {
+    const { servicos } = getContainers(form);
+    if (!servicos) return [];
+    return Array.from(servicos.querySelectorAll('[data-linha-item]'));
+  }
+
+  function renomearCampoFormset(field, index) {
+    const dataField = field.getAttribute('data-field');
+    if (!dataField) return;
+    field.name = 'items-' + index + '-' + dataField;
+    field.id = 'id_items-' + index + '-' + dataField;
+  }
+
+  function parseDecimal(value) {
+    const parsed = parseFloat(String(value || '0').replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function formatMoney(value) {
+    return parseDecimal(value).toFixed(2);
+  }
+
+  function calcularTotalLanhouse(form) {
+    let totalServicos = 0;
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      if (row.querySelector('[data-field="DELETE"]')?.checked) return;
+      const preco = parseDecimal(row.querySelector('[data-field="preco"]')?.value);
+      const qtd = parseInt(row.querySelector('[data-field="quantidade"]')?.value, 10) || 0;
+      totalServicos += preco * qtd;
+    });
+
+    form.dataset.lanhouseGrossTotal = totalServicos.toFixed(2);
+    const desconto = parseDecimal(form.querySelector('[name$="desconto"]')?.value);
+    const total = Math.max(totalServicos - desconto, 0);
+    const totalInput = form.querySelector('#totalValue');
+    if (totalInput) totalInput.value = total.toFixed(2);
+    validarDescontoLanhouse(form);
+    atualizarTaxaCartaoLanhouse(form);
+  }
+
+  function validarDescontoLanhouse(form) {
+    const campoDesconto = form.querySelector('[name$="desconto"]');
+    const labelDesconto = form.querySelector('#label_desconto');
+    if (!campoDesconto || !labelDesconto) return;
+
+    const desconto = parseDecimal(campoDesconto.value);
+    const total = parseDecimal(form.dataset.lanhouseGrossTotal);
+
+    if (desconto > total && total > 0) {
+      labelDesconto.innerHTML = 'Desconto maior que o valor do serviço';
+      labelDesconto.style.color = '#ff0000';
+      campoDesconto.style.border = '3px solid #ff0000';
+      campoDesconto.style.color = '#ff0000';
+    } else {
+      labelDesconto.textContent = 'Desconto';
+      labelDesconto.style.color = '';
+      campoDesconto.style.border = '';
+      campoDesconto.style.color = '';
+    }
+  }
+
+  function removerLinhasVaziasLanhouse(form) {
+    todasLinhas(form).forEach(function (row) {
+      if (row.style.display === 'none') return;
+      const idField = row.querySelector('[data-field="id"]');
+      if (idField && idField.value) return;
+
+      const servico = row.querySelector('[data-field="servico"]');
+      if (!servico || !servico.value) row.remove();
+    });
+  }
+
+  function atualizarCamposFiadoLanhouse(form) {
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    const fiadoRow = form.querySelector('.lanhouse-fiado-row');
+    if (!formaPagamento || !fiadoRow) return;
+
+    const isFiado = formaPagamento.value === 'Fiado a receber';
+    fiadoRow.hidden = !isFiado;
+    fiadoRow.setAttribute('aria-hidden', isFiado ? 'false' : 'true');
+
+    ['qtd_parcela', 'valor_entrada'].forEach(function (name) {
+      const el = form.querySelector('[name$="' + name + '"]');
+      if (el) el.type = isFiado ? 'number' : 'hidden';
+    });
+
+    const vencimento = form.querySelector('[name$="data_vencimento"]');
+    if (vencimento) vencimento.type = isFiado ? 'date' : 'hidden';
+  }
+
+  function isCardPayment(value) {
+    return value === 'Cartāo de credito' || value === 'Cartāo de debito';
+  }
+
+  function isCreditPayment(value) {
+    return value === 'Cartāo de credito';
+  }
+
+  function cardBaseAmount(form) {
+    const totalInput = form.querySelector('#totalValue');
+    return formatMoney(totalInput ? totalInput.value : 0);
+  }
+
+  function setCardHidden(form, name, value) {
+    const field = form.querySelector('[data-card-hidden="' + name + '"]');
+    if (field) field.value = value === null || value === undefined ? '' : value;
+  }
+
+  function setCardDisplay(form, name, value) {
+    const field = form.querySelector('[data-card-display="' + name + '"]');
+    if (!field) return;
+    field.value = name === 'fee_percentage' ? formatMoney(value) + '%' : formatMoney(value);
+  }
+
+  function setCardMessage(form, message, isError) {
+    const messageBox = form.querySelector('[data-card-fee-message]');
+    if (!messageBox) return;
+    messageBox.textContent = message || '';
+    messageBox.classList.toggle('text-danger', Boolean(isError && message));
+    messageBox.classList.toggle('text-muted', Boolean(!isError && message));
+  }
+
+  function applyCardPreview(form, data) {
+    data = data || {};
+    setCardHidden(form, 'payment_type', data.payment_type || '');
+    setCardHidden(form, 'fee_percentage', data.fee_percentage || '0.00');
+    setCardHidden(form, 'fee_amount', data.fee_amount || '0.00');
+    setCardHidden(form, 'base_amount', data.base_amount || cardBaseAmount(form));
+    setCardHidden(form, 'final_amount', data.final_amount || cardBaseAmount(form));
+    setCardDisplay(form, 'fee_percentage', data.fee_percentage || 0);
+    setCardDisplay(form, 'base_amount', data.base_amount || cardBaseAmount(form));
+    setCardDisplay(form, 'fee_amount', data.fee_amount || 0);
+    setCardDisplay(form, 'final_amount', data.final_amount || cardBaseAmount(form));
+    setCardMessage(form, data.message || '', false);
+  }
+
+  function resetCardPreview(form) {
+    const baseAmount = cardBaseAmount(form);
+    applyCardPreview(form, {
+      payment_type: '',
+      fee_percentage: '0.00',
+      fee_amount: '0.00',
+      base_amount: baseAmount,
+      final_amount: baseAmount,
+      message: '',
+    });
+  }
+
+  function atualizarCamposCartaoLanhouse(form) {
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    const cardSection = form.querySelector('[data-card-payment-section]');
+    const installmentsWrap = form.querySelector('[data-card-installments-wrap]');
+    const installments = form.querySelector('[name$="card_installments"]');
+    if (!formaPagamento || !cardSection) return;
+
+    const isCard = isCardPayment(formaPagamento.value);
+    const isCredit = isCreditPayment(formaPagamento.value);
+    cardSection.hidden = !isCard;
+    cardSection.setAttribute('aria-hidden', isCard ? 'false' : 'true');
+
+    if (installmentsWrap) {
+      installmentsWrap.hidden = !isCredit;
+      installmentsWrap.setAttribute('aria-hidden', isCredit ? 'false' : 'true');
+    }
+    if (installments && isCredit && !installments.value) {
+      installments.value = '1';
+    }
+
+    if (!isCard) {
+      resetCardPreview(form);
+      return;
+    }
+    atualizarTaxaCartaoLanhouse(form);
+  }
+
+  function atualizarTaxaCartaoLanhouse(form) {
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    const cardSection = form.querySelector('[data-card-payment-section]');
+    if (!formaPagamento || !cardSection || cardSection.hidden) {
+      resetCardPreview(form);
+      return;
+    }
+
+    const machine = form.querySelector('[name$="card_machine"]');
+    const installments = form.querySelector('[name$="card_installments"]');
+    const passFee = form.querySelector('[name$="pass_card_fee_to_customer"]');
+    const baseAmount = cardBaseAmount(form);
+
+    if (!machine || !machine.value) {
+      applyCardPreview(form, {
+        payment_type: '',
+        fee_percentage: '0.00',
+        fee_amount: '0.00',
+        base_amount: baseAmount,
+        final_amount: baseAmount,
+        message: 'Selecione a máquina de cartão.',
+      });
+      setCardMessage(form, 'Selecione a máquina de cartão.', true);
+      return;
+    }
+
+    const url = form.dataset.cardFeeUrl;
+    if (!url) return;
+
+    if (form._cardFeeController) {
+      form._cardFeeController.abort();
+    }
+    form._cardFeeController = new AbortController();
+
+    const params = new URLSearchParams({
+      forma_pagamento: formaPagamento.value,
+      card_machine: machine.value,
+      installments: installments ? installments.value : '',
+      base_amount: baseAmount,
+      pass_fee: passFee && passFee.checked ? '1' : '0',
+    });
+
+    fetch(url + '?' + params.toString(), {
+      credentials: 'same-origin',
+      signal: form._cardFeeController.signal,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          data._error = !response.ok;
+          return data;
+        });
+      })
+      .then(function (data) {
+        applyCardPreview(form, data);
+        setCardMessage(form, data.message || '', data._error);
+      })
+      .catch(function (error) {
+        if (error.name === 'AbortError') return;
+        setCardMessage(form, 'Não foi possível carregar a taxa da maquininha.', true);
+      });
+  }
+
+  function reorderItemsLanhouse(form, reprocessHtmx) {
+    if (!form) return;
+    const rows = todasLinhas(form).filter(function (row) {
+      return row.style.display !== 'none';
+    });
+
+    const totalInput = form.querySelector('#id_items-TOTAL_FORMS');
+    if (totalInput) totalInput.value = rows.length;
+
+    rows.forEach(function (row, i) {
+      row.querySelectorAll('input, select, textarea').forEach(function (field) {
+        renomearCampoFormset(field, i);
+        if (field.matches('[data-field="servico"]')) {
+          field.setAttribute('hx-target', '#id_items-' + i + '-preco');
+        }
+      });
+    });
+
+    if (reprocessHtmx && typeof htmx !== 'undefined') {
+      const { servicos } = getContainers(form);
+      if (servicos) htmx.process(servicos);
+    }
+    calcularTotalLanhouse(form);
+  }
+
+  window.reorderItemsLanhouse = reorderItemsLanhouse;
+  window.removerLinhasVaziasLanhouse = removerLinhasVaziasLanhouse;
+
+  window.removerLinhaLanhouse = function (button) {
+    const form = getFormFromEventTarget(button);
+    const row = button.closest('[data-linha-item]');
+    if (!row || !form) return;
+
+    const deleteField = row.querySelector('[data-field="DELETE"]');
+    if (deleteField) {
+      deleteField.checked = true;
+      row.style.display = 'none';
+      row.querySelectorAll('input, select, textarea').forEach(function (field) {
+        field.required = false;
+      });
+    } else {
+      row.remove();
+    }
+    reorderItemsLanhouse(form, false);
+    calcularTotalLanhouse(form);
+    validarDescontoLanhouse(form);
+  };
+
+  window.initLanhouseFormset = function (form) {
+    if (!form || form.dataset.lanhouseFormsetInit === '1') return;
+    form.dataset.lanhouseFormsetInit = '1';
+
+    form.addEventListener('submit', function () {
+      window.removerLinhasVaziasLanhouse(form);
+      reorderItemsLanhouse(form, false);
+    });
+
+    form.addEventListener('input', function (e) {
+      if (
+        e.target.closest('#lanhouse-servicos') ||
+        e.target.closest('#lanhouse') ||
+        e.target.matches('[name$="desconto"]')
+      ) {
+        calcularTotalLanhouse(form);
+      }
+    });
+
+    form.addEventListener('change', function (e) {
+      if (
+        e.target.closest('#lanhouse-servicos') ||
+        e.target.closest('#lanhouse') ||
+        e.target.matches('[name$="desconto"]')
+      ) {
+        calcularTotalLanhouse(form);
+      }
+      if (
+        e.target.matches('[name$="forma_pagamento"]') ||
+        e.target.matches('[name$="card_machine"]') ||
+        e.target.matches('[name$="card_installments"]') ||
+        e.target.matches('[name$="pass_card_fee_to_customer"]')
+      ) {
+        atualizarCamposFiadoLanhouse(form);
+        atualizarCamposCartaoLanhouse(form);
+      }
+    });
+
+    const formaPagamento = form.querySelector('[name$="forma_pagamento"]');
+    if (formaPagamento && !formaPagamento.dataset.lanhouseFiadoInit) {
+      formaPagamento.dataset.lanhouseFiadoInit = '1';
+      formaPagamento.addEventListener('change', function () {
+        atualizarCamposFiadoLanhouse(form);
+        atualizarCamposCartaoLanhouse(form);
+      });
+    }
+
+    atualizarCamposFiadoLanhouse(form);
+    atualizarCamposCartaoLanhouse(form);
+    form.addEventListener('htmx:afterSwap', function (e) {
+      if (e.target.id === 'lanhouse-servicos' || e.target.id === 'lanhouse') {
+        reorderItemsLanhouse(form, true);
+      }
+    });
+
+    reorderItemsLanhouse(form, true);
+  };
+
+  document.body.addEventListener('htmx:afterSwap', function (e) {
+    const root = e.target.id === 'addConteudo'
+      ? e.target
+      : e.target.closest('#addConteudo');
+    if (!root) return;
+
+    const form = root.querySelector('form[hx-post*="lanhouse"]');
+    if (form) initLanhouseFormset(form);
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (e) {
+    const xhr = e.detail.xhr;
+    const path = e.detail.pathInfo?.requestPath || xhr.responseURL || '';
+    if (!path.includes('/servico/preco/')) return;
+
+    try {
+      const data = JSON.parse(xhr.responseText);
+      const form = getFormFromEventTarget(e.detail.elt) || document.querySelector('#addConteudo form[hx-post*="lanhouse"]');
+      const field = document.getElementById('id_items-' + data.index + '-preco');
+      if (field) {
+        field.value = data.preco;
+        if (form) calcularTotalLanhouse(form);
+      }
+    } catch (err) {
+      console.error('Erro ao aplicar preço do serviço:', err);
+    }
+  });
+
+  function getBootstrapModal(id) {
+    const element = document.getElementById(id);
+    if (!element || !window.bootstrap) return null;
+    return window.bootstrap.Modal.getInstance(element) || new window.bootstrap.Modal(element);
+  }
+
+  document.body.addEventListener('lanhouseVendaSalva', function () {
+    const modal = getBootstrapModal('staticBackdrop');
+    if (modal) modal.hide();
+
+    const successModal = getBootstrapModal('success_tic');
+    if (successModal) {
+      window.setTimeout(function () {
+        successModal.show();
+      }, 250);
+    }
+  });
+})();
+</script>

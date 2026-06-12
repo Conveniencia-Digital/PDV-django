@@ -3,10 +3,15 @@
 (() => {
   'use strict'
 
-  feather.replace({ 'aria-hidden': 'true' })
+  if (window.feather) {
+    feather.replace({ 'aria-hidden': 'true' })
+  }
 
   // Graphs
   const ctx = document.getElementById('myChart')
+  if (!ctx || !window.Chart) {
+    return
+  }
   // eslint-disable-next-line no-unused-vars
   const myChart = new Chart(ctx, {
     type: 'line',

@@ -3,99 +3,103 @@
   <h5 class="modal-title" id="staticBackdropLabel">Lan house</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form hx-post="{% url 'cadastrar-lanhouse' %}" hx-target="#lanhouse-Tbody" hx-swap="afterbegin" hx-indicator=".htmx-indicator">
+<form class="lanhouse-modal-form" hx-post="{% url 'cadastrar-lanhouse' %}" hx-target="#addConteudo" hx-swap="innerHTML" hx-indicator=".htmx-indicator" data-card-fee-url="{% url 'preview-taxa-cartao-lanhouse' %}">
   {% csrf_token %}
-  <div class="modal-body">
-    <div class="row g-2">
-      <div class="col form-floating">
-        
+  <input type="hidden" name="submission_token" value="{{ submission_token }}">
+  <input type="hidden" name="dashboard_periodo" value="{{ dashboard_periodo|default:'' }}">
+  <input type="hidden" name="dashboard_inicio" value="{{ dashboard_inicio|default:'' }}">
+  <input type="hidden" name="dashboard_fim" value="{{ dashboard_fim|default:'' }}">
+  <div class="modal-body lanhouse-modal-body">
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <section class="lanhouse-form-section">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-6">
         {% render_field form.usuario class='form-control'%}
-        {% render_field form.cliente class='form-select'%}
-        <label>Cliente </label>
+        {% include 'cliente/componentes/seletor-cliente.html' with field=form.cliente label='Cliente' placeholder='Selecione o cliente' %}
       </div>
-      <div class="col form-floating">
-        {% render_field form.vendedor class='form-select' %}
-        <label>Vendedor</label>
+      <div class="col-md-6">
+        {% include 'colaborador/componentes/seletor-vendedor.html' with field=form.vendedor label='Vendedor' placeholder='Selecione o vendedor' %}
       </div>
     </div>
-    <hr>
-    <div class="row g-2">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Serviços</h2>
-      </div>
-    </div>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Serviços</h2>
 
     {{ formset.management_form }}
-    <div id="lanhouse">
+    <div id="lanhouse" class="lanhouse-items">
       {% for itemslanhouse in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="row g-2">
+      <div id="item-{{ forloop.counter0 }}" class="row g-3 align-items-end lanhouse-service-row" data-linha-item data-tipo="servico">
         {% render_field itemslanhouse.lanhouse data-field='lanhouse' %}
         {% render_field itemslanhouse.id data-field='id' %}
-        <div class="col-6 mb-3 form-floating">
-          {% render_field itemslanhouse.servico value="Selecione" hx-get="/servico/lanhouse/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="servico" class="form-select" %}
-          <label>Informe o serviço </label>
+        <div class="col-md-6">
+          {% include 'lanhouse/componentes/seletor-servico-lanhouse.html' with field=itemslanhouse.servico label='Serviço' placeholder='Selecione o serviço' %}
         </div>
-        <div class=" col mb-3 form-floating">
-          {% render_field itemslanhouse.preco data-field='preco' value="0.00" %}
-          <label>Preço Unitario </label>
+        <div class="col-md-3">
+          <label class="form-label client-picker-label" for="{{ itemslanhouse.preco.id_for_label }}">Preço unitário</label>
+          {% render_field itemslanhouse.preco data-field='preco' value="0.00" class="form-control selector-standard-control" %}
         </div>
-        <div class="col mb-3 form-floating">
-          {% render_field itemslanhouse.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Quantidade</label>
+        <div class="col-md-3">
+          <label class="form-label client-picker-label" for="{{ itemslanhouse.quantidade.id_for_label }}">Quantidade</label>
+          {% render_field itemslanhouse.quantidade class="form-control selector-standard-control" data-field='quantidade' value="01" %}
         </div>
       </div>
       {% endfor %}
     </div>
 
-    <button type="submit" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'add-item-lanhouse' %}" hx-target="#lanhouse"
+    <button type="button" id="addItem" class="btn btn-outline-primary btn-sm" hx-get="{% url 'add-item-lanhouse' %}" hx-target="#lanhouse"
       hx-swap="beforeend" style="margin-bottom: 5px; margin-top: 5px; font-size:10px">Add serviço
     </button>
-    <hr>
-    <div class="form-row">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Pagamento</h2>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Pagamento</h2>
+    <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+          {% render_field form.forma_pagamento class="form-select selector-standard-control" %}
       </div>
-    </div>
-    <div class="row g-2">
-        <div class="col-md-6 mb-3 form-floating">
-          {% render_field form.forma_pagamento class="form-select" %}
-          <label>Forma de pagamento</label> 
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_desconto" for="desconto">Desconto</label>
+        {% render_field form.desconto class="form-control selector-standard-control" id="desconto" value="00.00" data-field="desconto" %}
       </div>
-      <div class="col-md-3 mb-3 form-floating">
-        {% render_field form.desconto class="form-control" id="desconto" value="00.00" data-field="desconto" %}
-        <label id="label_desconto">Desconto</label>
-      </div>
-      <div  class="col-md-3 mb-3 form-floating">
-        <input id="totalValue" type="Number" class="form-control" readonly>
-        <label>Valor total</label>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" for="totalValue">Valor total</label>
+        <input id="totalValue" type="Number" class="form-control selector-standard-control" readonly>
       </div>     
     </div>
-    <div class="row g-2" style="color: white;">
-      <div class="col-md-6 mb-3 form-floating">
-        {% render_field form.qtd_parcela class="form-control" value="01" %}
-        <label id="label_qtd_parcela">Quantidade de parcelas</label>
+    {% include 'componentes/card-fee-fields.html' with form=form %}
+    <div class="row g-3 lanhouse-fiado-row" hidden>
+      <div class="col-md-6">
+        <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
+        {% render_field form.qtd_parcela class="form-control selector-standard-control" value="01" %}
       </div>
-      <div class="col-md-3 mb-3 form-floating">
-        {% render_field form.valor_entrada class="form-control" value="0.00" %}
-        <label id="label_valor_entrada">Valor de entrada</label>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
+        {% render_field form.valor_entrada class="form-control selector-standard-control" value="0.00" %}
       </div>
-      <div class="col-md-3 mb-3 form-floating">
-        {% render_field form.data_vencimento class="form-control" %}
-        <label id="label_data_vencimento">Dia vencimento</label>
-      </div>
-    </div>
-    <hr>
-    <div class="form-row">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações adicionais</h2>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Dia vencimento</label>
+        {% render_field form.data_vencimento class="form-control selector-standard-control" %}
       </div>
     </div>
-    <div class="form-row">
-      <div class="col form-floating" style="margin-bottom: 10px;">
-        {% render_field form.observacao id="obs" class="form-control" rows="3"  onclick="MyFunction()" %}
-        <label>Observação</label>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Informações adicionais</h2>
+    <div class="row g-3">
+      <div class="col">
+        <label class="form-label client-picker-label" for="obs">Observação</label>
+        {% render_field form.observacao id="obs" class="form-control lanhouse-textarea" rows="3" %}
       </div>
     </div>
+    </section>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
       <button type="submit" class="btn btn-outline-primary">Salvar</button>
@@ -103,169 +107,3 @@
 
   </div>
 </form>
-<script>
-  document.querySelector('#desconto').addEventListener('click', Desconto) 
-  document.querySelector('#desconto').addEventListener('keydown', Desconto) 
-  document.querySelector('#desconto').addEventListener('keyup', Desconto) 
-  document.querySelector('#desconto').addEventListener('change', Desconto) 
-  
-  Array.from(document.querySelectorAll('[data-field="servico"], [data-field="quantidade"]'))
-    .forEach((item, i) => {
-      item.addEventListener('change', Desconto);
-      item.addEventListener('focus', Desconto);
-      item.addEventListener('mouseover', Desconto);
-      item.addEventListener('click', Desconto);
-      item.addEventListener('mouseout', Desconto);
-      item.addEventListener('blur', Desconto);
-      item.addEventListener('keyup', Desconto);
-      item.addEventListener('keydown', Desconto);
-    });
-  
-  function Desconto () {
-    var desconto = parseFloat(document.querySelector('#desconto').value);
-    var total = parseFloat(document.querySelector('#totalValue').value);
-    let label_desconto = document.querySelector('#label_desconto')
-    let campo_desconto = document.querySelector('#desconto')
-
-    if(desconto > total) {
-      label_desconto.innerHTML = 'Desconto maior que o valor da venda <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-      label_desconto.style.color = ' #ff0000';
-      campo_desconto.style.border =  '3px solid #ff0000';
-      campo_desconto.style.color =  '#ff0000';
-    }else {
-      label_desconto.innerHTML = 'Desconto';
-      label_desconto.style.color = '';
-      campo_desconto.style.border = '';
-      campo_desconto.style.color = '';
-
-    }
-
-  };
- 
-
-
-
-
-
-  document.getElementById('id_main-forma_pagamento').addEventListener('change', function () {
-    var qtd_parcela = document.getElementById('id_main-qtd_parcela');
-    var valor_entrada = document.getElementById('id_main-valor_entrada');
-    var dia_vencimento = document.getElementById('id_main-data_vencimento');
-    var label_qtd_parcela = document.getElementById('label_qtd_parcela');
-    var label_data_vencimento = document.getElementById('label_data_vencimento');
-    var label_valor_entrada = document.getElementById('label_valor_entrada');
-
-    if (this.value === 'Fiado a receber') {
-      qtd_parcela.setAttribute('type', 'Number');
-      valor_entrada.setAttribute('type', 'Number');
-      dia_vencimento.setAttribute('type', 'Date');
-      label_valor_entrada.style.color = "rgb(67, 67, 67)";
-      label_data_vencimento.style.color = "rgb(67, 67, 67)";
-      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
-    } else {
-      qtd_parcela.setAttribute('type', 'Hidden');
-      valor_entrada.setAttribute('type', 'Hidden');
-      dia_vencimento.setAttribute('type', 'Hidden');
-      label_valor_entrada.style.color = "#FFFFFF";
-      label_data_vencimento.style.color = "#FFFFFF";
-      label_qtd_parcela.style.color = "#FFFFFF";
-
-    }
-  });
-  (function () {
-    reorderItems()
-  })();
-
-  document.querySelector('#addItem').addEventListener('click', function () {
-    setTimeout(() => {
-      reorderItems()
-    }, 500)
-  })
-  Array.from(document.querySelectorAll('[data-field="servico"], [data-field="quantidade"], [data-field="desconto"]'))
-    .forEach((item, i) => {
-      item.addEventListener('change', reorderItems);
-      item.addEventListener('mouseover', reorderItems);
-      item.addEventListener('click', reorderItems);
-      item.addEventListener('mouseout', reorderItems);
-      item.addEventListener('blur', reorderItems);
-      item.addEventListener('keydown', reorderItems);
-    });
-
-  function reorderItems() {
-    var totalValue = 0;
-    
-    Array.from(document.querySelectorAll("[id^='item-']"))
-      .forEach((item, i) => {
-        item.setAttribute('id', 'item-' + i)
-
-        if (!item.querySelector('[data-field="lanhouse"]')) {
-          return
-        }
-
-        item.querySelector('[data-field="lanhouse"]').setAttribute('name', 'items-' + i + '-lanhouse')
-        item.querySelector('[data-field="lanhouse"]').setAttribute('id', 'id_items-' + i + '-lanhouse')
-
-        item.querySelector('[data-field="servico"]').setAttribute('name', 'items-' + i + '-servico')
-        item.querySelector('[data-field="servico"]').setAttribute('hx-target', '#id_items-' + i + '-preco')
-
-
-        item.querySelector('[data-field="quantidade"]').setAttribute('name', 'items-' + i + '-quantidade')
-
-        item.querySelector('[data-field="preco"]').setAttribute('name', 'items-' + i + '-preco')
-        item.querySelector('[data-field="preco"]').setAttribute('id', 'id_items-' + i + '-preco')
-
-        let preco = parseFloat(item.querySelector('[data-field="preco"]').value);
-        let qtd = parseInt(item.querySelector('[data-field="quantidade"]').value);
-        
-        
-    
-        totalValue += preco * qtd;
-        
-      })
-
-    Array.from(document.querySelectorAll("#id_id"))
-      .forEach((item, i) => item.setAttribute('name', 'items-' + (i + 1) + '-id'))
-
-    let totalItems = $('#lanhouse').children().length
-    document.querySelector('#id_items-TOTAL_FORMS').value = totalItems
-
-    // htmx.org/api/#process
-    htmx.process(document.querySelector("#lanhouse"));
-    
-    document.querySelector('input[id="totalValue"]').value = totalValue.toFixed(2);
-    
-  }
- 
-  
- 
- 
-  function removeRow() {
-    const span = event.target.parentNode
-    const div = span.parentNode
-    div.parentNode.removeChild(div)
-
-    reorderItems()
-  }
-
-  Array.from(document.querySelectorAll('.remove-row'))
-    .forEach((item, i) => {
-      item.addEventListener('click', function () {
-        document.querySelector('button[type="submit"]').style.display = 'none'
-        document.querySelector('#btn-close').style.display = 'block'
-      })
-    })
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, 500)
-  });
-  function MyFunction(){
-    var desc =  document.querySelector('#desconto').value;
-    var tot = document.querySelector('#totalValue').value;
-    var total = tot - desc;
-    document.querySelector('input[id="totalValue"]').value = total.toFixed(2);
-  }
-
-
-</script>

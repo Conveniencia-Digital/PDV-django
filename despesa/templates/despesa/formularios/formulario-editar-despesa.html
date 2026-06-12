@@ -1,103 +1,92 @@
 {% load widget_tweaks %}
+
 <div class="modal-header">
-    <h5 class="modal-title" id="staticBackdropLabel">Editar {{object.nome_despesa}}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-
-    </button>
+  <h5 class="modal-title" id="staticBackdropLabel">Editar {{ object.nome_despesa }}</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form hx-post="{% url 'editar-despesa' object.pk %}" hx-target="#despesaTr{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
 
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.usuario class="form-control" %}
-                {% render_field form.nome_despesa class="form-control" %}
-                <label for="">Descrição da despesa </label>
-            </div>
-            <div class="col form-floating">
-                {% render_field form.categoria_despesa class="form-select" %}
-                <label for="">Informe a categoria desta despesa (opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col-3 form-floating">
-                {% render_field form.preco_despesa class="form-control" value="0.00" %}
-                <label for="">Informe o preco da despesa</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.forma_pagamento class="form-select" %}
-                <label for="">Forma de pagamento</label>
-              </div>
-            <div class="col-6 form-floating">
-                {% render_field form.fornecedor class="form-select" %}
-                <label for="">Informe o fornecedor se houver(opcional)</label>
-            </div>
-        </div>
-        <!---->
-        <div class="row g-2" style="margin-bottom: 10px;">
-            <div class="col form-floating">
-                {% render_field form.observacao class="form-control" %}
-                <label for="">Informe observação se houver</label>
-            </div>
-        </div>
-        <div class="row g-2">
-            <div class="col-6  form-floating">
-                {% render_field form.valor_entrada class="form-control" value="0.00"  %}
-                <label id="label_valor_entrada">Valor de entrada</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.qtd_parcela class="form-control" value="01" %}
-                <label id="label_qtd_parcela">Qtd. parcela</label>
-            </div>
-            <div class="col-3 form-floating">
-                {% render_field form.data_vencimento class="form-control" %}
-                <label id="label_data_vencimento">Data vencimento</label>
-            </div>
-        </div>
-    </div>
+<form class="despesa-modal-form erp-modal-form"
+      hx-post="{% url 'editar-despesa' object.pk %}"
+      hx-target="#bloco-dados"
+      hx-indicator=".htmx-indicator"
+      hx-swap="outerHTML"
+      data-despesa-modal-form="true"
+      data-loading-text="Salvando...">
+  <div class="modal-body erp-modal-body">
+    {% csrf_token %}
+    <input type="hidden" name="dashboard_periodo" value="{{ dashboard_periodo }}">
+    <input type="hidden" name="dashboard_inicio" value="{{ dashboard_inicio }}">
+    <input type="hidden" name="dashboard_fim" value="{{ dashboard_fim }}">
+    <input type="hidden" name="dashboard_data_inicio" value="{{ dashboard_data_inicio }}">
+    <input type="hidden" name="dashboard_data_fim" value="{{ dashboard_data_fim }}">
+    {% render_field form.usuario %}
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+    {% if form.errors %}
+      <div class="alert alert-danger" role="alert">
+        Verifique os campos destacados e tente novamente.
+        {% if form.non_field_errors %}
+          <div>{{ form.non_field_errors }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <section class="erp-form-section">
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-lg-7">
+        <label class="form-label client-picker-label" for="{{ form.nome_despesa.id_for_label }}">Descricao da despesa</label>
+        {% render_field form.nome_despesa class="form-control selector-standard-control" placeholder="Informe a despesa" %}
+        {% for error in form.nome_despesa.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-5">
+        {% include 'despesa/componentes/seletor-categoria-despesa.html' with field=form.categoria_despesa label='Categoria' %}
+      </div>
     </div>
+    </section>
+
+    <section class="erp-form-section">
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-4">
+        <label class="form-label client-picker-label" for="{{ form.preco_despesa.id_for_label }}">Valor da despesa</label>
+        {% render_field form.preco_despesa class="form-control selector-standard-control" step="0.01" placeholder="0,00" %}
+        {% for error in form.preco_despesa.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+        {% render_field form.forma_pagamento class="form-select selector-standard-control" %}
+        {% for error in form.forma_pagamento.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label client-picker-label" for="{{ form.fornecedor.id_for_label }}">Fornecedor (opcional)</label>
+        {% render_field form.fornecedor class="form-select selector-standard-control" %}
+        {% for error in form.fornecedor.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12">
+        <label class="form-label client-picker-label" for="{{ form.observacao.id_for_label }}">Observacao (opcional)</label>
+        {% render_field form.observacao class="form-control selector-standard-control" placeholder="Observacao" %}
+        {% for error in form.observacao.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    </section>
+
+    {% include 'despesa/formularios/campos-fiado-despesa.html' %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
 </form>
-<script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-            $('#success_tic_editar').modal('toggle')
-        }, 500)
-    });
-    document.querySelector('#id_forma_pagamento').addEventListener('change', function () {
-    var valor_entrada = document.querySelector('#id_valor_entrada');
-    var data_vencimento = document.querySelector('#id_data_vencimento');
-    var qtd_parcela = document.querySelector('#id_qtd_parcela');
-    var label_valor_entrada = document.querySelector('#label_valor_entrada');
-    var label_data_vencimento = document.querySelector('#label_data_vencimento')
-    var label_qtd_parcela = document.querySelector('#label_qtd_parcela')
-
-
-
-    if (this.value === "Fiado a pagar") {
-      valor_entrada.setAttribute('type', 'Number');
-      data_vencimento.setAttribute('type', 'Date');
-      qtd_parcela.setAttribute('type', 'Number');
-      label_valor_entrada.style.color = "rgb(67, 67, 67)";
-      label_data_vencimento.style.color = "rgb(67, 67, 67)";
-      label_qtd_parcela.style.color = "rgb(67, 67, 67)"
-    }
-    else {
-      valor_entrada.setAttribute('type', 'Hidden');
-      data_vencimento.setAttribute('type', 'Hidden');
-      qtd_parcela.setAttribute('type', 'Hidden');
-      label_valor_entrada.style.color = "#FFFFFF";
-      label_data_vencimento.style.color = "#FFFFFF";
-      label_qtd_parcela.style.color = "#FFFFFF";
-    }
-
-
-  });
-</script>

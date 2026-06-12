@@ -3,438 +3,143 @@
   <h5 class="modal-title" id="staticBackdropLabel">Nova venda</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form id="form-nova-venda" hx-post="{% url 'cadastrar-vendas' %}" hx-target="#vendas-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+
+<form id="form-nova-venda"
+      class="lanhouse-modal-form"
+      hx-post="{% url 'cadastrar-vendas' %}"
+      hx-target="#addConteudo"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+      data-card-fee-url="{% url 'preview-taxa-cartao-vendas' %}"
+      data-card-total-target="#totalValue">
   {% csrf_token %}
-  <div class="modal-body">
-    <div class="row g-2">
-      <div class="col form-floating">
-        {% render_field form.status class='form-control' id="status" %}
-        {% render_field form.usuario class='form-control'%}
-        {% render_field form.cliente class='form-control'%}
-        <label>Cliente </label>
-      </div>
-      <div class="col form-floating">
-        {% render_field form.vendedor class='form-control' %}
-        <label>Vendedor</label>
-      </div>
-    </div>
-    <hr>
-    <div class="row g-2">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Produtos</h2>
-      </div>
-    </div>
+  <input type="hidden" name="submission_token" value="{{ submission_token }}">
+  <input type="hidden" name="dashboard_periodo" value="{{ dashboard_periodo|default:'' }}">
+  <input type="hidden" name="dashboard_inicio" value="{{ dashboard_inicio|default:'' }}">
+  <input type="hidden" name="dashboard_fim" value="{{ dashboard_fim|default:'' }}">
 
-    {{ formset.management_form }}
-    <div id="venda">
-      {% for itemsvendaform in formset %}
-      <div id="item-{{ forloop.counter0 }}" class="row g-2">
-        {% render_field itemsvendaform.vendas data-field='vendas' %}
-        {% render_field itemsvendaform.id data-field='id' %}
-        <div class="col-6 mb-3 form-floating">
-          {% render_field itemsvendaform.produto value="Selecione" hx-get="/produto/preco/" hx-target="#id_preco" hx-swap="outerHTML" data-field="produto" %}
-          <label>Informe o produto </label>
+  <div class="modal-body lanhouse-modal-body">
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% render_field form.status class='d-none' %}
+
+    <section class="lanhouse-form-section">
+      <h2 class="lanhouse-section-title">Dados da venda</h2>
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-6">
+          {% render_field form.usuario %}
+          {% include 'cliente/componentes/seletor-cliente.html' with field=form.cliente label='Cliente' placeholder='Selecione o cliente' %}
         </div>
-        <div class=" col mb-3 form-floating">
-          {% render_field itemsvendaform.preco data-field='preco' value="0.00" readonly="readonly" %}
-          <label>Preço Unitario </label>
-        </div>
-        <div class="col mb-3 form-floating">
-          {% render_field itemsvendaform.quantidade class="form-control" data-field='quantidade' value="01" %}
-          <label>Qtd.</label>
+        <div class="col-lg-6">
+          {% include 'colaborador/componentes/seletor-vendedor.html' with field=form.vendedor label='Vendedor' placeholder='Selecione o vendedor' %}
         </div>
       </div>
-      {% endfor %}
-    </div>
+    </section>
 
-    <button
-      type="submit"
-      id="addItem"
-      class="btn btn-outline-primary btn-sm"
-      hx-get="{% url 'addform' %}"
-      hx-target="#venda"
-      hx-swap="beforeend"
-      hx-on="htmx:afterRequest:calcularVenda()"
-    >
-  Add produto
-  </button>
+    <section class="lanhouse-form-section">
+      <div class="selector-section-header">
+        <h2 class="lanhouse-section-title">Produtos</h2>
+        <button type="button"
+                id="addItem"
+                class="btn btn-outline-primary btn-sm selector-add-button"
+                hx-get="{% url 'addform' %}"
+                hx-target="#venda"
+                hx-swap="beforeend">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          <span>Adicionar produto</span>
+        </button>
+      </div>
+      {{ formset.management_form }}
+      <div id="venda" class="lanhouse-items">
+        {% for itemsvendaform in formset %}
+          <div id="item-{{ forloop.counter0 }}" class="row g-3 align-items-end lanhouse-service-row" data-linha-item data-tipo="produto">
+            {% render_field itemsvendaform.vendas data-field='vendas' %}
+            {% render_field itemsvendaform.id data-field='id' %}
+            <div class="col-lg-6">
+              {% include 'produto/componentes/seletor-produto.html' with field=itemsvendaform.produto label='Produto' placeholder='Selecione o produto' %}
+            </div>
+            <div class="col-lg-3 col-md-5">
+              <label class="form-label client-picker-label" for="{{ itemsvendaform.preco.id_for_label }}">Preço unitário</label>
+              {% render_field itemsvendaform.preco data-field='preco' value='0.00' readonly='readonly' class='form-control selector-standard-control' %}
+            </div>
+            <div class="col-lg-2 col-md-5">
+              <label class="form-label client-picker-label" for="{{ itemsvendaform.quantidade.id_for_label }}">Quantidade</label>
+              {% render_field itemsvendaform.quantidade class='form-control selector-standard-control' data-field='quantidade' value='01' %}
+            </div>
+            <div class="col-lg-1 col-md-2 d-none d-md-block">
+              <div class="selector-row-action-spacer" aria-hidden="true"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
 
-    <hr>
-    <div class="form-row">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Pagamento</h2>
+    <section class="lanhouse-form-section">
+      <h2 class="lanhouse-section-title">Pagamento</h2>
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-6">
+          <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+          {% render_field form.forma_pagamento class='form-select selector-standard-control' %}
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label client-picker-label" id="label_desconto" for="{{ form.desconto.id_for_label }}">Desconto</label>
+          {% render_field form.desconto class='form-control selector-standard-control' value='00.00' %}
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label client-picker-label" for="totalValue">Valor total</label>
+          <input id="totalValue" type="text" class="form-control selector-standard-control" readonly>
+        </div>
       </div>
-    </div>
-    <div class="row g-2">
-        <div class="col-md-4 mb-4 form-floating">
-          {% render_field form.forma_pagamento class="form-select" %}
-          <label>Forma de pagamento</label> 
+      <div class="row g-3 align-items-end vendas-payment-summary">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label client-picker-label" for="totalBrutoValue">Total bruto</label>
+          <input id="totalBrutoValue" type="text" class="form-control selector-standard-control" readonly>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label client-picker-label" for="lucroValue">Lucro</label>
+          <input id="lucroValue" type="text" class="form-control selector-standard-control" readonly>
+        </div>
+        <div class="col-lg-4">
+          <label class="form-label client-picker-label" for="margemValue">Margem</label>
+          <input id="margemValue" type="text" class="form-control selector-standard-control" readonly>
+        </div>
       </div>
-      <div  class="col-md-2 mb-2 form-floating">
-        <input id="totalBrutoValue" type="text" class="form-control" readonly>
-        <label>Total bruto</label>
-      </div> 
-      <div class="col-md-2 mb-2 form-floating">
-        {% render_field form.desconto class="form-control" value="00.00" %}
-        <label id="label_desconto">Desconto</label>
+      {% include 'componentes/card-fee-fields.html' with form=form %}
+      <div class="row g-3 lanhouse-fiado-row" hidden>
+        <div class="col-lg-6">
+          <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
+          {% render_field form.qtd_parcela class='form-control selector-standard-control' value='01' %}
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
+          {% render_field form.valor_entrada class='form-control selector-standard-control' value='0.00' %}
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Dia vencimento</label>
+          {% render_field form.data_vencimento class='form-control selector-standard-control' %}
+        </div>
       </div>
-      <div  class="col-md-2 mb-2 form-floating">
-        <input id="lucroValue" type="text" class="form-control" readonly>
-        <label>Lucro</label>
-      </div>
-      <div class="col-md-2 mb-2 form-floating">
-        <input id="margemValue" type="text" class="form-control" readonly>
-        <label>Margem (%)</label>
-      </div>
+    </section>
 
-          
-    </div>
-    <div class="row g-2" style="color: white;">
-      <div class="col-md-6 mb-3 form-floating">
-        {% render_field form.qtd_parcela class="form-control" value="01" %}
-        <label id="label_qtd_parcela">Quantidade de parcelas</label>
+    <section class="lanhouse-form-section">
+      <h2 class="lanhouse-section-title">Informações adicionais</h2>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label client-picker-label" for="{{ form.observacao.id_for_label }}">Observação</label>
+          {% render_field form.observacao class='form-control lanhouse-textarea' rows='3' %}
+        </div>
       </div>
-      <div class="col-md-3 mb-3 form-floating">
-        {% render_field form.valor_entrada class="form-control" value="0.00" %}
-        <label id="label_valor_entrada">Valor de entrada</label>
-      </div>
-      <div class="col-md-3 mb-3 form-floating">
-        {% render_field form.data_vencimento class="form-control" %}
-        <label id="label_data_vencimento">Dia vencimento</label>
-      </div>
-    </div>
-    <hr>
-    <div class="form-row">
-      <div class="col-md-6 mb-1 ">
-        <h2 class="fw-lighter" style="font-size: 1.5em;">Informações adicionais</h2>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col form-floating" style="margin-bottom: 10px;">
-        {% render_field form.observacao class="form-control" %}
-        <label>Observação</label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-      <button type="submit" class="btn btn-outline-primary">Salvar</button>
-    </div>
+    </section>
+  </div>
 
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Salvar</button>
   </div>
 </form>
-
-<script>
-// Usamos uma IIFE (Immediately Invoked Function Expression) para encapsular todo o código.
-(function() {
-    
-    // ===================================================
-    // 1. Elementos Chave
-    // ===================================================
-    const formElement = document.getElementById('form-nova-venda'); 
-    const modalElement = document.getElementById('staticBackdrop'); 
-    const successModalElement = document.getElementById('success_tic'); 
-    const vendaContainer = document.getElementById('venda');
-
-    if (!formElement) {
-        console.error("Erro: Formulário 'form-nova-venda' não encontrado.");
-        return; 
-    }
-
-    // ===================================================
-    // 2. Controladores HTMX & Fechamento/Abertura de Modais
-    // ===================================================
-
-    formElement.addEventListener('htmx:afterRequest', function(e) {
-        const isPostRequest = e.detail.requestConfig.verb.toUpperCase() === 'POST';
-        const isSuccess = e.detail.xhr.status >= 200 && e.detail.xhr.status < 300;
-
-        if (isPostRequest && isSuccess) {
-            // A) Fechar Modal de Venda (staticBackdrop)
-            if (modalElement && modalElement.classList.contains('show')) {
-                const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            }
-            
-            // B) Abrir Modal de Sucesso (success_tic) - Corrigido para Vanilla JS
-            if (successModalElement) {
-                let successModalInstance = bootstrap.Modal.getInstance(successModalElement);
-                if (!successModalInstance) {
-                    successModalInstance = new bootstrap.Modal(successModalElement);
-                }
-                successModalInstance.show();
-            }
-        }
-    });
-
-    // ✅ Recálculo e Processamento após qualquer troca de conteúdo HTMX
-    document.body.addEventListener('htmx:afterSwap', function(e) {
-        if (e.target === vendaContainer || e.target.closest('#form-nova-venda')) {
-            reorderItems();
-            calcularVenda();
-
-            htmx.process(e.target);
-            
-            // Garante que campos de preço vindos do servidor fiquem readonly
-            document.querySelectorAll('[data-field="preco"]').forEach(el => el.readOnly = true);
-        }
-    });
-
-    // ===================================================
-    // 3. Funções de Cálculo (Mantidas)
-    // ===================================================
-
-    function calcularTotalBruto() {
-      let total = 0;
-
-      document.querySelectorAll('#venda [id^="item-"]').forEach(row => {
-        if (row.querySelector('[data-field="DELETE"]')?.checked) return;
-
-        const preco = parseFloat(row.querySelector('[data-field="preco"]')?.value) || 0;
-        const qtd   = parseInt(row.querySelector('[data-field="quantidade"]')?.value) || 0;
-
-        total += preco * qtd;
-      });
-
-      return total;
-    }
-
-    
-    function obterDesconto() {
-      const campo = document.querySelector('[name$="desconto"]');
-      return campo ? parseFloat(campo.value) || 0 : 0;
-    }
-
-    let descontoInvalido = false;
-
-
-    function aplicarValores(totalBruto, desconto) {
-      const campoTotalBruto = document.getElementById('totalBrutoValue');
-      const campoLucro      = document.getElementById('lucroValue');
-      const campoMargem     = document.getElementById('margemValue');
-      const campoDesconto   = document.querySelector('[name$="desconto"]');
-      const labelDesconto   = document.getElementById('label_desconto');
-
-      // Total bruto (sempre)
-      campoTotalBruto.value = totalBruto.toFixed(2);
-
-      // 🔴 REGRA: desconto inválido
-      if (desconto > totalBruto && totalBruto > 0) {
-        descontoInvalido = true;
-
-        campoDesconto.classList.add('is-invalid');
-        labelDesconto.innerHTML = `
-          Desconto maior que o total da venda
-          <i class="fa-solid fa-triangle-exclamation ms-1"></i>
-        `;
-        labelDesconto.style.color = '#dc3545';
-
-        campoLucro.value  = '0.00';
-        campoMargem.value = '0%';
-        campoMargem.className = 'form-control text-danger';
-
-        return; // ⛔ trava o resto do cálculo
-      }
-
-      // ✅ Desconto válido
-      descontoInvalido = false;
-
-      campoDesconto.classList.remove('is-invalid');
-      labelDesconto.textContent = 'Desconto';
-      labelDesconto.style.color = '';
-
-      const lucro = totalBruto - desconto;
-      campoLucro.value = lucro.toFixed(2);
-
-      const margem = totalBruto > 0 ? (lucro / totalBruto) * 100 : 0;
-      campoMargem.value = margem.toFixed(2) + '%';
-
-      campoMargem.classList.remove('text-danger', 'text-warning', 'text-success');
-      if (margem >= 30) campoMargem.classList.add('text-success');
-      else if (margem >= 15) campoMargem.classList.add('text-warning');
-      else campoMargem.classList.add('text-danger');
-    }
-
-    formElement.addEventListener('htmx:beforeRequest', function (event) {
-      if (descontoInvalido) {
-        event.preventDefault();              // 🔥 trava o HTMX
-        event.stopImmediatePropagation();    // 🔥 garante o bloqueio
-
-        const campoDesconto = document.querySelector('[name$="desconto"]');
-        campoDesconto.focus();
-
-        return false;
-      }
-    });
-
-
-
-
-
-    window.calcularVenda = function () {
-      const totalBruto = calcularTotalBruto();
-      const desconto   = obterDesconto();
-
-      aplicarValores(totalBruto, desconto);
-    }
-    function calcularMargemPercentual(lucro, totalBruto) {
-      if (totalBruto <= 0) return 0;
-      return (lucro / totalBruto) * 100;
-    }
-
-    
-    // ===================================================
-    // 4. Lógica do Formset (reorder, duplicatas, remoção)
-    // ===================================================
-    
-    window.marcarParaRemover = function(buttonElement) {
-        const row = buttonElement.closest('.row.g-2'); 
-        if (!row) return;
-
-        const deleteField = row.querySelector('[data-field="DELETE"]'); 
-        
-        if (deleteField) {
-            // 1. Marca para remoção (Django)
-            deleteField.checked = true;
-            
-            // 2. Oculta visualmente e desativa validação HTML5
-            row.style.display = 'none';
-            row.querySelectorAll('input, select, textarea').forEach(field => {
-                field.required = false; 
-                // Zera valores de quantidade e preço para evitar cálculos errados
-                if (field.matches('[data-field="quantidade"]') || field.matches('[data-field="preco"]')) {
-                    field.value = 0; 
-                }
-            });
-
-            // 3. Reorganiza (atualiza TOTAL_FORMS) e recalcula
-            reorderItems(); 
-            calcularVenda();
-            
-        } else {
-            // Se não houver campo DELETE (linha nova sem ID), apenas remove
-            row.remove();
-            reorderItems();
-            calcularVenda();
-        }
-    }
-
-    function verificarDuplicatas() {
-        let produtos = document.querySelectorAll('#venda [data-field="produto"]:not([data-field="DELETE"]:checked)');
-        let produtosSelecionados = new Set();
-        let duplicatas = false;
-
-        produtos.forEach(produto => {
-            let valor = produto.value;
-            let itemRow = produto.closest('.row'); 
-
-            if (valor !== "Selecione" && valor !== "") {
-                if (produtosSelecionados.has(valor)) {
-                    alert("Este produto já foi adicionado! O item será removido.");
-                    // Chamar a nova função de remoção
-                    marcarParaRemover(produto); 
-                    duplicatas = true;
-                } else {
-                    produtosSelecionados.add(valor);
-                }
-            }
-        });
-        return !duplicatas;
-    }
-    
-    window.reorderItems = function() { // Exposto globalmente
-        let items = Array.from(vendaContainer.querySelectorAll("[id^='item-']"));
-        document.querySelector('#id_items-TOTAL_FORMS').value = items.length;
-
-        items.forEach((item, i) => {
-            item.setAttribute('id', 'item-' + i);
-            const regex = /items-\d+-/g;
-            const replacement = `items-${i}-`;
-
-            item.querySelectorAll('input, select, textarea').forEach(field => {
-                if (field.name) field.name = field.name.replace(regex, replacement);
-                if (field.id) field.id = field.id.replace(regex, replacement);
-                
-                if (field.matches('[data-field="produto"]')) {
-                    field.setAttribute('hx-target', `#id_items-${i}-preco`);
-                }
-            });
-        });
-        htmx.process(vendaContainer);
-        calcularVenda(); 
-    }
-
-    // ===================================================
-    // 5. Delegação de Eventos (Limpos e Corrigidos)
-    // ===================================================
-
-    // ✅ Eventos globais de cálculo (simplificado)
-    document.addEventListener('input', calcularVenda);
-    document.addEventListener('change', calcularVenda);
-    
-    // ✅ Bloqueia o envio se houver duplicatas
-    formElement.addEventListener('submit', function(event) {
-        if (!verificarDuplicatas()) {
-            event.preventDefault(); 
-        }
-    });
-  
-
-    // ✅ Aciona a função de duplicatas/reorder
-    formElement.addEventListener("change", function (event) {
-        if (event.target.matches('[data-field="produto"]')) {
-            verificarDuplicatas();
-        }
-        // O cálculo já é feito pelo listener global 'change'
-    });
-    
-    // ✅ Lógica de Pagamento
-    document.querySelector('[name$="forma_pagamento"]')?.addEventListener('change', function () {
-        var qtd_parcela = document.querySelector('[name$="qtd_parcela"]');
-        var valor_entrada = document.querySelector('[name$="valor_entrada"]');
-        var dia_vencimento = document.querySelector('[name$="data_vencimento"]');
-        var label_qtd_parcela = document.getElementById('label_qtd_parcela');
-        var label_data_vencimento = document.getElementById('label_data_vencimento');
-        var label_valor_entrada = document.getElementById('label_valor_entrada');
-
-        const isFiado = this.value === 'Fiado a receber';
-        const typeNum = isFiado ? 'Number' : 'Hidden';
-        const typeDate = isFiado ? 'Date' : 'Hidden';
-        const color = isFiado ? "rgb(67, 67, 67)" : "#FFFFFF";
-
-        qtd_parcela.setAttribute('type', typeNum);
-        valor_entrada.setAttribute('type', typeNum);
-        dia_vencimento.setAttribute('type', typeDate);
-        
-        label_valor_entrada.style.color = color;
-        label_data_vencimento.style.color = color;
-        label_qtd_parcela.style.color = color;
-    });
-
-    // ✅ Inicialização e Ocultar Status
-    reorderItems();
-    
-    // Ocultar campo 'status' (tempo corrigido)
-    setTimeout(() => {
-        document.querySelector('#status')?.setAttribute('hidden', 'hidden');
-    }, 100); 
-
-
-document.body.addEventListener('htmx:beforeRequest', function (e) {
-  const form = e.target.closest('#form-nova-venda');
-  if (!form) return;
-
-  const primeiroProduto = form.querySelector('[name="items-0-produto"]');
-
-  if (!primeiroProduto || !primeiroProduto.value) {
-    e.preventDefault(); // cancela requisição HTMX
-    alert('Selecione ao menos um produto');
-    primeiroProduto?.focus();
-  }
-});
-
-
-})();
-</script>

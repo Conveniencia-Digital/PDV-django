@@ -1,0 +1,391 @@
+{% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
+
+{% block titulo %}Fechamento de Caixa{% endblock titulo %}
+
+{% block style %}
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/erp-table.css' %}" rel="stylesheet">
+<style>
+    .cash-closing-dashboard {
+        background: #f8f9fb;
+        border-radius: 18px;
+        padding: 24px;
+    }
+
+    .cash-toolbar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .cash-toolbar h2,
+    .cash-section-title {
+        color: #182230;
+        font-size: 20px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .cash-toolbar p {
+        color: #667085;
+        font-size: 14px;
+        margin: 6px 0 0;
+    }
+
+    .cash-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+        gap: 18px;
+        margin-bottom: 18px;
+    }
+
+    .cash-summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .cash-summary-item {
+        align-items: center;
+        border-bottom: 1px solid #eef1f5;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 0;
+    }
+
+    .cash-summary-item:last-child {
+        border-bottom: 0;
+    }
+
+    .cash-summary-item span {
+        color: #667085;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .cash-summary-item strong {
+        color: #182230;
+        font-size: 18px;
+    }
+
+    .cash-difference-preview {
+        border: 1px solid #e7eaef;
+        border-radius: 8px;
+        padding: 14px;
+    }
+
+    .cash-difference-preview.success {
+        background: #ecfdf3;
+        border-color: #abefc6;
+        color: #027a48;
+    }
+
+    .cash-difference-preview.danger {
+        background: #fef3f2;
+        border-color: #fecdca;
+        color: #b42318;
+    }
+
+    .cash-difference-preview.neutral {
+        background: #f9fafb;
+        color: #344054;
+    }
+
+    .btn-periodo-ativo {
+        background: linear-gradient(135deg, #0d6efd, #4f8cff);
+        color: #fff !important;
+        border: none;
+    }
+
+    .cash-status {
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 6px 10px;
+    }
+
+    .cash-status.cash-over,
+    .cash-status.balanced {
+        background: #e6f4ea;
+        color: #1e7e34;
+    }
+
+    .cash-status.cash-shortage {
+        background: #fdecea;
+        color: #b42318;
+    }
+
+    @media (max-width: 980px) {
+        .cash-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .cash-closing-dashboard {
+            padding: 16px;
+        }
+
+        .cash-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock style %}
+
+{% block conteudo %}
+<div class="finance-dashboard cash-closing-dashboard">
+    <div class="finance-toolbar cash-toolbar">
+        <div>
+            <h2>Fechamento de Caixa</h2>
+            <p>Compare o saldo esperado com o dinheiro contado e registre sobras ou faltas automaticamente.</p>
+        </div>
+        <a class="btn btn-outline-primary" href="{% url 'dashboard-financeiro' %}">
+            <span data-feather="activity" aria-hidden="true"></span>
+            Dashboard financeiro
+        </a>
+    </div>
+
+    <div class="finance-kpi-grid">
+        <article class="finance-kpi primary">
+            <div class="finance-kpi-title">
+                <span>Saldo esperado hoje</span>
+                <span data-feather="target" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ today_snapshot.expected_balance|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">Abertura + receitas - despesas.</div>
+        </article>
+
+        <article class="finance-kpi info">
+            <div class="finance-kpi-title">
+                <span>Saldo contado hoje</span>
+                <span data-feather="dollar-sign" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ today_counted_balance|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">{% if today_closing %}Ultimo fechamento registrado.{% else %}Ainda sem fechamento hoje.{% endif %}</div>
+        </article>
+
+        <article class="finance-kpi {% if today_difference < 0 %}danger{% elif today_difference > 0 %}success{% else %}info{% endif %}">
+            <div class="finance-kpi-title">
+                <span>Diferença hoje</span>
+                <span data-feather="sliders" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ today_difference|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">{% if today_difference < 0 %}Falta de caixa.{% elif today_difference > 0 %}Sobra de caixa.{% else %}Balanceado ou sem fechamento.{% endif %}</div>
+        </article>
+
+        <article class="finance-kpi success">
+            <div class="finance-kpi-title">
+                <span>Total de sobras</span>
+                <span data-feather="trending-up" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ cash_over_total|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">No periodo filtrado.</div>
+        </article>
+
+        <article class="finance-kpi danger">
+            <div class="finance-kpi-title">
+                <span>Total de faltas</span>
+                <span data-feather="trending-down" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ cash_shortage_total|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">No periodo filtrado.</div>
+        </article>
+
+        <article class="finance-kpi info">
+            <div class="finance-kpi-title">
+                <span>Fechamentos</span>
+                <span data-feather="archive" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">{{ closing_count }}</div>
+            <div class="finance-kpi-meta">Registros no historico filtrado.</div>
+        </article>
+    </div>
+
+    <div class="cash-grid">
+        <section class="finance-panel">
+            <h2 class="cash-section-title mb-3">Cálculo automático</h2>
+            <div class="cash-summary-list">
+                <div class="cash-summary-item">
+                    <span>Saldo de abertura</span>
+                    <strong>R$ {{ form_snapshot.opening_balance|floatformat:2 }}</strong>
+                </div>
+                <div class="cash-summary-item">
+                    <span>Total de receitas</span>
+                    <strong>R$ {{ form_snapshot.revenue|floatformat:2 }}</strong>
+                </div>
+                <div class="cash-summary-item">
+                    <span>Total de despesas</span>
+                    <strong>R$ {{ form_snapshot.expenses|floatformat:2 }}</strong>
+                </div>
+                <div class="cash-summary-item">
+                    <span>Saldo esperado</span>
+                    <strong>R$ {{ form_snapshot.expected_balance|floatformat:2 }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="finance-panel">
+            <h2 class="cash-section-title mb-3">Registrar fechamento</h2>
+            <form id="cashClosingForm"
+                  method="post"
+                  data-cash-closing-form
+                  data-expected-balance="{{ form_snapshot.expected_balance }}">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Verifique os campos destacados e tente novamente.
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="{{ form.data.id_for_label }}">Data</label>
+                        {{ form.data }}
+                        {% for error in form.data.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="{{ form.valor_contado.id_for_label }}">Valor contado</label>
+                        {{ form.valor_contado }}
+                        {% for error in form.valor_contado.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-12">
+                        <div class="cash-difference-preview neutral" data-cash-difference-preview>
+                            <div class="fw-bold">Diferença calculada: <span data-cash-difference-value>R$ 0,00</span></div>
+                            <div data-cash-difference-label>Informe o valor contado para calcular.</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold" for="{{ form.observacao.id_for_label }}">Observações</label>
+                        {{ form.observacao }}
+                        {% for error in form.observacao.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            {{ form.allow_duplicate }}
+                            <label class="form-check-label" for="{{ form.allow_duplicate.id_for_label }}">
+                                {{ form.allow_duplicate.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn btn-primary mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmCashClosingModal">
+                    Fechar caixa
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <section class="finance-panel mb-3">
+        <h2 class="cash-section-title mb-3">Histórico de fechamentos</h2>
+        <form method="get">
+            <div class="row g-2 mb-3">
+                <div class="col-sm-4">
+                    <input type="date" name="inicio" value="{{ filters.inicio }}" class="form-control shadow-sm {% if filters.inicio %}border-primary border-2{% endif %}">
+                </div>
+                <div class="col-sm-4">
+                    <input type="date" name="fim" value="{{ filters.fim }}" class="form-control shadow-sm {% if filters.fim %}border-primary border-2{% endif %}">
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <button class="btn btn-primary w-100 shadow-sm" type="submit">Filtrar</button>
+                </div>
+            </div>
+            <div class="btn-group flex-wrap w-100 gap-2" role="group">
+                <button name="periodo" value="hoje" class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'hoje' %}btn-periodo-ativo{% endif %}">Hoje</button>
+                <button name="periodo" value="ontem" class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'ontem' %}btn-periodo-ativo{% endif %}">Ontem</button>
+                <button name="periodo" value="7dias" class="btn btn-outline-secondary shadow-sm {% if filters.periodo == '7dias' %}btn-periodo-ativo{% endif %}">7 dias</button>
+                <button name="periodo" value="este_mes" class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">Este mês</button>
+                <button name="periodo" value="mes_passado" class="btn btn-outline-secondary shadow-sm {% if filters.periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">Mês passado</button>
+                <a class="btn btn-danger shadow-sm" href="{% url 'fechamento-caixa' %}">Limpar</a>
+            </div>
+        </form>
+    </section>
+
+    <div class="finance-panel table-responsive">
+        <table class="table table-borderless table-hover erp-table mb-0">
+            <thead class="erp-header">
+                <tr>
+                    <th>Data</th>
+                    <th>Responsável</th>
+                    <th>Saldo esperado</th>
+                    <th>Saldo contado</th>
+                    <th>Diferença</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for closing in closings %}
+                    <tr class="erp-row">
+                        <td class="erp-primary-text">{{ closing.data|date:"d/m/Y" }}</td>
+                        <td>{{ closing.usuario.get_full_name|default:closing.usuario.username }}</td>
+                        <td>R$ {{ closing.saldo_esperado|floatformat:2 }}</td>
+                        <td>R$ {{ closing.valor_contado|floatformat:2 }}</td>
+                        <td class="{% if closing.diferenca < 0 %}text-danger{% elif closing.diferenca > 0 %}text-success{% endif %} fw-bold">R$ {{ closing.diferenca|floatformat:2 }}</td>
+                        <td>
+                            <span class="cash-status {% if closing.status == 'cash_shortage' %}cash-shortage{% elif closing.status == 'cash_over' %}cash-over{% else %}balanced{% endif %}">
+                                {{ closing.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">Nenhum fechamento no período selecionado.</div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmCashClosingModal" tabindex="-1" aria-labelledby="confirmCashClosingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmCashClosingModalLabel">Confirmar fechamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Confirme o fechamento de caixa. Se houver diferença, o sistema registrará automaticamente a sobra ou falta no financeiro.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="cashClosingForm">Confirmar fechamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if success %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1085;">
+    <div id="cashClosingSuccessToast" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">Fechamento de caixa registrado com sucesso.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock conteudo %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'js/cash-closing.js' %}"></script>
+{% endblock scripts %}

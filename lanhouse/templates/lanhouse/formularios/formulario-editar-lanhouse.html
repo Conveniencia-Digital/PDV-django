@@ -1,0 +1,112 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+  <h5 class="modal-title" id="staticBackdropLabel"> Editar serviço lanhouse </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form class="lanhouse-modal-form" hx-post="{% url 'editar-lanhouse' object.pk %}"
+      hx-target="#addConteudo"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+      data-card-fee-url="{% url 'preview-taxa-cartao-lanhouse' %}">
+  {% csrf_token %}
+  <input type="hidden" name="dashboard_periodo" value="{{ dashboard_periodo|default:'' }}">
+  <input type="hidden" name="dashboard_inicio" value="{{ dashboard_inicio|default:'' }}">
+  <input type="hidden" name="dashboard_fim" value="{{ dashboard_fim|default:'' }}">
+
+  <div class="modal-body lanhouse-modal-body">
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <section class="lanhouse-form-section">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-6">
+        {% render_field form.usuario class='form-control' %}
+        {% include 'cliente/componentes/seletor-cliente.html' with field=form.cliente label='Cliente' placeholder='Selecione o cliente' %}
+      </div>
+      <div class="col-md-6">
+        {% include 'colaborador/componentes/seletor-vendedor.html' with field=form.vendedor label='Vendedor' placeholder='Selecione o vendedor' %}
+      </div>
+    </div>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Serviços</h2>
+    {{ formset.management_form }}
+    <div id="lanhouse-servicos" class="lanhouse-items">
+      {% for itemslanhouse in formset %}
+        <div id="item-{{ forloop.counter0 }}" class="row g-3 align-items-end lanhouse-service-row" data-linha-item data-tipo="servico">
+          {% render_field itemslanhouse.lanhouse data-field='lanhouse' %}
+          {% render_field itemslanhouse.id data-field='id' %}
+          <div class="col-md-6">
+            {% include 'lanhouse/componentes/seletor-servico-lanhouse.html' with field=itemslanhouse.servico label='Serviço' placeholder='Selecione o serviço' %}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label client-picker-label" for="{{ itemslanhouse.preco.id_for_label }}">Preço unitário</label>
+            {% render_field itemslanhouse.preco data-field='preco' class="form-control selector-standard-control" %}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label client-picker-label" for="{{ itemslanhouse.quantidade.id_for_label }}">Quantidade</label>
+            {% render_field itemslanhouse.quantidade class="form-control selector-standard-control" data-field='quantidade' %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="btn btn-outline-primary btn-sm mb-3" hx-get="{% url 'add-item-lanhouse' %}"
+      hx-target="#lanhouse-servicos" hx-swap="beforeend settle:1s" style="font-size: 10px;">
+      Add serviço
+    </button>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Informações de pagamento</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
+        {% render_field form.forma_pagamento class='form-select selector-standard-control'%}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_desconto" for="{{ form.desconto.id_for_label }}">Desconto</label>
+        {% render_field form.desconto class='form-control selector-standard-control' %}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" for="totalValue">Valor total</label>
+        <input id="totalValue" type="Number" class="form-control selector-standard-control" readonly>
+      </div>
+    </div>
+    {% include 'componentes/card-fee-fields.html' with form=form %}
+    <div class="row g-3 lanhouse-fiado-row" hidden>
+      <div class="col-md-6">
+        <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
+        {% render_field form.qtd_parcela class="form-control selector-standard-control" type="hidden" %}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
+        {% render_field form.valor_entrada class="form-control selector-standard-control" type="hidden" %}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Dia vencimento</label>
+        {% render_field form.data_vencimento class="form-control selector-standard-control" type="hidden" %}
+      </div>
+    </div>
+    </section>
+
+    <section class="lanhouse-form-section">
+    <h2 class="lanhouse-section-title">Informações adicionais</h2>
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label client-picker-label" for="{{ form.observacao.id_for_label }}">Observação</label>
+        {% render_field form.observacao class='form-control lanhouse-textarea' %}
+      </div>
+    </div>
+    </section>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-outline-primary">Finalizar</button>
+  </div>
+</form>

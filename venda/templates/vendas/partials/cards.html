@@ -1,112 +1,74 @@
-<style>
-  .dashboard-card {
-    transition: all .25s ease;
-    background: linear-gradient(180deg, #ffffff, #f8f9fa);
-  }
-
-  .dashboard-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 1rem 2rem rgba(0,0,0,.08);
-  }
-
-  .metric-value {
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: -.02em;
-  }
-
-  .metric-label {
-    font-size: .75rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: #6c757d;
-  }
-
-  .metric-sub {
-    font-size: .85rem;
-    color: #6c757d;
-  }
-
-  .divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, #dee2e6, transparent);
-    margin: 1rem 0;
-  }
-</style>
-<div class="row g-4 mt-4" id="relatorio-venda">
-
-  <!-- RECEITA -->
-  <div class="col-lg-4">
-    <div class="card dashboard-card border-0 rounded-4 h-100">
-      <div class="card-body text-center p-4">
-
-        <span class="badge bg-primary-subtle text-primary mb-3">
-          {% if periodo == 'hoje' %} Hoje
-          {% elif periodo == 'ontem' %} Ontem
-          {% elif periodo == '7dias' %} Últimos 7 dias
-          {% elif periodo == 'este_mes' %} Este mês
-          {% elif periodo == 'mes_passado' %} Mês passado
-          {% elif periodo == 'este_ano' %} Este ano
-          {% elif periodo == 'todas' %} Todo período
-          {% elif inicio or fim %} Vendas no periodo de {{ inicio }} ate {{ fim }}
-          {% endif %}
-        </span>
-
-        <div class="metric-label">Receita líquida</div>
-        <div class="metric-value text-primary">
-          <sup>R$</sup> {{ total_vendas }}
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="metric-label fw-bold">
-          {{ qtd_vendas }} vendas realizadas
-        </div>
-
-      </div>
+<div class="finance-kpi-grid" id="relatorio-venda">
+  <article class="finance-kpi success">
+    <div class="finance-kpi-title">
+      <span>Faturamento</span>
+      <span data-feather="trending-up" aria-hidden="true"></span>
     </div>
-  </div>
+    <div class="finance-kpi-value">R$ {{ total_vendas|floatformat:2 }}</div>
+    <div class="finance-kpi-meta">{{ qtd_vendas }} vendas entregues no periodo.</div>
+  </article>
 
-  <!-- CUSTOS -->
-  <div class="col-lg-4">
-    <div class="card dashboard-card border-0 rounded-4 h-100">
-      <div class="card-body text-center p-4">
-
-        <div class="metric-label">Custo da mercadoria</div>
-        <div class="metric-value text-danger">
-          <sup>R$</sup> {{ custo_mercadoria_vendida }}
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="metric-label">Descontos concedidos</div>
-        <div class="metric-value text-warning">
-          <sup>R$</sup> {{ total_descontos }}
-        </div>
-
-      </div>
+  <article class="finance-kpi danger">
+    <div class="finance-kpi-title">
+      <span>CMV</span>
+      <span data-feather="package" aria-hidden="true"></span>
     </div>
-  </div>
+    <div class="finance-kpi-value">R$ {{ custo_mercadoria_vendida|floatformat:2 }}</div>
+    <div class="finance-kpi-meta">Custo das mercadorias vendidas.</div>
+  </article>
 
-  <!-- RESULTADO -->
-  <div class="col-lg-4">
-    <div class="card dashboard-card border-0 rounded-4 h-100">
-      <div class="card-body text-center p-4">
-
-        <div class="metric-label">Lucro líquido</div>
-        <div class="metric-value text-success">
-          <sup>R$</sup> {{ lucro_total }}
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="metric-label">Margem de lucro</div>
-        <div class="metric-value text-success">
-          {{ margem_lucro_total_vendas }}%
-        </div>
-
-      </div>
+  <article class="finance-kpi primary">
+    <div class="finance-kpi-title">
+      <span>Lucro liquido</span>
+      <span data-feather="dollar-sign" aria-hidden="true"></span>
     </div>
-  </div>
+    <div class="finance-kpi-value">R$ {{ lucro_total|floatformat:2 }}</div>
+    <div class="finance-kpi-meta">Ja desconta CMV e taxas absorvidas.</div>
+  </article>
 
+  <article class="finance-kpi info">
+    <div class="finance-kpi-title">
+      <span>Margem</span>
+      <span data-feather="percent" aria-hidden="true"></span>
+    </div>
+    <div class="finance-kpi-value">{{ margem_lucro_total_vendas|floatformat:2 }}%</div>
+    <div class="finance-kpi-meta">Lucro liquido sobre faturamento.</div>
+  </article>
+
+  <article class="finance-kpi warning">
+    <div class="finance-kpi-title">
+      <span>Ticket medio</span>
+      <span data-feather="shopping-bag" aria-hidden="true"></span>
+    </div>
+    <div class="finance-kpi-value">R$ {{ ticket_medio_vendas|floatformat:2 }}</div>
+    <div class="finance-kpi-meta">Media por venda entregue.</div>
+  </article>
+
+  <article class="finance-kpi info">
+    <div class="finance-kpi-title">
+      <span>Itens vendidos</span>
+      <span data-feather="layers" aria-hidden="true"></span>
+    </div>
+    <div class="finance-kpi-value">{{ quantidade_total_itens_vendidos }}</div>
+    <div class="finance-kpi-meta">{{ quantidade_total_clientes_atendidos }} clientes atendidos.</div>
+  </article>
+</div>
+
+<div class="indicator-grid">
+  <div class="finance-indicator">
+    <span>Descontos</span>
+    <strong>R$ {{ total_descontos|floatformat:2 }}</strong>
+  </div>
+  <div class="finance-indicator">
+    <span>Taxas absorvidas</span>
+    <strong>R$ {{ taxas_maquininha_absorvidas|floatformat:2 }}</strong>
+  </div>
+  <div class="finance-indicator">
+    <span>Fiado a receber</span>
+    <strong>R$ {{ total_vendas_a_receber|floatformat:2 }}</strong>
+  </div>
+  <div class="finance-indicator">
+    <span>Outros status</span>
+    <strong>{{ qtd_vendas_canceladas|add:qtd_vendas_troca_garantia }}</strong>
+  </div>
 </div>

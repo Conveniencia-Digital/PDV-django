@@ -1,8 +1,12 @@
 {% extends 'dashboard/pagina-inicial.html' %}
+{% load static %}
 {% block titulo %}
 Despesas
 {% endblock titulo %}
 {% block style %}
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/erp-table.css' %}" rel="stylesheet">
+<link href="{% static 'css/client-picker.css' %}" rel="stylesheet">
 <style>
     tr.htmx-swapping td {
         opacity: 0;
@@ -19,66 +23,112 @@ Despesas
         margin: 30px auto;
     }
 
-    .table {
-        font-size: 20px;
-    }
-
-    .btn {
+    body > .btn,
+    .modal .btn,
+    .offcanvas .btn {
         box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
         font-size: 20px;
 
+    }
+
+    .despesa-dashboard {
+        background: #f8f9fb;
+        border-radius: 18px;
+        padding: 24px;
+    }
+
+    .despesa-dashboard #bloco-completo {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .despesa-dashboard .btn-nova-despesa {
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 12px;
+        padding: 12px;
+        transition: all 0.25s ease;
+    }
+
+    .despesa-dashboard .btn-nova-despesa:hover {
+        transform: translateY(-2px);
+    }
+
+    .despesa-dashboard input[type="date"] {
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+
+    .despesa-dashboard input[type="date"]:focus {
+        box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+    }
+
+    .despesa-dashboard .btn-group button {
+        border-radius: 999px !important;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .despesa-dashboard .btn-periodo-ativo {
+        background: linear-gradient(135deg, #0d6efd, #4f8cff);
+        color: #fff !important;
+        border: none;
+    }
+
+    .despesa-dashboard .btn-group button:hover {
+        transform: translateY(-1px);
+    }
+
+    .despesa-dashboard .btn-danger {
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+
+    .despesa-modal-form .client-picker {
+        margin-bottom: 0;
+    }
+
+    .despesa-modal-form .modal-footer {
+        gap: 0.5rem;
+        padding: 1rem 1.35rem;
+    }
+
+    .despesa-modal-form .modal-footer .btn {
+        border-radius: 8px;
+        box-shadow: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.55rem 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .despesa-dashboard {
+            padding: 16px;
+        }
+
+        .despesa-dashboard .btn-group {
+            justify-content: center;
+        }
     }
 </style>
 {% endblock style %}
 
 {% block conteudo %}
-<nav class="navbar justify-content-center">
-    <ul class="nav justify-content-center">
-        <li class="nav-item">
-            <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'cadastrar-despesa' %}"
-            hx-target="#adicionar-conteudo">Cadastrar despesa</a>
-        </li>
-        <li class="nav-item">
-            <a  data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-outline-primary" hx-get="{% url 'categoria-despesa' %}"
-                hx-target="#adicionar-conteudo" style="text-decoration: none; margin-left: 10px;">Nova gategoria despesa</a>
-        </li>
-        <li class="nav-item">
-            <a  data-bs-toggle="modal" 
-            data-bs-target="#staticBackdrop" 
-            class="btn btn-outline-primary" 
-            hx-get="{% url 'lista-categoria-despesa' %}"
-            hx-target="#adicionar-conteudo"
-            style="margin-left: 10px;">Categorias</a>
-    </li>
-        </li>
-      </ul>
-</nav>
-
-
-
-
-<div class="table-responsive" style="padding-top: 18px">
-    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead style="border-bottom: 0.15px solid rgb(229, 224, 224)">
-            <tr>
-                <th>Descriçāo despesa</th>
-                <th>Preço a pagar</th>
-                <th>Pagamento</th>
-                <th>Ações</th>
-                
-              
-            </tr>
-        </thead>
-        <tbody id="despesa-Tbody">
-            {% include 'despesa/tabela/tabela-despesa.html' %}
-        </tbody>
-    </table>
-</div>
+{% include 'despesa/bloco-dados.html' %}
 
 {% include 'despesa/modal/modal-despesa.html' %}
-{% include 'despesa/modal/modal-alerta.html' %}
-{% include 'despesa/modal/modal-alerta-editar.html' %}
+{% include 'despesa/componentes/modal-categoria-despesa-picker.html' %}
 {% include 'despesa/modal/modal-alerta-apagar.html' %}
 {% include 'despesa/off-canvas/off-canvas.html' %}
-
 {% endblock conteudo %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'js/finance-charts.js' %}"></script>
+<script src="{% static 'js/despesa-dashboard.js' %}"></script>
+<script src="{% static 'js/client-picker.js' %}"></script>
+{% endblock scripts %}

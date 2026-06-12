@@ -1,0 +1,184 @@
+<div id="bloco-dados" class="finance-dashboard despesa-dashboard">
+    <div id="bloco-completo">
+        <div class="row align-items-center mt-4">
+            <div class="col-md-3 mb-3">
+                <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    class="btn btn-primary w-100 shadow-sm btn-nova-despesa"
+                    hx-get="{% url 'cadastrar-despesa' %}"
+                    hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo|default:'' }}", "dashboard_inicio": "{{ expense_filters.inicio|default:'' }}", "dashboard_fim": "{{ expense_filters.fim|default:'' }}"}'
+                    hx-target="#adicionar-conteudo"
+                    hx-swap="innerHTML">
+                    + Cadastrar despesa
+                </button>
+            </div>
+
+            <div class="col-md-9">
+                <form
+                    method="get"
+                    hx-get="{% url 'despesa' %}"
+                    hx-target="#bloco-dados"
+                    hx-swap="outerHTML"
+                    hx-indicator=".htmx-indicator"
+                    hx-trigger="submit">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <input
+                                type="date"
+                                name="inicio"
+                                aria-label="Data inicial"
+                                value="{{ expense_filters.inicio }}"
+                                class="form-control shadow-sm {% if expense_filters.inicio %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4">
+                            <input
+                                type="date"
+                                name="fim"
+                                aria-label="Data final"
+                                value="{{ expense_filters.fim }}"
+                                class="form-control shadow-sm {% if expense_filters.fim %}border-primary border-2{% endif %}">
+                        </div>
+                        <div class="col-sm-4 d-grid">
+                            <button class="btn btn-primary w-100 shadow-sm btn-nova-despesa" type="submit">Filtrar</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group flex-wrap w-100 gap-2" role="group">
+                        <button name="periodo" value="hoje"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'hoje' %}btn-periodo-ativo{% endif %}">Hoje</button>
+                        <button name="periodo" value="ontem"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'ontem' %}btn-periodo-ativo{% endif %}">Ontem</button>
+                        <button name="periodo" value="7dias"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == '7dias' %}btn-periodo-ativo{% endif %}">7 dias</button>
+                        <button name="periodo" value="este_mes"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'este_mes' %}btn-periodo-ativo{% endif %}">Este mês</button>
+                        <button name="periodo" value="mes_passado"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'mes_passado' %}btn-periodo-ativo{% endif %}">Mês passado</button>
+                        <button name="periodo" value="este_ano"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'este_ano' %}btn-periodo-ativo{% endif %}">Este ano</button>
+                        <button name="periodo" value="todas"
+                            class="btn btn-outline-secondary shadow-sm {% if expense_filters.periodo == 'todas' %}btn-periodo-ativo{% endif %}">Todas</button>
+                        <button
+                            type="button"
+                            class="btn btn-danger shadow-sm"
+                            hx-get="{% url 'despesa' %}"
+                            hx-target="#bloco-dados"
+                            hx-swap="outerHTML">
+                            Limpar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-auto">
+                <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    class="btn btn-outline-primary btn-sm"
+                    hx-get="{% url 'categoria-despesa' %}"
+                    hx-target="#adicionar-conteudo"
+                    hx-swap="innerHTML">
+                    Nova categoria despesa
+                </button>
+            </div>
+            <div class="col-auto">
+                <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    class="btn btn-outline-primary btn-sm"
+                    hx-get="{% url 'lista-categoria-despesa' %}"
+                    hx-target="#adicionar-conteudo"
+                    hx-swap="innerHTML">
+                    Categorias
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="finance-kpi-grid">
+        <article class="finance-kpi danger">
+            <div class="finance-kpi-title">
+                <span>Total de despesas</span>
+                <span data-feather="trending-down" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ expense_total|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">Despesas cadastradas no periodo filtrado.</div>
+        </article>
+
+        <article class="finance-kpi warning">
+            <div class="finance-kpi-title">
+                <span>Total de despesas a pagar</span>
+                <span data-feather="clock" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">R$ {{ expense_payable_total|floatformat:2 }}</div>
+            <div class="finance-kpi-meta">Saldo pendente em Fiado a pagar no periodo filtrado.</div>
+        </article>
+
+        <article class="finance-kpi info">
+            <div class="finance-kpi-title">
+                <span>Despesas cadastradas</span>
+                <span data-feather="file-text" aria-hidden="true"></span>
+            </div>
+            <div class="finance-kpi-value">{{ expense_count }}</div>
+            <div class="finance-kpi-meta">Quantidade de despesas manuais no periodo.</div>
+        </article>
+    </div>
+
+    <div class="finance-grid-2">
+        <section class="finance-panel">
+            <h2>Despesas por categoria</h2>
+            {% if expense_category_ranking %}
+                <div class="finance-chart" style="height: {{ expense_chart_height }}px;">
+                    <canvas id="expenseCategoryChart"></canvas>
+                </div>
+            {% else %}
+                <div class="empty-state">Sem despesas no periodo selecionado.</div>
+            {% endif %}
+        </section>
+
+        <section class="finance-panel">
+            <h2>Participacao por categoria</h2>
+            {% if expense_category_ranking %}
+                {% for item in expense_category_ranking %}
+                    <div class="ranking-row">
+                        <div class="ranking-index">{{ forloop.counter }}</div>
+                        <div>
+                            <div class="ranking-title">{{ item.category }}</div>
+                            <div class="ranking-share">{{ item.percentage|floatformat:2 }}% das despesas</div>
+                        </div>
+                        <div class="ranking-amount">R$ {{ item.amount|floatformat:2 }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">Nenhuma categoria com movimento.</div>
+            {% endif %}
+        </section>
+    </div>
+
+    <div class="table-responsive" style="padding-top: 18px">
+        <table class="table table-borderless table-hover erp-table">
+            <thead class="erp-header" style="border-bottom: 0.15px solid rgb(229, 224, 224)">
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Despesa</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                    <th>Forma de pagamento</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="despesa-Tbody">
+                {% include 'despesa/tabela/tabela-despesa.html' %}
+            </tbody>
+        </table>
+    </div>
+
+    {{ expense_charts|json_script:"despesaChartsData" }}
+</div>

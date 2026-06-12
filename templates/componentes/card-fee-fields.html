@@ -1,0 +1,51 @@
+{% load widget_tweaks %}
+
+{% render_field form.card_payment_type data-card-hidden='payment_type' %}
+{% render_field form.card_fee_percentage data-card-hidden='fee_percentage' %}
+{% render_field form.card_fee_amount data-card-hidden='fee_amount' %}
+{% render_field form.card_base_amount data-card-hidden='base_amount' %}
+{% render_field form.card_final_amount data-card-hidden='final_amount' %}
+
+<div class="lanhouse-card-row" data-card-payment-section hidden>
+  <div class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label client-picker-label" for="{{ form.card_machine.id_for_label }}">Máquina de cartão</label>
+      {% render_field form.card_machine class="form-select selector-standard-control" data-card-field="machine" %}
+      {% if form.card_machine.errors %}
+        <div class="client-picker-errors">{{ form.card_machine.errors }}</div>
+      {% endif %}
+    </div>
+    <div class="col-md-2" data-card-installments-wrap>
+      <label class="form-label client-picker-label" for="{{ form.card_installments.id_for_label }}">Parcelas</label>
+      {% render_field form.card_installments class="form-select selector-standard-control" data-card-field="installments" %}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label client-picker-label" for="{{ form.pass_card_fee_to_customer.id_for_label }}">Repassar taxa</label>
+      <div class="selector-standard-control lanhouse-switch-control">
+        {% render_field form.pass_card_fee_to_customer class="form-check-input" data-card-field="pass_fee" %}
+        <span>Repassar taxa ao cliente</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label client-picker-label">Taxa da maquininha</label>
+      <input type="text" class="form-control selector-standard-control" data-card-display="fee_percentage" value="{{ form.instance.card_fee_percentage|default_if_none:'0.00' }}%" readonly>
+    </div>
+  </div>
+
+  <div class="row g-3 lanhouse-card-summary">
+    <div class="col-md-4">
+      <label class="form-label client-picker-label">Valor base</label>
+      <input type="text" class="form-control selector-standard-control" data-card-display="base_amount" value="{{ form.instance.card_base_amount|default_if_none:'0.00' }}" readonly>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label client-picker-label">Valor da taxa</label>
+      <input type="text" class="form-control selector-standard-control" data-card-display="fee_amount" value="{{ form.instance.card_fee_amount|default_if_none:'0.00' }}" readonly>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label client-picker-label">Valor final</label>
+      <input type="text" class="form-control selector-standard-control" data-card-display="final_amount" value="{{ form.instance.card_final_amount|default_if_none:'0.00' }}" readonly>
+    </div>
+  </div>
+
+  <div class="lanhouse-card-message" data-card-fee-message></div>
+</div>

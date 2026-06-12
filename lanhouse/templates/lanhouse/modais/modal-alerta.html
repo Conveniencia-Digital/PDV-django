@@ -150,7 +150,12 @@ text-decoration: none;
 
     <!-- Modal content-->
     <div class="modal-content">
-      <a class="close" href="#" data-bs-dismiss="modal" hx-get="{% url 'relatorio-lanhouse' %}" hx-target="#relatorio-lanhouse" hx-swap="innerHTML">&times;</a>
+      <a class="close"
+         href="{% url 'lanhouse' %}"
+         data-bs-dismiss="modal"
+         hx-get="{% url 'lanhouse' %}"
+         hx-target="#bloco-dados"
+         hx-swap="outerHTML">&times;</a>
       <div class="page-body">
     <div class="head">
       <h3 style="margin-top:5px;">Servico de lanhouse</h3>
@@ -168,4 +173,3 @@ text-decoration: none;
     </div>
 
   </div>
-

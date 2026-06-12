@@ -1,6 +1,10 @@
+import json
+
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
+from django.db.models import Q
 from django.db.models.aggregates import Sum
+from django.http import HttpResponse, JsonResponse
 from peca.models import Pecas
 from peca.forms import PecasForms
 from django.contrib.auth.decorators import login_required
@@ -13,19 +17,54 @@ class Peca(ListView):
         return Pecas.objects.filter(usuario=self.request.user)
 
 
+def _peca_payload(peca):
+    return {
+        'id': peca.pk,
+        'text': peca.nome_peca,
+        'name': peca.nome_peca,
+        'price': str(peca.preco_peca or 0),
+        'cost': str(peca.preco_de_custo or 0),
+        'meta': f'Estoque: {peca.quantidade} | R$ {peca.preco_peca}',
+    }
+
+
+@login_required
+def buscarpecas(request):
+    termo = request.GET.get('q', '').strip()
+    pecas = Pecas.objects.filter(usuario=request.user, quantidade__gt=0)
+
+    if termo:
+        pecas = pecas.filter(
+            Q(nome_peca__icontains=termo)
+            | Q(categoria_peca__icontains=termo)
+            | Q(codigo_de_barras__icontains=termo)
+        )
+
+    pecas = pecas.order_by('nome_peca')[:30]
+    return JsonResponse({'results': [_peca_payload(peca) for peca in pecas]})
+
+
 @login_required
 def cadastrarpeca(request):
     template_name = 'peca/formularios/formulario-cadastrar-peca.html'
+    picker_mode = request.GET.get('picker') == '1' or request.POST.get('piece_picker') == '1'
     form = PecasForms(request.POST or None, initial={'usuario': request.user}, user=request.user)
 
     if request.method == 'POST':
         if form.is_valid():
             peca = form.save()
+            if picker_mode:
+                response = HttpResponse('')
+                response['HX-Trigger'] = json.dumps({'orcamentoPecaCriada': _peca_payload(peca)})
+                return response
+
             template_name = 'peca/tabela/linhas-tabela-peca.html'
             context = {'object': peca}
-            return render(request, template_name, context)
+            response = render(request, template_name, context)
+            response['HX-Trigger'] = 'pecaSalva'
+            return response
 
-    context = {'form': form}
+    context = {'form': form, 'piece_picker_mode': picker_mode}
     return render(request, template_name, context)
 
 
@@ -43,7 +82,9 @@ def editarpeca(request, pk):
             peca = form.save()
             template_name = 'peca/tabela/linhas-tabela-peca.html'
             context = {'object': peca}
-            return render(request, template_name, context)
+            response = render(request, template_name, context)
+            response['HX-Trigger'] = 'pecaEditada'
+            return response
 
     context = {'form': form, 'object': instance}
     return render(request, template_name, context)
@@ -85,4 +126,3 @@ class DetalhePeca(DetailView):
 
     def get_queryset(self):
         return Pecas.objects.filter(usuario=self.request.user)
-    

@@ -2,7 +2,27 @@
 <tr id="tr-ServicoLanhouse{{ object.pk }}">
     <td>{{ object.servico }}</td>
     <td><sup>R$</sup> {{ object.preco_custo }}</td>
+    <td>{{ object.margem_de_lucro|default:"0.00" }}%</td>
     <td><sup>R$</sup> {{ object.preco }}</td>
-    <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop2" hx-get="{% url 'editar-servico-lanhouse' object.pk %}" hx-target="#addConteudo2"><i class="fa fa-edit"></span></td>
-    <td><span hx-get="{% url 'apagar-servico-lanhouse' object.pk %}" hx-target="closest tr" hx-swap="outerHTML swap:1s"><i class="fa fa-trash"></span></td>
+    <td class="text-end">
+        <button type="button"
+                class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop2"
+                hx-get="{% url 'editar-servico-lanhouse' object.pk %}"
+                hx-target="#addConteudo2"
+                title="Editar serviço">
+            <i class="fa fa-edit"></i>
+        </button>
+        <button type="button"
+                class="btn btn-sm btn-outline-danger"
+                hx-post="{% url 'apagar-servico-lanhouse' object.pk %}"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-confirm="Tem certeza que deseja excluir este serviço Lan House?"
+                hx-target="closest tr"
+                hx-swap="outerHTML swap:300ms"
+                title="Excluir serviço">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
 </tr>

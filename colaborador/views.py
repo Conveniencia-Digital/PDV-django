@@ -3,6 +3,8 @@ from django.views.generic import ListView, DetailView
 from colaborador.models import Colaborador
 from colaborador.forms import ColaboradorForms
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import JsonResponse
 
 
 class ListaColaborador(ListView):
@@ -11,6 +13,34 @@ class ListaColaborador(ListView):
 
     def get_queryset(self):
         return Colaborador.objects.filter(usuario=self.request.user)
+
+
+def _colaborador_payload(colaborador):
+    meta = colaborador.telefone_contato or colaborador.cargo or ''
+    return {
+        'id': colaborador.pk,
+        'text': colaborador.nome_colaborador,
+        'name': colaborador.nome_colaborador,
+        'phone': colaborador.telefone_contato or '',
+        'meta': meta,
+    }
+
+
+@login_required
+def buscarvendedores(request):
+    termo = request.GET.get('q', '').strip()
+    vendedores = Colaborador.objects.filter(usuario=request.user)
+
+    if termo:
+        vendedores = vendedores.filter(
+            Q(nome_colaborador__icontains=termo)
+            | Q(telefone_contato__icontains=termo)
+            | Q(telefone_contato_2__icontains=termo)
+            | Q(cargo__icontains=termo)
+        )
+
+    vendedores = vendedores.order_by('nome_colaborador')[:30]
+    return JsonResponse({'results': [_colaborador_payload(vendedor) for vendedor in vendedores]})
 
 
 @login_required

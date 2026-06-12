@@ -1,6 +1,7 @@
 from django.db import models
 from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 
 
@@ -54,6 +55,7 @@ class Pecas(models.Model):
     quantidade = models.IntegerField()
     codigo_de_barras = models.IntegerField(null=True, blank=True)
     preco_de_custo = models.DecimalField(max_digits=9, decimal_places=2)
+    margem_de_lucro = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     forma_pagamento = models.CharField(choices=FORMA_PAGAMENTO, max_length=21, default=PIX)
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
@@ -66,6 +68,12 @@ class Pecas(models.Model):
 
     def lucro(self):
          return f'R$ {self.preco_peca - self.preco_de_custo}'
+
+    def margem_lucro_und(self):
+        if self.preco_peca == 0:
+            return Decimal('0.00')
+        margem_und = ((self.preco_peca - self.preco_de_custo) / self.preco_peca) * 100
+        return round(margem_und, 2)
     
     def precototal(self):
         return self.preco_de_custo * self.quantidade
@@ -80,4 +88,16 @@ class Pecas(models.Model):
         return self.preco_peca * self.quantidade
 
     def saldodespesa(self):
-        return (self.preco_de_custo * self.quantidade) - self.valor_entrada
+        return (self.preco_de_custo * self.quantidade) - (self.valor_entrada or Decimal('0.00'))
+
+    def margem_lucro_total_percentual(self):
+        try:
+            vendatotal = Decimal(self.vendatotal() or Decimal('0.00'))
+            lucrototal = Decimal(self.lucrototal() or Decimal('0.00'))
+
+            if self.preco_peca == 0:
+                return Decimal('0.00')
+            margem = (lucrototal / vendatotal) * 100
+            return margem.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        except (InvalidOperation, ZeroDivisionError, TypeError, ValueError):
+            return Decimal('0.00')

@@ -1,96 +1,26 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-{% load orcamento_extra %}
+{% load static %}
+
+{% block titulo %}Orçamentos{% endblock titulo %}
+
 {% block style %}
-<style>
-    tr.htmx-swapping td {
-        opacity: 0;
-        transition: opacity 300ms ease-out;
-    }
-
-    .card {
-        max-width: 20rem;
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-
-    }
-
-    .card .card-text {
-        margin: 30px auto;
-    }
-
-    .table {
-        font-size: 20px;
-    }
-
-    .btn {
-        box-shadow: 5px 5px 15px 0px rgba(4, 4, 4, 0.15);
-        font-size: 20px;
-
-    }
-</style>
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/client-picker.css' %}" rel="stylesheet">
 {% endblock style %}
 
-{% block titulo %} Orçamentos {% endblock titulo %}
-
-{% block conteudo%}
-
-<div class="row" id="relatorio-orcamento">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Voce fez <b>{% qtd_orcamento request %}</b> orcamentos este mes <b></b></h5>
-            <h2 class="card-text"><sup>R$</sup> {% valor_total request %}</h2>           
-        </div>
-    </div>
-</div>
-
-<hr>
-
-<nav class="navbar justify-content-center">
-    <ul class="nav justify-content-center">
-        <li class="nav-item">
-            <a  class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'cadastrar-orcamento' %}"
-                hx-target="#adicionar-conteudo">Novo orçamento
-            </a>
-        </li>
-        <li class="nav-item">
-            <a
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'cadastrar-servico' %}"
-                hx-target="#adicionar-conteudo"
-                style="margin-left: 10px;">
-                Cadastrar Serviço 
-            </a>
-        </li>
-        <li class="nav-item">
-            <a
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                hx-get="{% url 'servico' %}"
-                hx-target="#adicionar-conteudo"
-                style="margin-left: 10px;">
-                Lista de serviços
-            </a>
-        </li>    
-      </ul>
-</nav>
-
-
-<div class="table-responsive" style="padding-top:18px">
-    <table class="table table-borderless table-hover" style="box-shadow: 2px 2px 15px 0px rgba(4, 4, 4, 0.15);">
-        <thead></thead>
-        <tbody id="orcamento-Tbody">
-        {% include 'orcamento/tabela/tabela-orcamento.html' %}
-        </tbody>
-    </table>
-</div>
-
-{% include 'orcamento/modal/modal-orcamento.html' %}
-{% include 'orcamento/modal/modal-alerta.html' %}
-{% include 'orcamento/modal/modal-alerta-servico.html' %}
+{% block conteudo %}
+    {% include 'orcamento/bloco-dados.html' %}
+    {% include 'orcamento/modal/modal-orcamento.html' %}
+    {% include 'orcamento/modal/modal-alerta.html' %}
+    {% include 'orcamento/modal/modal-alerta-servico.html' %}
 {% endblock conteudo %}
 
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'js/finance-charts.js' %}"></script>
+<script src="{% static 'js/orcamento-dashboard.js' %}"></script>
+<script src="{% static 'js/client-picker.js' %}"></script>
+<script src="{% static 'js/card-fee-preview.js' %}"></script>
+<script src="{% static 'js/pricing-margin.js' %}"></script>
+{% include 'orcamento/formularios/orcamento-formset-script.html' %}
+{% endblock scripts %}

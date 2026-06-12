@@ -1,9 +1,12 @@
 from decimal import ROUND_HALF_UP, Decimal
+from django.db import transaction
+from django.db.models import F
 from django.db import models
 from produto.models import Produto
 from cliente.models import Cliente
 from colaborador.models import Colaborador
 from django.contrib.auth.models import User
+from financeiro.models import CardMachine
 
 
 
@@ -44,6 +47,14 @@ class Vendas(models.Model):
     data_vencimento = models.DateField(null=True, blank=True)
     qtd_parcela = models.IntegerField(null=True, blank=True)
     valor_entrada = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_machine = models.ForeignKey(CardMachine, on_delete=models.PROTECT, null=True, blank=True)
+    card_payment_type = models.CharField(max_length=10, null=True, blank=True)
+    card_installments = models.PositiveSmallIntegerField(null=True, blank=True)
+    card_fee_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    card_fee_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_base_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    card_final_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    pass_card_fee_to_customer = models.BooleanField(default=False)
 
 
     class Meta:
@@ -62,6 +73,8 @@ class Vendas(models.Model):
         return desc 
     """
     def total(self):
+        if self.card_final_amount is not None:
+            return self.card_final_amount
         desconto = self.desconto or Decimal("0.00")
         qs = self.vendas_items.values_list("preco", "quantidade")
         total = sum(preco * qtd for preco, qtd in qs)
@@ -133,6 +146,19 @@ class Vendas(models.Model):
             (item.produto.preco_de_custo or Decimal("0.00")) * item.quantidade
             for item in self.vendas_items.select_related("produto"))
 
+
+class VendasSubmissionToken(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=64, unique=True)
+    finalidade = models.CharField(max_length=40)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    usado_em = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['usuario', 'finalidade', 'usado_em']),
+        ]
+
 class ItemsVenda(models.Model):
     vendas = models.ForeignKey(Vendas,
                                on_delete=models.SET_NULL,
@@ -161,9 +187,43 @@ class ItemsVenda(models.Model):
         return (self.preco - self.produto.preco_de_custo) * self.quantidade
 
     def save(self, *args, **kwargs):
-        self.produto.quantidade -= self.quantidade
-        self.produto.save()
-        super(ItemsVenda, self).save(*args, **kwargs)
+        quantidade_atual = self.quantidade or 0
+        produto_atual_id = self.produto_id
+        item_anterior = None
+
+        if self.pk:
+            item_anterior = (
+                ItemsVenda.objects
+                .filter(pk=self.pk)
+                .values('produto_id', 'quantidade')
+                .first()
+            )
+
+        with transaction.atomic():
+            super(ItemsVenda, self).save(*args, **kwargs)
+
+            if item_anterior:
+                produto_anterior_id = item_anterior['produto_id']
+                quantidade_anterior = item_anterior['quantidade'] or 0
+
+                if produto_anterior_id == produto_atual_id:
+                    diferenca = quantidade_atual - quantidade_anterior
+                    if diferenca:
+                        Produto.objects.filter(pk=produto_atual_id).update(quantidade=F('quantidade') - diferenca)
+                else:
+                    Produto.objects.filter(pk=produto_anterior_id).update(quantidade=F('quantidade') + quantidade_anterior)
+                    Produto.objects.filter(pk=produto_atual_id).update(quantidade=F('quantidade') - quantidade_atual)
+            else:
+                Produto.objects.filter(pk=produto_atual_id).update(quantidade=F('quantidade') - quantidade_atual)
+
+    def delete(self, *args, **kwargs):
+        produto_id = self.produto_id
+        quantidade = self.quantidade or 0
+        with transaction.atomic():
+            result = super().delete(*args, **kwargs)
+            if produto_id and quantidade:
+                Produto.objects.filter(pk=produto_id).update(quantidade=F('quantidade') + quantidade)
+            return result
 
     def margem_lucro_percentual(self):
         try:
@@ -189,8 +249,6 @@ class ItemsVenda(models.Model):
 
 
     
-
-
 
 
 

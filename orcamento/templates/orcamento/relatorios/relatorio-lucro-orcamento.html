@@ -1,0 +1,306 @@
+<div class="modal-header border-0 pb-0">
+    <h4 class="modal-title fw-bold">Custos e lucros do orçamento</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="contentPrint">
+        <style>
+            .profit-report {
+                color: #212529;
+                font-family: "Segoe UI", Arial, sans-serif;
+            }
+
+            .profit-report-header {
+                align-items: flex-start;
+                border-bottom: 2px solid #dee2e6;
+                display: flex;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: 20px;
+                padding-bottom: 12px;
+            }
+
+            .profit-report-logo {
+                font-size: 1.45rem;
+                font-weight: 700;
+            }
+
+            .profit-report-info {
+                font-size: 0.78rem;
+                line-height: 1.45;
+                text-align: right;
+            }
+
+            .profit-meta {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px 18px;
+                margin: 16px 0 20px;
+                font-size: 0.9rem;
+            }
+
+            .profit-kpi-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .profit-kpi {
+                background: #f8f9fa;
+                border: 1px solid #edf0f4;
+                border-radius: 10px;
+                padding: 12px;
+            }
+
+            .profit-kpi span {
+                color: #6c757d;
+                display: block;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.03em;
+                text-transform: uppercase;
+            }
+
+            .profit-kpi strong {
+                display: block;
+                font-size: 1.05rem;
+                margin-top: 5px;
+            }
+
+            .profit-section-title {
+                font-weight: 700;
+                margin: 20px 0 10px;
+            }
+
+            .profit-table th {
+                background: #f8f9fa;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+            }
+
+            .profit-table td {
+                font-size: 0.86rem;
+                vertical-align: middle;
+            }
+
+            .profit-summary {
+                margin-left: auto;
+                margin-top: 16px;
+                max-width: 520px;
+            }
+
+            .profit-summary .summary-row {
+                display: flex;
+                justify-content: space-between;
+                gap: 16px;
+                padding: 5px 0;
+            }
+
+            .profit-summary .summary-row.highlight {
+                border-top: 1px solid #dee2e6;
+                font-weight: 700;
+                margin-top: 6px;
+                padding-top: 10px;
+            }
+
+            @media print {
+                .modal-header,
+                .modal-footer {
+                    display: none !important;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .profit-report-header,
+                .profit-meta {
+                    display: block;
+                }
+
+                .profit-report-info {
+                    margin-top: 12px;
+                    text-align: left;
+                }
+
+                .profit-kpi-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 480px) {
+                .profit-kpi-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+        <div class="profit-report">
+            <div class="profit-report-header">
+                <div class="profit-report-logo">Conveniência Digital</div>
+                <div class="profit-report-info">
+                    Centro de reparo<br>
+                    CNPJ: 29.216.862/0001-38<br>
+                    Rua das Nogueiras, 3360 - Dourados/MS<br>
+                    Tel: (67) 99664-9605
+                </div>
+            </div>
+
+            <div class="profit-meta">
+                <div><strong>Orçamento:</strong> #{{ object.pk }}</div>
+                <div><strong>Data:</strong> {{ object.data_criacao|date:'d/m/Y - H:i:s' }}</div>
+                <div><strong>Cliente:</strong> {{ object.cliente.nome_cliente|default:'Não informado' }}</div>
+                <div><strong>Telefone:</strong> {{ object.cliente.telefone_contato|default:'Não informado' }}</div>
+                <div><strong>Aparelho:</strong> {{ object.celular|default:'Não informado' }}</div>
+                <div><strong>Técnico:</strong> {{ object.tecnico|default:'Não informado' }}</div>
+                <div><strong>Status:</strong> {{ object.status }}</div>
+                <div><strong>Pagamento:</strong> {{ object.forma_pagamento }}</div>
+            </div>
+
+            <div class="profit-kpi-grid">
+                <div class="profit-kpi">
+                    <span>Receita líquida</span>
+                    <strong>R$ {{ receita_liquida_itens|floatformat:2 }}</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Custo total</span>
+                    <strong>R$ {{ custo_total|floatformat:2 }}</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Lucro líquido</span>
+                    <strong>R$ {{ lucro_liquido_individual|floatformat:2 }}</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Margem de lucro</span>
+                    <strong>{{ margem_lucro_individual|floatformat:2 }}%</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Lucro bruto</span>
+                    <strong>R$ {{ lucro_bruto|floatformat:2 }}</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Taxa absorvida</span>
+                    <strong>R$ {{ taxa_absorvida|floatformat:2 }}</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Markup sobre custo</span>
+                    <strong>{{ markup_individual|floatformat:2 }}%</strong>
+                </div>
+                <div class="profit-kpi">
+                    <span>Itens</span>
+                    <strong>{{ quantidade_itens }} total</strong>
+                </div>
+            </div>
+
+            <div class="profit-section-title">Custos e lucros por item</div>
+            <div class="table-responsive">
+                <table class="table table-bordered profit-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Item</th>
+                            <th class="text-center">Qtd</th>
+                            <th class="text-end">Preço unit.</th>
+                            <th class="text-end">Subtotal</th>
+                            <th class="text-end">Custo unit.</th>
+                            <th class="text-end">Custo total</th>
+                            <th class="text-end">Lucro</th>
+                            <th class="text-end">Margem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in item_rows %}
+                        <tr>
+                            <td>{{ item.tipo }}</td>
+                            <td>{{ item.nome }}</td>
+                            <td class="text-center">{{ item.quantidade }}</td>
+                            <td class="text-end">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                            <td class="text-end">R$ {{ item.subtotal|floatformat:2 }}</td>
+                            <td class="text-end">R$ {{ item.custo_unitario|floatformat:2 }}</td>
+                            <td class="text-end">R$ {{ item.custo_total|floatformat:2 }}</td>
+                            <td class="text-end">R$ {{ item.lucro|floatformat:2 }}</td>
+                            <td class="text-end">{{ item.margem|floatformat:2 }}%</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">Nenhum item informado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="profit-summary">
+                <div class="summary-row">
+                    <span>Total sem desconto</span>
+                    <strong>R$ {{ total_bruto|floatformat:2 }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Desconto concedido</span>
+                    <strong>R$ {{ desconto_total|floatformat:2 }}</strong>
+                </div>
+                {% if taxa_repassada %}
+                <div class="summary-row">
+                    <span>Taxa de cartão repassada ao cliente</span>
+                    <strong>R$ {{ taxa_repassada|floatformat:2 }}</strong>
+                </div>
+                {% endif %}
+                <div class="summary-row">
+                    <span>Total cobrado</span>
+                    <strong>R$ {{ total_cobrado|floatformat:2 }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Receita líquida dos itens</span>
+                    <strong>R$ {{ receita_liquida_itens|floatformat:2 }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Custo de peças</span>
+                    <strong>R$ {{ custo_total|floatformat:2 }}</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Taxa de maquininha absorvida</span>
+                    <strong>R$ {{ taxa_absorvida|floatformat:2 }}</strong>
+                </div>
+                <div class="summary-row highlight">
+                    <span>Lucro líquido do orçamento</span>
+                    <strong>R$ {{ lucro_liquido_individual|floatformat:2 }}</strong>
+                </div>
+            </div>
+
+            <div class="profit-section-title">Composição</div>
+            <div class="profit-meta">
+                <div><strong>Peças:</strong> {{ quantidade_pecas }}</div>
+                <div><strong>Serviços:</strong> {{ quantidade_servicos }}</div>
+                <div><strong>Ticket médio por item:</strong> R$ {{ ticket_medio_item|floatformat:2 }}</div>
+                <div><strong>Taxa repassada:</strong> {% if object.pass_card_fee_to_customer %}Sim{% else %}Não{% endif %}</div>
+            </div>
+
+            {% if object.observacao %}
+            <div class="mt-3">
+                <strong>Observação:</strong><br>
+                {{ object.observacao }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button onclick="imprimirLucroOrcamento('.contentPrint')" class="btn btn-primary">Imprimir relatório</button>
+</div>
+
+{% block scripts %}
+<script>
+    function imprimirLucroOrcamento(divName) {
+        var content = document.querySelector(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = content;
+        window.print();
+        document.body.innerHTML = originalContents;
+        setTimeout(function () {
+            window.location.reload();
+        }, 500);
+    }
+</script>
+{% endblock scripts %}

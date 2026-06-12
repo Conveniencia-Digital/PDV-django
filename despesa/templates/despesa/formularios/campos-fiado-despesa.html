@@ -1,0 +1,30 @@
+{% load widget_tweaks %}
+
+<section class="erp-form-section despesa-fiado-row"
+         data-despesa-fiado-row
+         hidden
+         aria-hidden="true">
+  <div class="row g-3 align-items-end">
+  <div class="col-12 col-md-4">
+    <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
+    {% render_field form.valor_entrada class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="valor_entrada" %}
+    {% if form.valor_entrada.errors %}
+      <div class="invalid-feedback d-block">{{ form.valor_entrada.errors|join:", " }}</div>
+    {% endif %}
+  </div>
+  <div class="col-12 col-md-4">
+    <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
+    {% render_field form.qtd_parcela class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="qtd_parcela" %}
+    {% if form.qtd_parcela.errors %}
+      <div class="invalid-feedback d-block">{{ form.qtd_parcela.errors|join:", " }}</div>
+    {% endif %}
+  </div>
+  <div class="col-12 col-md-4">
+    <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Data de vencimento</label>
+    {% render_field form.data_vencimento class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="data_vencimento" %}
+    {% if form.data_vencimento.errors %}
+      <div class="invalid-feedback d-block">{{ form.data_vencimento.errors|join:", " }}</div>
+    {% endif %}
+  </div>
+  </div>
+</section>
