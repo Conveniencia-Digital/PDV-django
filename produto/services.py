@@ -48,6 +48,22 @@ def _average_days_in_stock(products):
     return round(sum(ages) / len(ages), 1)
 
 
+def _stock_expense_totals(products):
+    paid_total = DECIMAL_ZERO
+    payable_total = DECIMAL_ZERO
+
+    for produto in products.only(
+        'preco_de_custo',
+        'quantidade',
+        'forma_pagamento',
+        'valor_entrada',
+    ):
+        paid_total += produto.despesa_paga()
+        payable_total += produto.despesa_a_pagar()
+
+    return paid_total, payable_total
+
+
 def build_produto_dashboard(user):
     produtos = Produto.objects.filter(usuario=user)
     sale_stock_expr = _money_expression('preco')
@@ -66,6 +82,8 @@ def build_produto_dashboard(user):
     margem_media = DECIMAL_ZERO
     if valor_venda_total > 0:
         margem_media = (lucro_potencial / valor_venda_total) * Decimal('100')
+
+    despesa_paga_total, despesa_a_pagar_total = _stock_expense_totals(produtos)
 
     categorias_qs = (
         produtos.values('categoria__nome', 'categoria_produtos')
@@ -132,6 +150,8 @@ def build_produto_dashboard(user):
         'produto_valor_venda_total': valor_venda_total,
         'produto_lucro_potencial': lucro_potencial,
         'produto_margem_media': margem_media,
+        'produto_despesa_paga_total': despesa_paga_total,
+        'produto_despesa_a_pagar_total': despesa_a_pagar_total,
         'produto_baixo_estoque': baixo_estoque,
         'produto_sem_estoque': sem_estoque,
         'produto_tempo_medio_estoque': _average_days_in_stock(produtos),

@@ -12,12 +12,16 @@
     {% else %}
         <h6>{{ object.cpf }}</h6>
     {% endif %}
-    <h6>{{ object.telefone_contato }}</h6>
+    {% if object.telefone_contato %}
+        <h6>{{ object.telefone_contato }}</h6>
+    {% else %}
+        <h6>Sem telefone</h6>
+    {% endif %}
     
-    {% if object.telefone_contato2 == None %}
+    {% if object.telefone_contato_2 == None or not object.telefone_contato_2 %}
         <h6></h6>
     {% else %}
-    <h6>{{ object.telefone_contato2 }}</h6>
+    <h6>{{ object.telefone_contato_2 }}</h6>
     {% endif %}
 
     {% if object.rua == None %}

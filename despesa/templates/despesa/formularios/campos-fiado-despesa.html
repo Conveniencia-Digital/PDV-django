@@ -5,26 +5,46 @@
          hidden
          aria-hidden="true">
   <div class="row g-3 align-items-end">
-  <div class="col-12 col-md-4">
+  <div class="col-12 {% if is_divida_form %}col-md-4{% else %}col-md-3{% endif %}">
     <label class="form-label client-picker-label" id="label_valor_entrada" for="{{ form.valor_entrada.id_for_label }}">Valor de entrada</label>
     {% render_field form.valor_entrada class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="valor_entrada" %}
     {% if form.valor_entrada.errors %}
       <div class="invalid-feedback d-block">{{ form.valor_entrada.errors|join:", " }}</div>
     {% endif %}
   </div>
-  <div class="col-12 col-md-4">
+  <div class="col-12 {% if is_divida_form %}col-md-4{% else %}col-md-3{% endif %}">
     <label class="form-label client-picker-label" id="label_qtd_parcela" for="{{ form.qtd_parcela.id_for_label }}">Quantidade de parcelas</label>
     {% render_field form.qtd_parcela class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="qtd_parcela" %}
     {% if form.qtd_parcela.errors %}
       <div class="invalid-feedback d-block">{{ form.qtd_parcela.errors|join:", " }}</div>
     {% endif %}
   </div>
-  <div class="col-12 col-md-4">
+  <div class="col-12 {% if is_divida_form %}col-md-4{% else %}col-md-3{% endif %}"
+       data-fiado-vencimento-data>
     <label class="form-label client-picker-label" id="label_data_vencimento" for="{{ form.data_vencimento.id_for_label }}">Data de vencimento</label>
     {% render_field form.data_vencimento class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="data_vencimento" %}
     {% if form.data_vencimento.errors %}
       <div class="invalid-feedback d-block">{{ form.data_vencimento.errors|join:", " }}</div>
     {% endif %}
   </div>
+  <div class="col-12 {% if is_divida_form %}col-md-4{% else %}col-md-3{% endif %}"
+       data-fiado-vencimento-dia
+       hidden
+       aria-hidden="true">
+    <label class="form-label client-picker-label" for="{{ form.dia_vencimento_parcela.id_for_label }}">Dia do vencimento mensal</label>
+    {% render_field form.dia_vencimento_parcela class="form-control selector-standard-control" type="hidden" data-despesa-fiado-field="dia_vencimento_parcela" %}
+    {% if form.dia_vencimento_parcela.errors %}
+      <div class="invalid-feedback d-block">{{ form.dia_vencimento_parcela.errors|join:", " }}</div>
+    {% endif %}
+  </div>
+  {% if not is_divida_form %}
+    <div class="col-12 col-md-3">
+      <label class="form-label client-picker-label" for="{{ form.fiado_pago.id_for_label }}">Status</label>
+      {% render_field form.fiado_pago class="form-select selector-standard-control" data-despesa-fiado-field="fiado_pago" %}
+      {% if form.fiado_pago.errors %}
+        <div class="invalid-feedback d-block">{{ form.fiado_pago.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
   </div>
 </section>

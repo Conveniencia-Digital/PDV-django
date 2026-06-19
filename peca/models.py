@@ -87,8 +87,22 @@ class Pecas(models.Model):
     def vendatotal(self):
         return self.preco_peca * self.quantidade
 
+    def despesa_total_custo(self):
+        return (self.preco_de_custo or Decimal('0.00')) * (self.quantidade or 0)
+
+    def despesa_paga(self):
+        total = self.despesa_total_custo()
+        if self.forma_pagamento == self.FIADO:
+            return min(self.valor_entrada or Decimal('0.00'), total)
+        return total
+
+    def despesa_a_pagar(self):
+        if self.forma_pagamento != self.FIADO:
+            return Decimal('0.00')
+        return max(self.despesa_total_custo() - (self.valor_entrada or Decimal('0.00')), Decimal('0.00'))
+
     def saldodespesa(self):
-        return (self.preco_de_custo * self.quantidade) - (self.valor_entrada or Decimal('0.00'))
+        return self.despesa_a_pagar()
 
     def margem_lucro_total_percentual(self):
         try:

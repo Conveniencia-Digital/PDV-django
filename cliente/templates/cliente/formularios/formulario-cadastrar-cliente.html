@@ -62,7 +62,7 @@
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col-6 form-floating">
         {% render_field form.telefone_contato class="form-control" id="telefone" %}
-        <label for="telefone" id="error-message">Telefone para contato</label>
+        <label for="telefone" id="error-message">Telefone para contato (opcional)</label>
         {{ form.telefone_contato.errors }}
       </div>
       <div class="col-6 form-floating">
@@ -124,24 +124,50 @@
 
   if (window.jQuery && window.jQuery.fn.mask) {
     if (cpf) window.jQuery(cpf).mask('000.000.000-00', { reverse: false });
-    if (telefone) window.jQuery(telefone).mask('(00) 00000-0000');
-    if (telefone2) window.jQuery(telefone2).mask('(00) 00000-0000');
+    aplicarMascaraTelefone(telefone);
+    aplicarMascaraTelefone(telefone2);
   }
 
   function setSubmitEnabled(enabled) {
     if (finalizar) finalizar.setAttribute('type', enabled ? 'submit' : 'button');
   }
 
-  function validarMascara(input, label, tamanho, mensagemPadrao) {
+  function aplicarMascaraTelefone(input) {
+    if (!input || !window.jQuery || !window.jQuery.fn.mask) return;
+    var behavior = function (value) {
+      return value.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    };
+    var options = {
+      onKeyPress: function (value, event, field, option) {
+        field.mask(behavior.apply({}, arguments), option);
+      }
+    };
+    window.jQuery(input).mask(behavior, options);
+  }
+
+  function telefoneValido(input) {
+    if (!input || !input.value) return true;
+    return /^\(\d{2}\) \d{4,5}-\d{4}$/.test(input.value);
+  }
+
+  function cpfValido() {
+    return !cpf || !cpf.value || cpf.value.length >= 14;
+  }
+
+  function atualizarSubmit() {
+    setSubmitEnabled(telefoneValido(telefone) && telefoneValido(telefone2) && cpfValido());
+  }
+
+  function validarTelefone(input, label, mensagemPadrao) {
     if (!input || !label) return true;
-    var invalido = input.value.length >= 1 && input.value.length < tamanho;
+    var invalido = input.value.length >= 1 && !telefoneValido(input);
 
     if (invalido) {
       input.style.border = '1px solid #ff0000';
       label.style.display = 'block';
       label.style.color = '#ff0000';
-      label.innerHTML = 'Numero invalido';
-      setSubmitEnabled(false);
+      label.innerHTML = 'Telefone inválido';
+      atualizarSubmit();
       return false;
     }
 
@@ -149,16 +175,16 @@
     label.style.display = 'block';
     label.style.color = '';
     label.innerHTML = mensagemPadrao;
-    setSubmitEnabled(true);
+    atualizarSubmit();
     return true;
   }
 
   function erroformulario() {
-    validarMascara(telefone, container.querySelector('#error-message'), 15, 'Telefone para contato');
+    validarTelefone(telefone, container.querySelector('#error-message'), 'Telefone para contato (opcional)');
   }
 
   function erroformulario2() {
-    validarMascara(telefone2, container.querySelector('#error-message2'), 15, 'Outro telefone de contato (opcional)');
+    validarTelefone(telefone2, container.querySelector('#error-message2'), 'Outro telefone de contato (opcional)');
   }
 
   function errocpf() {
@@ -171,13 +197,13 @@
       label.style.display = 'block';
       label.style.color = '#ff0000';
       label.innerHTML = 'CPF invalido';
-      setSubmitEnabled(false);
+      atualizarSubmit();
     } else {
       cpf.style.border = '';
       label.style.display = 'block';
       label.style.color = '';
       label.innerHTML = 'Informe o CPF (opcional)';
-      setSubmitEnabled(true);
+      atualizarSubmit();
     }
   }
 

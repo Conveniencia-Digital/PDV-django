@@ -1,0 +1,9 @@
+{% if despesa_list %}
+    {% for object in despesa_list %}
+        {% include 'despesa/tabela/linhas-tabela-despesa.html' %}
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="7" class="text-center text-muted py-4">{{ empty_message|default:'Nenhum resultado encontrado.' }}</td>
+    </tr>
+{% endif %}

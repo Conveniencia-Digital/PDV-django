@@ -88,6 +88,188 @@ Despesas
         font-size: 0.75rem;
     }
 
+    .despesa-dashboard .erp-badge-prolabore {
+        background: #fff3cd;
+        color: #8a5a00;
+        border: 1px solid #f3d27a;
+    }
+
+    .despesa-dashboard .erp-badge-divida {
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fdba74;
+    }
+
+    .despesa-dashboard .erp-badge-fixed {
+        background: #ecfdf3;
+        color: #067647;
+        border: 1px solid #abefc6;
+    }
+
+    .despesa-dashboard .analysis-section {
+        border-top: 1px solid #e4e7ec;
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    .despesa-dashboard .summary-section {
+        border-top: 0;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    .despesa-dashboard .prolabore-section,
+    .despesa-dashboard .debt-section,
+    .despesa-dashboard .fixed-expense-section,
+    .despesa-dashboard .expense-section {
+        margin-bottom: 18px;
+    }
+
+    .despesa-dashboard .analysis-section-header,
+    .despesa-dashboard .prolabore-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+    }
+
+    .despesa-dashboard .analysis-section-header h2,
+    .despesa-dashboard .prolabore-section-header h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #182230;
+    }
+
+    .despesa-dashboard .analysis-section-header p,
+    .despesa-dashboard .prolabore-section-header p {
+        margin: 4px 0 0;
+        color: #667085;
+        font-size: 13px;
+    }
+
+    .despesa-dashboard .section-header-actions {
+        align-items: center;
+        display: inline-flex;
+        gap: 10px;
+    }
+
+    .despesa-dashboard .section-collapse-toggle {
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid #d0d5dd;
+        border-radius: 999px;
+        color: #475467;
+        display: inline-flex;
+        height: 34px;
+        justify-content: center;
+        padding: 0;
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        width: 34px;
+    }
+
+    .despesa-dashboard .section-collapse-toggle:hover {
+        background: #f9fafb;
+        border-color: #98a2b3;
+    }
+
+    .despesa-dashboard .section-collapse-toggle .collapse-toggle-icon {
+        height: 17px;
+        transition: transform 0.2s ease;
+        width: 17px;
+    }
+
+    .despesa-dashboard .section-collapse-toggle.collapsed .collapse-toggle-icon {
+        transform: rotate(-90deg);
+    }
+
+    .despesa-dashboard .analysis-section-body {
+        padding-top: 2px;
+    }
+
+    .despesa-dashboard .summary-kpi-grid {
+        margin-bottom: 0;
+    }
+
+    .despesa-dashboard .section-indicator-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-bottom: 14px;
+    }
+
+    .despesa-dashboard .section-table-wrap {
+        margin-top: 14px;
+    }
+
+    .despesa-dashboard .fixed-table-scroll {
+        background: #ffffff;
+        border: 1px solid #eef2f6;
+        border-radius: 12px;
+        max-height: 420px;
+        overflow: auto;
+        scrollbar-width: thin;
+    }
+
+    .despesa-dashboard .fixed-table-scroll .erp-table {
+        margin-bottom: 0;
+        min-width: 920px;
+        table-layout: fixed;
+    }
+
+    .despesa-dashboard .fixed-table-scroll .erp-header th {
+        background: #ffffff;
+        box-shadow: inset 0 -1px 0 #e4e7ec;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    .despesa-dashboard .fixed-table-scroll td,
+    .despesa-dashboard .fixed-table-scroll th {
+        vertical-align: middle;
+    }
+
+    .despesa-dashboard .finance-chart canvas {
+        display: block;
+        height: 100% !important;
+        width: 100% !important;
+    }
+
+    .despesa-dashboard .debt-category-grid {
+        margin-bottom: 14px;
+    }
+
+    .despesa-dashboard .debt-summary-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(260px, 420px));
+        margin-bottom: 16px;
+    }
+
+    .despesa-dashboard .debt-category-title {
+        color: #344054;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0 0 10px;
+    }
+
+    .despesa-dashboard .debt-category-card small {
+        color: #667085;
+        display: block;
+        font-size: 12px;
+        line-height: 1.35;
+        margin-top: 4px;
+    }
+
+    .despesa-dashboard .debt-empty-state {
+        grid-column: 1 / -1;
+    }
+
+    .despesa-dashboard .debt-table-wrap {
+        margin-top: 14px;
+    }
+
     .despesa-modal-form .client-picker {
         margin-bottom: 0;
     }
@@ -105,6 +287,38 @@ Despesas
         padding: 0.55rem 0.9rem;
     }
 
+    .despesa-dashboard .finance-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .despesa-dashboard .category-ranking-scroll {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 6px;
+        scrollbar-width: thin;
+    }
+
+    .despesa-dashboard .category-ranking-scroll .ranking-row:last-child {
+        border-bottom: 0;
+    }
+
+    @media (max-width: 1300px) {
+        .despesa-dashboard .finance-kpi-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .despesa-dashboard .finance-kpi-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .despesa-dashboard .debt-summary-grid,
+        .despesa-dashboard .section-indicator-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     @media (max-width: 768px) {
         .despesa-dashboard {
             padding: 16px;
@@ -112,6 +326,21 @@ Despesas
 
         .despesa-dashboard .btn-group {
             justify-content: center;
+        }
+
+        .despesa-dashboard .finance-kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .despesa-dashboard .analysis-section-header,
+        .despesa-dashboard .prolabore-section-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .despesa-dashboard .section-header-actions {
+            justify-content: space-between;
+            width: 100%;
         }
     }
 </style>
@@ -122,6 +351,7 @@ Despesas
 
 {% include 'despesa/modal/modal-despesa.html' %}
 {% include 'despesa/componentes/modal-categoria-despesa-picker.html' %}
+{% include 'fornecedor/componentes/modal-fornecedor-picker.html' %}
 {% include 'despesa/modal/modal-alerta-apagar.html' %}
 {% include 'despesa/off-canvas/off-canvas.html' %}
 {% endblock conteudo %}
@@ -129,6 +359,6 @@ Despesas
 {% block scripts %}
 {{ block.super }}
 <script src="{% static 'js/finance-charts.js' %}"></script>
-<script src="{% static 'js/despesa-dashboard.js' %}"></script>
+<script src="{% static 'js/despesa-dashboard.js' %}?v=20260617-prolabore-chart"></script>
 <script src="{% static 'js/client-picker.js' %}"></script>
 {% endblock scripts %}

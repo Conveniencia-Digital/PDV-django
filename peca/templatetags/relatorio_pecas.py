@@ -1,44 +1,37 @@
 from django import template
-from django.db.models.aggregates import Sum, Count
 from peca.models import Pecas
-from django.shortcuts import render
 
 register = template.Library()
 
 
+def _dashboard_totals(user):
+    preco_venda_total = 0
+    preco_custo_total = 0
+    for peca in Pecas.objects.filter(usuario=user).only('preco_peca', 'preco_de_custo', 'quantidade'):
+        preco_venda_total += peca.vendatotal()
+        preco_custo_total += peca.precototal()
+    return preco_venda_total, preco_custo_total
+
+
 @register.simple_tag
 def preco_venda(self):
-    i = 0
-    total = Pecas.objects.filter(usuario=self.request.user).aggregate(total=Sum('preco_peca'))
- 
-    for i in total.values():
-        if i == None:
-            return(0.00)
-    return i
+    preco_venda_total, _preco_custo_total = _dashboard_totals(self.request.user)
+    return preco_venda_total
 
 
 @register.simple_tag
 def preco_custo(self):
-    i = 0
-    tot_custo = Pecas.objects.filter(usuario=self.request.user).aggregate(tot_custo=Sum('preco_de_custo'))
-    for i in tot_custo.values():
-        if i == None:
-            return(0.00)
-    return i
+    _preco_venda_total, preco_custo_total = _dashboard_totals(self.request.user)
+    return preco_custo_total
 
 
 @register.simple_tag
 def total_peca(self):
-    tot = Pecas.objects.filter(usuario=self.request.user).count()
-    if tot == None:
-        return 0
-    else:
-        return tot
+    return Pecas.objects.filter(usuario=self.request.user).count()
         
 @register.simple_tag
-def calculo():
-    calc = preco_venda() - preco_custo()
-    return calc 
-
+def calculo(self):
+    preco_venda_total, preco_custo_total = _dashboard_totals(self.request.user)
+    return preco_venda_total - preco_custo_total
 
 

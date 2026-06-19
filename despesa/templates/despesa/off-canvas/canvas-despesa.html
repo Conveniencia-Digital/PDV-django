@@ -1,12 +1,19 @@
+{% load despesa_formatters %}
 {% if object.forma_pagamento == "Fiado a pagar" %}
 <h5>Descricao</h5>
-<h6>{{ object.nome_despesa }}</h6>
+<h6>{% if object.tipo == "prolabore" %}Pró-labore - {% endif %}{{ object.nome_despesa }}</h6>
+
+<h5>Status</h5>
+<h6>{{ object.fiado_status_label }}</h6>
 
 <h5>Categoria</h5>
 <h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
 
+<h5>Tipo</h5>
+<h6>{{ object.get_tipo_display }}</h6>
+
 <h5>Valor de entrada</h5>
-<h6>R$ {{ object.valor_entrada }}</h6>
+<h6>{{ object.valor_entrada|brl }}</h6>
 
 <h5>Fornecedor</h5>
 <h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
@@ -19,10 +26,20 @@
 
 
 <h5>Valor a pagar</h5>
-<h6>R$ {{ object.saldodespesa }}</h6>
+<h6>{{ object.saldodespesa|brl }}</h6>
 
+{% if object.qtd_parcela and object.qtd_parcela > 1 and object.dia_vencimento_parcela %}
+<h5>Dia do vencimento mensal</h5>
+<h6>Todo dia {{ object.dia_vencimento_parcela }}</h6>
+{% else %}
 <h5>Data de vencimento</h5>
 <h6>{{ object.data_vencimento|date:'d/m/y' }}</h6>
+{% endif %}
+
+{% if object.vencimento_status_label %}
+<h5>Situação do vencimento</h5>
+<h6>{{ object.vencimento_status_label }}</h6>
+{% endif %}
 
 <h5>Quantidade de parcelas</h5>
 <h6>{{ object.qtd_parcela }}</h6>
@@ -31,10 +48,13 @@
 
 <h3>Pago</h3>
 <h5>Descricao</h5>
-<h6>{{ object.nome_despesa }}</h6>
+<h6>{% if object.tipo == "prolabore" %}Pró-labore - {% endif %}{{ object.nome_despesa }}</h6>
 
 <h5>Categoria</h5>
 <h6>{{ object.categoria_despesa|default:'Nao informado' }}</h6>
+
+<h5>Tipo</h5>
+<h6>{{ object.get_tipo_display }}</h6>
 
 <h5>Fornecedor</h5>
 <h6>{{ object.fornecedor|default:'Nao informado' }}</h6>
@@ -46,7 +66,7 @@
 <h6>{{ object.data_cadastro|date:'d/m/y - h:i' }}</h6>
 
 <h5>Valor pago</h5>
-<h6>R$ {{ object.preco_despesa }}</h6>
+<h6>{{ object.preco_despesa|brl }}</h6>
 
 
 {% endif %}

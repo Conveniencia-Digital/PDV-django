@@ -1,9 +1,404 @@
 {% extends 'dashboard/pagina-inicial.html' %}
-
+{% load static %}
+{% load despesa_formatters %}
 
 {% block titulo %}
-Relatorios
+Relatórios
 {% endblock titulo %}
+
+{% block style %}
+<link href="{% static 'css/finance-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/erp-table.css' %}" rel="stylesheet">
+<style>
+  .report-dashboard {
+    background: #f8f9fb;
+    border-radius: 18px;
+    padding: 24px;
+  }
+
+  .report-toolbar {
+    align-items: flex-end;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(16, 24, 40, 0.06);
+    display: grid;
+    gap: 14px;
+    grid-template-columns: minmax(240px, 1fr) minmax(520px, 2fr);
+    margin-bottom: 18px;
+    padding: 18px;
+  }
+
+  .report-toolbar h2 {
+    color: #182230;
+    font-size: 22px;
+    margin: 0;
+  }
+
+  .report-toolbar p {
+    color: #667085;
+    font-size: 13px;
+    margin: 5px 0 0;
+  }
+
+  .report-filter-form {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .report-periods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    grid-column: 1 / -1;
+  }
+
+  .report-periods .btn {
+    border-radius: 999px;
+    font-size: 0.78rem;
+    padding: 6px 13px;
+  }
+
+  .report-period-active {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+  }
+
+  .report-section {
+    border-top: 1px solid #e4e7ec;
+    margin-top: 22px;
+    padding-top: 20px;
+  }
+
+  .report-section:first-of-type {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .report-section-header {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .report-section-header h2 {
+    color: #182230;
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .report-section-header p {
+    color: #667085;
+    font-size: 13px;
+    margin: 4px 0 0;
+  }
+
+  .report-kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .report-grid-2 {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .report-table-panel {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .report-table-panel h2 {
+    color: #182230;
+    font-size: 17px;
+    margin: 0;
+    padding: 16px 16px 0;
+  }
+
+  .report-note {
+    color: #667085;
+    display: block;
+    font-size: 12px;
+    padding: 4px 16px 12px;
+  }
+
+  @media (max-width: 1180px) {
+    .report-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .report-kpi-grid,
+    .report-grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .report-dashboard {
+      padding: 16px;
+    }
+
+    .report-filter-form,
+    .report-kpi-grid,
+    .report-grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .report-section-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock style %}
+
 {% block conteudo %}
-<h5>Voce não possui relatorios ainda</h5>
+<div class="finance-dashboard report-dashboard">
+  <div class="report-toolbar">
+    <div>
+      <h2>Relatórios</h2>
+      <p>Margem, ponto de equilíbrio e projeção de faturamento pelo período selecionado.</p>
+    </div>
+
+    <form method="get" class="report-filter-form">
+      <input
+        type="date"
+        name="inicio"
+        value="{{ filters.inicio }}"
+        class="form-control"
+        aria-label="Data inicial">
+      <input
+        type="date"
+        name="fim"
+        value="{{ filters.fim }}"
+        class="form-control"
+        aria-label="Data final">
+      <button type="submit" class="btn btn-primary">Aplicar período</button>
+      <a href="{% url 'relatorio' %}" class="btn btn-outline-secondary">Limpar</a>
+
+      <div class="report-periods" role="group" aria-label="Períodos rápidos">
+        {% for key, label in periods %}
+          <button
+            class="btn {% if filters.periodo == key %}report-period-active{% else %}btn-outline-secondary{% endif %}"
+            name="periodo"
+            value="{{ key }}"
+            type="submit">
+            {{ label }}
+          </button>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+
+  <section class="report-section" aria-labelledby="profitability-title">
+    <div class="report-section-header">
+      <div>
+        <h2 id="profitability-title">Indicadores de margem</h2>
+        <p>{{ period.label }}: {{ period.start|date:'d/m/Y' }} a {{ period.end|date:'d/m/Y' }}</p>
+      </div>
+      <span class="erp-badge erp-badge-neutral">{{ summary.transaction_count }} lançamento(s)</span>
+    </div>
+
+    <div class="finance-kpi-grid report-kpi-grid">
+      <article class="finance-kpi success">
+        <div class="finance-kpi-title">
+          <span>Faturamento</span>
+          <span data-feather="trending-up" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.revenue|brl }}</div>
+        <div class="finance-kpi-meta">Receita operacional e receitas manuais no período.</div>
+      </article>
+
+      <article class="finance-kpi warning">
+        <div class="finance-kpi-title">
+          <span>Custos variáveis</span>
+          <span data-feather="package" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.variable_costs|brl }}</div>
+        <div class="finance-kpi-meta">CMV, custo de serviços e taxas variáveis.</div>
+      </article>
+
+      <article class="finance-kpi primary">
+        <div class="finance-kpi-title">
+          <span>Margem de contribuição</span>
+          <span data-feather="percent" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.contribution_margin|brl }}</div>
+        <div class="finance-kpi-meta">{{ summary.contribution_margin_percent|br_percent }} sobre o faturamento.</div>
+      </article>
+
+      <article class="finance-kpi {% if summary.operating_result >= 0 %}success{% else %}danger{% endif %}">
+        <div class="finance-kpi-title">
+          <span>Resultado após fixas</span>
+          <span data-feather="activity" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.operating_result|brl }}</div>
+        <div class="finance-kpi-meta">Margem de lucro: {{ summary.profit_margin_percent|br_percent }}.</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="report-section" aria-labelledby="breakeven-title">
+    <div class="report-section-header">
+      <div>
+        <h2 id="breakeven-title">Ponto de equilíbrio</h2>
+        <p>Quanto precisa faturar para cobrir as despesas fixas com a margem atual.</p>
+      </div>
+      <span class="erp-badge {% if summary.break_even_reached %}erp-badge-neutral{% else %}erp-badge-warning{% endif %}">
+        {% if summary.break_even_reached %}Atingido{% else %}A atingir{% endif %}
+      </span>
+    </div>
+
+    <div class="finance-kpi-grid report-kpi-grid">
+      <article class="finance-kpi info">
+        <div class="finance-kpi-title">
+          <span>Despesas fixas</span>
+          <span data-feather="refresh-cw" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.fixed_expenses|brl }}</div>
+        <div class="finance-kpi-meta">{{ summary.fixed_expense_occurrences }} ocorrência(s) no período.</div>
+      </article>
+
+      <article class="finance-kpi primary">
+        <div class="finance-kpi-title">
+          <span>Faturamento de equilíbrio</span>
+          <span data-feather="target" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.break_even_revenue|brl }}</div>
+        <div class="finance-kpi-meta">Fixas divididas pela margem de contribuição.</div>
+      </article>
+
+      <article class="finance-kpi {% if summary.gap_to_break_even > 0 %}warning{% else %}success{% endif %}">
+        <div class="finance-kpi-title">
+          <span>Diferença para equilibrar</span>
+          <span data-feather="bar-chart-2" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.gap_to_break_even|brl }}</div>
+        <div class="finance-kpi-meta">Valor adicional necessário no período.</div>
+      </article>
+
+      <article class="finance-kpi info">
+        <div class="finance-kpi-title">
+          <span>Ticket médio</span>
+          <span data-feather="shopping-bag" aria-hidden="true"></span>
+        </div>
+        <div class="finance-kpi-value">{{ summary.average_ticket|brl }}</div>
+        <div class="finance-kpi-meta">Média por venda, orçamento, lan house ou receita.</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="report-section" aria-labelledby="projection-title">
+    <div class="report-section-header">
+      <div>
+        <h2 id="projection-title">Projeção de faturamento</h2>
+        <p>Estimativa baseada no faturamento médio diário do período filtrado.</p>
+      </div>
+      <span class="erp-badge erp-badge-neutral">Média diária {{ summary.average_daily_revenue|brl }}</span>
+    </div>
+
+    <div class="finance-kpi-grid report-kpi-grid">
+      {% for item in projection_rows %}
+        <article class="finance-kpi info">
+          <div class="finance-kpi-title">
+            <span>{{ item.label }}</span>
+            <span data-feather="calendar" aria-hidden="true"></span>
+          </div>
+          <div class="finance-kpi-value">{{ item.amount|brl }}</div>
+          <div class="finance-kpi-meta">{{ item.days }} dia(s) projetado(s).</div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="report-section" aria-labelledby="source-title">
+    <div class="report-section-header">
+      <div>
+        <h2 id="source-title">Composição do faturamento</h2>
+        <p>Receita, custos variáveis e margem por origem.</p>
+      </div>
+    </div>
+
+    <div class="report-grid-2">
+      <div class="report-table-panel">
+        <h2>Margem por origem</h2>
+        <span class="report-note">A margem de contribuição considera faturamento menos custos variáveis.</span>
+        <div class="table-responsive">
+          <table class="table table-borderless table-hover erp-table mb-0">
+            <thead class="erp-header">
+              <tr>
+                <th>Origem</th>
+                <th class="text-end">Faturamento</th>
+                <th class="text-end">Custos variáveis</th>
+                <th class="text-end">Contribuição</th>
+                <th class="text-end">Margem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if source_rows %}
+                {% for row in source_rows %}
+                  <tr class="erp-row">
+                    <td class="erp-primary-text">{{ row.source }}</td>
+                    <td class="text-end">{{ row.revenue|brl }}</td>
+                    <td class="text-end">{{ row.variable_cost|brl }}</td>
+                    <td class="text-end">{{ row.contribution|brl }}</td>
+                    <td class="text-end">{{ row.contribution_percent|br_percent }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">Nenhum faturamento no período.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="report-table-panel">
+        <h2>Projeções por período</h2>
+        <span class="report-note">Use como referência rápida para metas de faturamento.</span>
+        <div class="table-responsive">
+          <table class="table table-borderless table-hover erp-table mb-0">
+            <thead class="erp-header">
+              <tr>
+                <th>Período</th>
+                <th class="text-end">Dias</th>
+                <th class="text-end">Faturamento projetado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in projection_rows %}
+                <tr class="erp-row">
+                  <td class="erp-primary-text">{{ item.label }}</td>
+                  <td class="text-end">{{ item.days }}</td>
+                  <td class="text-end">{{ item.amount|brl }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{ charts|json_script:"relatorioChartsData" }}
+</div>
 {% endblock conteudo %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.feather) {
+      window.feather.replace();
+    }
+  });
+</script>
+{% endblock scripts %}

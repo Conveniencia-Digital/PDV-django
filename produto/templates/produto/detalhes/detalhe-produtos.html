@@ -1,73 +1,91 @@
-<table class="table table-hover">
-  <thead>
-    <tr class="table-dark text-center">
-      <th scope="col">Qtd. em Estoque</th>
-      <th scope="col">Produto</th>
-      <th scope="col">Categoria</th>
-      <th scope="col">Fornecedor</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="text-center">
-      <td>{{ object.quantidade }}</td>
-      <td>{{ object.nome_produto }}</td>
-      <td>{{ object.categoria_produtos }}</td>
-      <td>{% if object.fornecedor == None %}
-            Não informado
+<div class="produto-detail-table">
+  <table class="table table-hover align-middle mb-3">
+    <thead>
+      <tr class="table-dark text-center">
+        <th scope="col">Qtd. em Estoque</th>
+        <th scope="col">Produto</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Fornecedor</th>
+        <th scope="col">Tempo em estoque</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center">
+        <td>{{ object.quantidade }}</td>
+        <td>{{ object.nome_produto }}</td>
+        <td>
+          {% if object.categoria %}
+            {{ object.categoria.nome }}
+          {% elif object.categoria_produtos %}
+            {{ object.categoria_produtos }}
           {% else %}
-            {{ object.fornecedor }}
+            Nao informado
           {% endif %}
-      </td>
-    </tr>
-  </tbody>
-</table>
-<table class="table table-hover">
-  <thead>
-    <tr class="table-dark text-center">
-      <th scope="col">Preço de Custo por Unidade</th>
-      <th scope="col">Preço de Venda por Unidade</th>
-      <th scope="col">Margem de Lucro por Unidade</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="text-center">
-      <td><sup>R$</sup> {{ object.preco_de_custo }}</td>
-      <td><sup>R$</sup> {{ object.preco }}</td>
-      <td><sup>R$</sup> {{ object.lucro }} <b>(%{{ object.margem_lucro_und }})</b></td>
-    </tr>
-  </tbody>
-</table>
-<table class="table table-hover">
-  <thead>
-    <tr class="table-dark text-center">
-      <th scope="col">Preço de Custo de Total</th>
-      <th scope="col">Preço de Venda Total</th>
-      <th scope="col">Margem de Lucro Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="text-center">
-      <td><sup>R$</sup> {{ object.precototal }}</td>
-      <td><sup>R$</sup> {{ object.vendatotal }}</td>
-      <td><sup>R$</sup> {{ object.lucrototal }} <b>(%{{ object.margem_lucro_total_percentual }})</b></td>
-    </tr>
-  </tbody>
-</table>
-<table class="table table-hover">
-  <thead>
-    <tr class="table-dark text-center">
-      <th scope="col">Data do Cadastro</th>
-      <th scope="col">Ultima Edição</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="text-center">
-      <td>{{ object.data_criacao|date:'d/m/y h:i' }}</td>
-      <td>{{ object.data_edicao|date:'d/m/y h:i' }}</td>
-    </tr>
-  </tbody>
-</table>
+        </td>
+        <td>{{ object.fornecedor|default:'Nao informado' }}</td>
+        <td>
+          <span class="produto-detail-stock {% if object.quantidade <= 0 %}is-empty{% endif %}">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            {{ object.tempo_em_estoque_label }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
+  <table class="table table-hover align-middle mb-3">
+    <thead>
+      <tr class="table-dark text-center">
+        <th scope="col">Preco de Custo por Unidade</th>
+        <th scope="col">Preco de Venda por Unidade</th>
+        <th scope="col">Margem de Lucro por Unidade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center">
+        <td><sup>R$</sup> {{ object.preco_de_custo }}</td>
+        <td><sup>R$</sup> {{ object.preco }}</td>
+        <td><sup>R$</sup> {{ object.lucro }} <b>({{ object.margem_lucro_und }}%)</b></td>
+      </tr>
+    </tbody>
+  </table>
 
-        
-    
+  <table class="table table-hover align-middle mb-3">
+    <thead>
+      <tr class="table-dark text-center">
+        <th scope="col">Preco de Custo Total</th>
+        <th scope="col">Preco de Venda Total</th>
+        <th scope="col">Margem de Lucro Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center">
+        <td><sup>R$</sup> {{ object.precototal }}</td>
+        <td><sup>R$</sup> {{ object.vendatotal }}</td>
+        <td><sup>R$</sup> {{ object.lucrototal }} <b>({{ object.margem_lucro_total_percentual }}%)</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-hover align-middle mb-0">
+    <thead>
+      <tr class="table-dark text-center">
+        <th scope="col">Data do Cadastro</th>
+        <th scope="col">Ultima Edicao</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center">
+        <td>{{ object.data_criacao|date:'d/m/Y H:i' }}</td>
+        <td>{{ object.data_edicao|date:'d/m/Y H:i' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if object.observacao %}
+    <div class="produto-detail-note mt-3">
+      <strong>Observacao</strong>
+      <p>{{ object.observacao }}</p>
+    </div>
+  {% endif %}
+</div>

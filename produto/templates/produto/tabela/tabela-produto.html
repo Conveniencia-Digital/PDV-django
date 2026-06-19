@@ -1,3 +1,13 @@
 {% for object in object_list %}
     {% include 'produto/tabela/linhas-tabela-produto.html' %}
+{% empty %}
+    <tr class="erp-row">
+        <td colspan="5" class="produto-empty-row">
+            <div class="produto-empty-state">
+                <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+                <strong>Nenhum produto encontrado</strong>
+                <span>Revise a busca ou selecione outra categoria.</span>
+            </div>
+        </td>
+    </tr>
 {% endfor %}

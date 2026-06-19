@@ -105,6 +105,19 @@
         root.querySelectorAll('[data-produto-form]').forEach(bindProdutoForm);
     }
 
+    function cleanupBootstrapArtifacts() {
+        window.setTimeout(function () {
+            if (!document.querySelector('.modal.show')) {
+                document.querySelectorAll('.modal-backdrop').forEach(function (backdrop) {
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('padding-right');
+                document.body.style.removeProperty('overflow');
+            }
+        }, 120);
+    }
+
     function closeProdutoModal() {
         var modal = document.getElementById('staticBackdrop');
         if (!modal || !window.bootstrap) return;
@@ -114,18 +127,34 @@
             instance = new window.bootstrap.Modal(modal);
         }
         instance.hide();
+        cleanupBootstrapArtifacts();
+    }
+
+    function showProdutoToast(message, type) {
+        var stack = document.querySelector('[data-produto-toast-stack]');
+        if (!stack) {
+            stack = document.createElement('div');
+            stack.className = 'produto-toast-stack';
+            stack.setAttribute('data-produto-toast-stack', 'true');
+            document.body.appendChild(stack);
+        }
+
+        var toast = document.createElement('div');
+        toast.className = 'produto-toast ' + (type || 'success');
+        toast.setAttribute('role', 'status');
+        toast.innerHTML = '<i class="fa-solid ' + (type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-check') + '" aria-hidden="true"></i><span></span>';
+        toast.querySelector('span').textContent = message;
+        stack.appendChild(toast);
 
         window.setTimeout(function () {
-            document.querySelectorAll('.modal-backdrop').forEach(function (backdrop) {
-                if (!document.querySelector('.modal.show')) {
-                    backdrop.remove();
+            toast.classList.add('is-hiding');
+            window.setTimeout(function () {
+                toast.remove();
+                if (!stack.children.length) {
+                    stack.remove();
                 }
-            });
-            if (!document.querySelector('.modal.show')) {
-                document.body.classList.remove('modal-open');
-                document.body.style.removeProperty('padding-right');
-            }
-        }, 120);
+            }, 180);
+        }, 3600);
     }
 
     function refreshProdutoDashboard() {
@@ -145,6 +174,23 @@
         refreshProdutoDashboard();
     }
 
+    function handleProdutoDeleted(event) {
+        var message = event.detail && event.detail.message
+            ? event.detail.message
+            : 'Produto excluido com sucesso.';
+        cleanupBootstrapArtifacts();
+        showProdutoToast(message, 'success');
+        refreshProdutoDashboard();
+    }
+
+    function handleProdutoDeleteBlocked(event) {
+        var message = event.detail && event.detail.message
+            ? event.detail.message
+            : 'Produto possui vendas vinculadas e nao pode ser excluido.';
+        cleanupBootstrapArtifacts();
+        showProdutoToast(message, 'warning');
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         initProdutoForms(document);
     });
@@ -153,7 +199,9 @@
         initProdutoForms(event.target);
     });
 
+    document.body.addEventListener('hidden.bs.modal', cleanupBootstrapArtifacts);
     document.body.addEventListener('produtoSalvo', handleProdutoMutationSuccess);
     document.body.addEventListener('produtoEditado', handleProdutoMutationSuccess);
-    document.body.addEventListener('produtoExcluido', refreshProdutoDashboard);
+    document.body.addEventListener('produtoExcluido', handleProdutoDeleted);
+    document.body.addEventListener('produtoExclusaoBloqueada', handleProdutoDeleteBlocked);
 })();

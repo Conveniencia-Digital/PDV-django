@@ -1,3 +1,4 @@
+{% load despesa_formatters %}
 <h5>Fornecedor</h5>
 <h6>{{ object.fornecedor|default:'---' }}</h6>
 
@@ -11,8 +12,7 @@
 <h6>{{ object.quantidade }} unidades {{ object.nome_peca }}</h6>
 
 <h5>Valor a pagar</h5>
-<h6>R$ {{ object.saldodespesa }}</h6>
+<h6>{{ object.saldodespesa|brl }}</h6>
 
 <h5>Data de vencimento</h5>
 <h6>{{ object.data_vencimento|date:'d/m/y' }}</h6>
-

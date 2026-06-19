@@ -1,0 +1,18 @@
+{% load widget_tweaks %}
+
+<section class="erp-form-section" data-despesa-divida-status>
+  <div class="row g-3 align-items-end">
+    <div class="col-12 col-md-4">
+      <label class="form-label client-picker-label" for="{{ form.fiado_pago.id_for_label }}">Status da dívida</label>
+      {% render_field form.fiado_pago class="form-select selector-standard-control" %}
+      {% if form.fiado_pago.errors %}
+        <div class="invalid-feedback d-block">{{ form.fiado_pago.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="text-muted small">
+        Dívidas não pagas ficam em a pagar; só entram como despesa quando marcadas como Pago.
+      </div>
+    </div>
+  </div>
+</section>

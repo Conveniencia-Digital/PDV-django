@@ -6,7 +6,7 @@
     </button>
 </div>
 <form hx-post="{% url 'editar-cliente' object.pk %}" hx-target="#trCliente{{ object.pk }}"
-    hx-indicator=".htmx-indicator" hx-swap="outerHTML">
+    hx-indicator=".htmx-indicator" hx-swap="outerHTML" data-cliente-edit-form>
 
     <div class="modal-body">
         {% csrf_token %}
@@ -21,7 +21,8 @@
         <div class="row g-2" style="margin-bottom: 10px;">
             <div class="col-6 form-floating">
                 {% render_field form.cpf class="form-control" id="cpf" %}
-                <label for="">Informe o CPF (opcional)</label>
+                <label for="" id="error-cpf">Informe o CPF (opcional)</label>
+                {{ form.cpf.errors }}
             </div>
             <div class="col-6 form-floating">
                 {% render_field form.data_nascimento class="form-control" %}
@@ -32,11 +33,13 @@
         <div class="row g-2" style="margin-bottom: 10px;">
             <div class="col-6 form-floating">
                 {% render_field form.telefone_contato class="form-control" id="telefone" %}
-                <label for="" id="error-message">Telefone para contato</label>
+                <label for="" id="error-message">Telefone para contato (opcional)</label>
+                {{ form.telefone_contato.errors }}
             </div>
             <div class="col-6 form-floating">
                 {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
                 <label for="" id="error-message2">Outro telefone de contato (opcional)</label>
+                {{ form.telefone_contato_2.errors }}
             </div>
         </div>
         <!---->
@@ -64,88 +67,123 @@
     </div>
 </form>
 <script>
-    $('form').on('submit', function () {
-        $('#staticBackdrop').modal('toggle')
-        setTimeout(() => {
-            $('#success_tic_editar').modal('toggle')
-        }, "500");
+(function () {
+  var script = document.currentScript;
+  var container = script.closest('#adicionar-conteudo') || document;
+  var form = container.querySelector('form[data-cliente-edit-form]');
+  if (!form || form.dataset.clienteEditScriptInit === '1') return;
+  form.dataset.clienteEditScriptInit = '1';
+
+  var cpf = container.querySelector('#cpf');
+  var telefone = container.querySelector('#telefone');
+  var telefone2 = container.querySelector('#telefone2');
+  var finalizar = container.querySelector('#finalizar');
+
+  if (window.jQuery) {
+    window.jQuery(form).off('submit.clienteEditForm').on('submit.clienteEditForm', function () {
+      window.jQuery('#staticBackdrop').modal('toggle');
+      setTimeout(function () {
+        window.jQuery('#success_tic_editar').modal('toggle');
+      }, 500);
     });
-    $(document).ready(function () {
-        $('#cpf').mask('000.000.000-00', { reverse: false });
-        $('#telefone').mask('(00) 00000-0000');
-        $('#telefone2').mask('(00) 00000-0000');
-    })
-  document.querySelector('#telefone').addEventListener('change', erroformulario); 
-  document.querySelector('#telefone').addEventListener('mouseout', erroformulario); 
-  document.querySelector('#telefone').addEventListener('click', erroformulario);
-  document.querySelector('#telefone').addEventListener('keyup', erroformulario);
-  
-  
-  document.querySelector('#telefone2').addEventListener('change', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('mouseout', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('click', erroformulario2);
-  
-  
-  document.querySelector('#cpf').addEventListener('change', errocpf); 
-  document.querySelector('#cpf').addEventListener('mouseout', errocpf); 
-  document.querySelector('#cpf').addEventListener('click', errocpf);
-  
-  function erroformulario () {
-    let telefone = document.querySelector('#telefone');
-    let error_tel =  document.querySelector('#error-message');
-    let qtd = telefone.value;
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone.style.border = '1px solid #ff0000';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '#ff0000';
-      error_tel.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone.style.border = '';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '';
-      error_tel.innerHTML = 'Telefone para contato';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
+  }
+
+  if (window.jQuery && window.jQuery.fn.mask) {
+    if (cpf) window.jQuery(cpf).mask('000.000.000-00', { reverse: false });
+    aplicarMascaraTelefone(telefone);
+    aplicarMascaraTelefone(telefone2);
+  }
+
+  function aplicarMascaraTelefone(input) {
+    if (!input || !window.jQuery || !window.jQuery.fn.mask) return;
+    var behavior = function (value) {
+      return value.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    };
+    var options = {
+      onKeyPress: function (value, event, field, option) {
+        field.mask(behavior.apply({}, arguments), option);
+      }
+    };
+    window.jQuery(input).mask(behavior, options);
+  }
+
+  function setSubmitEnabled(enabled) {
+    if (finalizar) finalizar.setAttribute('type', enabled ? 'submit' : 'button');
+  }
+
+  function telefoneValido(input) {
+    if (!input || !input.value) return true;
+    return /^\(\d{2}\) \d{4,5}-\d{4}$/.test(input.value);
+  }
+
+  function cpfValido() {
+    return !cpf || !cpf.value || cpf.value.length >= 14;
+  }
+
+  function atualizarSubmit() {
+    setSubmitEnabled(telefoneValido(telefone) && telefoneValido(telefone2) && cpfValido());
+  }
+
+  function validarTelefone(input, label, mensagemPadrao) {
+    if (!input || !label) return true;
+    var invalido = input.value.length >= 1 && !telefoneValido(input);
+
+    if (invalido) {
+      input.style.border = '1px solid #ff0000';
+      label.style.display = 'block';
+      label.style.color = '#ff0000';
+      label.innerHTML = 'Telefone inválido';
+      atualizarSubmit();
+      return false;
     }
 
-  };
-  function erroformulario2 () {
-    let telefone2 = document.querySelector('#telefone2');cpf
-    let error_tel2 =  document.querySelector('#error-message2');
-    let qtd = telefone2.value;
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone2.style.border = '1px solid #ff0000';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '#ff0000';
-      error_tel2.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone2.style.border = '';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '';
-      error_tel2.innerHTML = 'Telefone para contato';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
-    }
+    input.style.border = '';
+    label.style.display = 'block';
+    label.style.color = '';
+    label.innerHTML = mensagemPadrao;
+    atualizarSubmit();
+    return true;
+  }
 
-  };
+  function erroformulario() {
+    validarTelefone(telefone, container.querySelector('#error-message'), 'Telefone para contato (opcional)');
+  }
 
-  function errocpf () {
-    let cpf = document.querySelector('#cpf');
-    let error_cpf =  document.querySelector('#error-cpf');
-    let qtd = cpf.value;
-    if(qtd.length >= 1 && qtd.length < 14){
+  function erroformulario2() {
+    validarTelefone(telefone2, container.querySelector('#error-message2'), 'Outro telefone de contato (opcional)');
+  }
+
+  function errocpf() {
+    var label = container.querySelector('#error-cpf');
+    if (!cpf || !label) return;
+    var invalido = cpf.value.length >= 1 && !cpfValido();
+
+    if (invalido) {
       cpf.style.border = '1px solid #ff0000';
-      error_cpf.style.display = 'block' ; 
-      error_cpf.style.color = '#ff0000';
-      error_cpf.innerHTML = 'CPF invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
+      label.style.display = 'block';
+      label.style.color = '#ff0000';
+      label.innerHTML = 'CPF invalido';
+    } else {
       cpf.style.border = '';
-      error_cpf.style.display = 'block' ; 
-      error_cpf.style.color = '';
-      error_cpf.innerHTML = 'Informe o CPF (opcional)';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
+      label.style.display = 'block';
+      label.style.color = '';
+      label.innerHTML = 'Informe o CPF (opcional)';
     }
+    atualizarSubmit();
+  }
 
-  };
+  [
+    [telefone, erroformulario],
+    [telefone2, erroformulario2],
+    [cpf, errocpf]
+  ].forEach(function (entry) {
+    var input = entry[0];
+    var handler = entry[1];
+    if (!input) return;
+    input.addEventListener('change', handler);
+    input.addEventListener('mouseout', handler);
+    input.addEventListener('click', handler);
+    input.addEventListener('keyup', handler);
+  });
+})();
 </script>

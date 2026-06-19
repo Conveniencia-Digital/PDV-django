@@ -1,9 +1,22 @@
 <tr id="tr-Categoria{{ object.pk }}">
 
     <td>{{ object.nome_categoria_despesa }}</td>
-    <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop2" hx-get="{% url 'editar-categoria-despesa' object.pk %}" hx-target="#adicionar-conteudo2"><i class="fa fa-edit"></i></span></td>
+    <td>
+        <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop2"
+            hx-get="{% url 'editar-categoria-despesa' object.pk %}"
+            hx-target="#adicionar-conteudo2"
+            hx-swap="innerHTML"
+            title="Editar categoria">
+            <i class="fa fa-edit"></i>
+        </button>
+    </td>
     <td><span hx-get="{% url 'apagar-categoria-despesa' object.pk %}" hx-target="closest tr"
-            hx-swap="outerHTML swap:1s">
+            hx-swap="outerHTML swap:300ms"
+            hx-confirm="Deseja apagar a categoria {{ object.nome_categoria_despesa }}? As despesas vinculadas ficarão sem categoria.">
             <i class="fa fa-trash-can"></i>
         </span>
     </td>

@@ -1,4 +1,73 @@
 (function () {
+    function currencyLabel(value) {
+        return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function diagonalCategoryChart(element, labels, datasets) {
+        if (!element || !window.Chart) return null;
+        return new Chart(element, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { labels: { boxWidth: 14 } },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            var dataset = data.datasets[tooltipItem.datasetIndex];
+                            return dataset.label + ': ' + currencyLabel(tooltipItem.yLabel || tooltipItem.value);
+                        }
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            minRotation: 45,
+                            maxRotation: 45,
+                            autoSkip: false
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function (value) { return currencyLabel(value); }
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    function chartLabels(source, emptyLabel) {
+        return source && source.labels && source.labels.length ? source.labels : [emptyLabel || 'Sem dados'];
+    }
+
+    function chartValues(source) {
+        return source && source.values && source.values.length ? source.values : [0];
+    }
+
+    function renderCategoryChart(context, key, element, source, datasetOptions, emptyLabel) {
+        if (!element) return;
+
+        var dataset = Object.assign({}, datasetOptions, {
+            data: chartValues(source)
+        });
+
+        try {
+            context.setChart(key, diagonalCategoryChart(element, chartLabels(source, emptyLabel), [dataset]));
+        } catch (error) {
+            context.setChart(key, null);
+            element.dataset.chartError = 'true';
+        }
+    }
+
     if (window.FinanceCharts && window.FinanceCharts.registerHtmxDashboard) {
         window.DespesaDashboardCharts = FinanceCharts.registerHtmxDashboard({
             name: 'despesa',
@@ -9,16 +78,21 @@
                 var root = context.root;
                 var data = context.data || {};
                 var category = data.category_ranking || {};
+                var prolaboreCategory = data.prolabore_category_ranking || {};
                 var canvas = root.querySelector('#expenseCategoryChart');
+                var prolaboreCanvas = root.querySelector('#prolaboreCategoryChart');
 
-                if (canvas) {
-                    context.setChart('category', context.charts.barChart(canvas, category.labels || [], [{
-                        label: 'Despesas por categoria',
-                        backgroundColor: '#f0ad4e',
-                        borderColor: '#c47f10',
-                        data: category.values || []
-                    }]));
-                }
+                renderCategoryChart(context, 'category', canvas, category, {
+                    label: 'Despesas por categoria',
+                    backgroundColor: '#f0ad4e',
+                    borderColor: '#c47f10'
+                }, 'Sem despesas');
+
+                renderCategoryChart(context, 'prolaboreCategory', prolaboreCanvas, prolaboreCategory, {
+                    label: 'Pró-labore por categoria',
+                    backgroundColor: '#f59e0b',
+                    borderColor: '#b45309'
+                }, 'Sem Pró-labore');
 
                 if (window.feather) {
                     window.feather.replace();
@@ -27,11 +101,27 @@
         });
     }
 
+    document.body.addEventListener('shown.bs.collapse', function (event) {
+        if (
+            event.target &&
+            event.target.closest &&
+            event.target.closest('#bloco-dados') &&
+            window.DespesaDashboardCharts &&
+            typeof window.DespesaDashboardCharts.resize === 'function'
+        ) {
+            window.setTimeout(function () {
+                window.DespesaDashboardCharts.resize();
+            }, 80);
+        }
+    });
+
     function modalFormFromEvent(event) {
         var element = event.detail && event.detail.elt ? event.detail.elt : event.target;
         if (!element) return null;
         if (element.matches && element.matches('[data-despesa-modal-form]')) return element;
-        return element.closest ? element.closest('[data-despesa-modal-form]') : null;
+        if (element.matches && element.matches('[data-despesa-category-form]')) return element;
+        if (!element.closest) return null;
+        return element.closest('[data-despesa-modal-form], [data-despesa-category-form]');
     }
 
     function setSubmitState(form, isLoading) {
@@ -75,6 +165,15 @@
 
     function closeMainModal() {
         var modalElement = document.getElementById('staticBackdrop');
+        closeModalElement(modalElement);
+    }
+
+    function closeCategoryModal() {
+        var modalElement = document.getElementById('staticBackdrop2');
+        closeModalElement(modalElement);
+    }
+
+    function closeModalElement(modalElement) {
         if (!modalElement) {
             cleanupModalArtifacts();
             return;
@@ -137,6 +236,88 @@
         showToast(message, variant || 'success');
     }
 
+    var recentTriggerRuns = {};
+    var triggerActions = {
+        despesaSalva: function () {
+            handleSuccess('Despesa cadastrada com sucesso.');
+        },
+        prolaboreSalvo: function () {
+            handleSuccess('Pró-labore cadastrado com sucesso.');
+        },
+        dividaSalva: function () {
+            handleSuccess('Dívida cadastrada com sucesso.');
+        },
+        despesaEditada: function () {
+            handleSuccess('Despesa atualizada com sucesso.');
+        },
+        prolaboreEditado: function () {
+            handleSuccess('Pró-labore atualizado com sucesso.');
+        },
+        dividaEditada: function () {
+            handleSuccess('Dívida atualizada com sucesso.');
+        },
+        despesaExcluida: function () {
+            showToast('Despesa excluida com sucesso.', 'danger');
+            cleanupModalArtifacts();
+        },
+        prolaboreExcluido: function () {
+            showToast('Pró-labore excluido com sucesso.', 'danger');
+            cleanupModalArtifacts();
+        },
+        dividaExcluida: function () {
+            showToast('Dívida excluida com sucesso.', 'danger');
+            cleanupModalArtifacts();
+        },
+        despesaCategoriaSalva: function () {
+            showToast('Categoria cadastrada com sucesso.');
+        },
+        despesaCategoriaEditada: function () {
+            closeCategoryModal();
+            showToast('Categoria atualizada com sucesso.');
+        },
+        despesaCategoriaExcluida: function () {
+            showToast('Categoria excluida com sucesso.', 'danger');
+            cleanupModalArtifacts();
+        }
+    };
+
+    function runTriggerAction(triggerName) {
+        var action = triggerActions[triggerName];
+        if (!action) return;
+
+        var now = Date.now();
+        if (recentTriggerRuns[triggerName] && now - recentTriggerRuns[triggerName] < 500) {
+            return;
+        }
+
+        recentTriggerRuns[triggerName] = now;
+        action();
+    }
+
+    function triggerNamesFromHeader(header) {
+        if (!header) return [];
+
+        var value = String(header).trim();
+        if (!value) return [];
+
+        if (value.charAt(0) === '{') {
+            try {
+                return Object.keys(JSON.parse(value));
+            } catch (error) {
+                return [];
+            }
+        }
+
+        return value.split(/[\s,]+/).filter(Boolean);
+    }
+
+    function runHeaderTriggerActions(event) {
+        var xhr = event.detail && event.detail.xhr;
+        if (!xhr || !xhr.getResponseHeader) return;
+
+        triggerNamesFromHeader(xhr.getResponseHeader('HX-Trigger')).forEach(runTriggerAction);
+    }
+
     function syncFiadoFields(form) {
         if (!form) return;
 
@@ -145,13 +326,15 @@
         if (!formaPagamento || !fiadoRow) return;
 
         var isFiado = formaPagamento.value === 'Fiado a pagar';
+        var qtdParcela = form.querySelector('[name="qtd_parcela"]');
+        var quantidadeParcelas = qtdParcela && qtdParcela.value ? parseInt(qtdParcela.value, 10) : 1;
+        var isParceladoMensal = isFiado && quantidadeParcelas > 1;
         fiadoRow.hidden = !isFiado;
         fiadoRow.setAttribute('aria-hidden', isFiado ? 'false' : 'true');
 
         var fields = {
             valor_entrada: 'number',
-            qtd_parcela: 'number',
-            data_vencimento: 'date'
+            qtd_parcela: 'number'
         };
 
         Object.keys(fields).forEach(function (name) {
@@ -160,14 +343,62 @@
             field.type = isFiado ? fields[name] : 'hidden';
         });
 
+        var dataVencimento = form.querySelector('[name="data_vencimento"]');
+        var diaVencimentoParcela = form.querySelector('[name="dia_vencimento_parcela"]');
+        var dataVencimentoGroup = form.querySelector('[data-fiado-vencimento-data]');
+        var diaVencimentoGroup = form.querySelector('[data-fiado-vencimento-dia]');
+
+        if (dataVencimentoGroup) {
+            dataVencimentoGroup.hidden = !isFiado || isParceladoMensal;
+            dataVencimentoGroup.setAttribute('aria-hidden', isFiado && !isParceladoMensal ? 'false' : 'true');
+        }
+        if (diaVencimentoGroup) {
+            diaVencimentoGroup.hidden = !isParceladoMensal;
+            diaVencimentoGroup.setAttribute('aria-hidden', isParceladoMensal ? 'false' : 'true');
+        }
+        if (dataVencimento) {
+            dataVencimento.type = isFiado && !isParceladoMensal ? 'date' : 'hidden';
+            dataVencimento.required = false;
+            if (isParceladoMensal || !isFiado) {
+                dataVencimento.value = '';
+            }
+        }
+        if (diaVencimentoParcela) {
+            diaVencimentoParcela.type = isParceladoMensal ? 'number' : 'hidden';
+            diaVencimentoParcela.required = isParceladoMensal;
+            if (!isParceladoMensal) {
+                diaVencimentoParcela.value = '';
+            }
+        }
+
         var valorEntrada = form.querySelector('[name="valor_entrada"]');
         if (isFiado && valorEntrada && !valorEntrada.value) {
             valorEntrada.value = '0.00';
         }
 
-        var qtdParcela = form.querySelector('[name="qtd_parcela"]');
         if (isFiado && qtdParcela && !qtdParcela.value) {
             qtdParcela.value = '1';
+        }
+    }
+
+    function syncDespesaFixaFields(form) {
+        if (!form) return;
+
+        var despesaFixa = form.querySelector('[name="despesa_fixa"]');
+        var vencimentoRow = form.querySelector('[data-despesa-fixa-row]');
+        if (!despesaFixa || !vencimentoRow) return;
+
+        var isFixed = despesaFixa.checked;
+        vencimentoRow.hidden = !isFixed;
+        vencimentoRow.setAttribute('aria-hidden', isFixed ? 'false' : 'true');
+
+        var diaVencimento = form.querySelector('[name="dia_vencimento_fixo"]');
+        if (!diaVencimento) return;
+
+        diaVencimento.type = isFixed ? 'number' : 'hidden';
+        diaVencimento.required = isFixed;
+        if (!isFixed) {
+            diaVencimento.value = '';
         }
     }
 
@@ -185,6 +416,7 @@
         forms.forEach(function (form) {
             if (form.dataset.despesaFiadoInit === '1') {
                 syncFiadoFields(form);
+                syncDespesaFixaFields(form);
                 return;
             }
 
@@ -195,7 +427,23 @@
                     syncFiadoFields(form);
                 });
             }
+            var qtdParcela = form.querySelector('[name="qtd_parcela"]');
+            if (qtdParcela) {
+                qtdParcela.addEventListener('input', function () {
+                    syncFiadoFields(form);
+                });
+                qtdParcela.addEventListener('change', function () {
+                    syncFiadoFields(form);
+                });
+            }
+            var despesaFixa = form.querySelector('[name="despesa_fixa"]');
+            if (despesaFixa) {
+                despesaFixa.addEventListener('change', function () {
+                    syncDespesaFixaFields(form);
+                });
+            }
             syncFiadoFields(form);
+            syncDespesaFixaFields(form);
         });
     }
 
@@ -205,10 +453,18 @@
 
     document.body.addEventListener('htmx:afterRequest', function (event) {
         setSubmitState(modalFormFromEvent(event), false);
+        runHeaderTriggerActions(event);
     });
 
     document.body.addEventListener('htmx:responseError', function (event) {
         setSubmitState(modalFormFromEvent(event), false);
+    });
+
+    document.body.addEventListener('change', function (event) {
+        var target = event.target;
+        if (!target || !target.matches || !target.matches('[name="despesa_fixa"]')) return;
+
+        syncDespesaFixaFields(target.closest('[data-despesa-modal-form]'));
     });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {
@@ -225,21 +481,14 @@
         initFiadoFields(document);
     });
 
-    document.body.addEventListener('despesaSalva', function () {
-        handleSuccess('Despesa cadastrada com sucesso.');
-    });
-
-    document.body.addEventListener('despesaEditada', function () {
-        handleSuccess('Despesa atualizada com sucesso.');
-    });
-
-    document.body.addEventListener('despesaExcluida', function () {
-        showToast('Despesa excluida com sucesso.', 'danger');
-        cleanupModalArtifacts();
+    Object.keys(triggerActions).forEach(function (triggerName) {
+        document.body.addEventListener(triggerName, function () {
+            runTriggerAction(triggerName);
+        });
     });
 
     document.addEventListener('hidden.bs.modal', function (event) {
-        if (event.target && event.target.id === 'staticBackdrop') {
+        if (event.target && (event.target.id === 'staticBackdrop' || event.target.id === 'staticBackdrop2')) {
             cleanupModalArtifacts();
         }
     });

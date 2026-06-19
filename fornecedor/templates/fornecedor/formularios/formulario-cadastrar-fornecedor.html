@@ -5,20 +5,34 @@
     
   </button>
 </div>
-<form hx-post="{% url 'cadastrar-fornecedor' %}" hx-target="#fornecedor-Tbody" hx-indicator=".htmx-indicator"
-  hx-swap="afterbegin">
+<form id="{% if supplier_picker_mode %}fornecedor-picker-form{% else %}fornecedor-form{% endif %}"
+  hx-post="{% url 'cadastrar-fornecedor' %}{% if supplier_picker_mode %}?picker=1{% endif %}"
+  hx-target="{% if supplier_picker_mode %}#fornecedorPickerModalConteudo{% else %}#fornecedor-Tbody{% endif %}"
+  hx-indicator=".htmx-indicator"
+  hx-swap="{% if supplier_picker_mode %}innerHTML{% else %}afterbegin{% endif %}"
+  data-supplier-picker-form="{% if supplier_picker_mode %}true{% else %}false{% endif %}">
 
   <div class="modal-body">
     {% csrf_token %}
+    {% if supplier_picker_mode %}
+      <input type="hidden" name="supplier_picker" value="1">
+    {% endif %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger py-2">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
         {% render_field form.usuario class="form-control" %}
         {% render_field form.nome_fornecedor class="form-control" %}
         <label for="">Escreva o nome do fornecedor</label>
+        {{ form.nome_fornecedor.errors }}
       </div>
       <div class="col form-floating">
         {% render_field form.cnpj class="form-control" id="cnpj" %}
         <label for="" id="error-cnpj">Informe o CNPJ (opcional)</label>
+        {{ form.cnpj.errors }}
       </div>
     </div>
     <!---->
@@ -26,10 +40,12 @@
       <div class="col form-floating">
         {% render_field form.telefone_contato class="form-control" id="telefone" %}
         <label for="" id="error-message">Telefone para contato</label>
+        {{ form.telefone_contato.errors }}
       </div>
       <div class="col form-floating">
         {% render_field form.telefone_contato_2 class="form-control" id="telefone2" %}
         <label for="" id="error-message2">Outro telefone de contato (opcional)</label>
+        {{ form.telefone_contato_2.errors }}
       </div>
     </div>
     <!---->
@@ -37,16 +53,19 @@
       <div class="col form-floating">
         {% render_field form.rua class="form-control" %}
         <label for="">Endereço (opcional)</label>
+        {{ form.rua.errors }}
       </div>
       <div class="col form-floating">
         {% render_field form.bairro class="form-control" %}
         <label for="">Bairro (opcional</label>
+        {{ form.bairro.errors }}
       </div>
     </div>
     <div class="row g-2" style="margin-bottom: 10px;">
       <div class="col form-floating">
           {% render_field form.observacao class="form-control" %}
           <label for="">Observaçāo</label>
+          {{ form.observacao.errors }}
       </div>
   </div>
   </div>
@@ -57,88 +76,98 @@
   </div>
 </form>
 <script>
+(function () {
+  var script = document.currentScript;
+  var container = script.closest('#fornecedorPickerModalConteudo') || script.closest('#adicionar-conteudo') || document;
+  var form = container.querySelector('form[data-supplier-picker-form]');
+  if (!form || form.dataset.fornecedorFormScriptInit === '1') return;
+  form.dataset.fornecedorFormScriptInit = '1';
 
-  $('form').on('submit', function () {
-    $('#staticBackdrop').modal('toggle')
-    setTimeout(() => {
-      $('#success_tic').modal('toggle')
-    }, "500");
-  });
-  $(document).ready(function () {
-        $('#cnpj').mask('00.000.000/0000-00', { reverse: false });
-        $('#telefone').mask('(00) 00000-0000');
-        $('#telefone2').mask('(00) 00000-0000');
-    })
-    document.querySelector('#telefone').addEventListener('change', erroformulario); 
-  document.querySelector('#telefone').addEventListener('mouseout', erroformulario); 
-  document.querySelector('#telefone').addEventListener('click', erroformulario);
-  
-  
-  document.querySelector('#telefone2').addEventListener('change', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('mouseout', erroformulario2); 
-  document.querySelector('#telefone2').addEventListener('click', erroformulario2);
-  
-  document.querySelector('#cnpj').addEventListener('change', errocnpj); 
-  document.querySelector('#cnpj').addEventListener('mouseout', errocnpj); 
-  document.querySelector('#cnpj').addEventListener('click', errocnpj);
-  
+  var pickerMode = form.dataset.supplierPickerForm === 'true';
+  var cnpj = container.querySelector('#cnpj');
+  var telefone = container.querySelector('#telefone');
+  var telefone2 = container.querySelector('#telefone2');
+  var finalizar = container.querySelector('#finalizar');
+
+  if (!pickerMode && window.jQuery) {
+    window.jQuery(form).off('submit.fornecedorForm').on('submit.fornecedorForm', function () {
+      window.jQuery('#staticBackdrop').modal('toggle');
+      setTimeout(function () {
+        window.jQuery('#success_tic').modal('toggle');
+      }, 500);
+    });
+  }
+
+  if (window.jQuery && window.jQuery.fn.mask) {
+    if (cnpj) window.jQuery(cnpj).mask('00.000.000/0000-00', { reverse: false });
+    if (telefone) window.jQuery(telefone).mask('(00) 00000-0000');
+    if (telefone2) window.jQuery(telefone2).mask('(00) 00000-0000');
+  }
+
+  function setSubmitEnabled(enabled) {
+    if (finalizar) finalizar.setAttribute('type', enabled ? 'submit' : 'button');
+  }
+
+  function validarMascara(input, label, tamanho, mensagemPadrao) {
+    if (!input || !label) return true;
+    var invalido = input.value.length >= 1 && input.value.length < tamanho;
+
+    if (invalido) {
+      input.style.border = '1px solid #ff0000';
+      label.style.display = 'block';
+      label.style.color = '#ff0000';
+      label.innerHTML = 'Numero invalido';
+      setSubmitEnabled(false);
+      return false;
+    }
+
+    input.style.border = '';
+    label.style.display = 'block';
+    label.style.color = '';
+    label.innerHTML = mensagemPadrao;
+    setSubmitEnabled(true);
+    return true;
+  }
+
   function erroformulario () {
-    let telefone = document.querySelector('#telefone');
-    let error_tel =  document.querySelector('#error-message');
-    let qtd = telefone.value;
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone.style.border = '1px solid #ff0000';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '#ff0000';
-      error_tel.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone.style.border = '';
-      error_tel.style.display = 'block' ; 
-      error_tel.style.color = '';
-      error_tel.innerHTML = 'Telefone para contato';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
-    }
-
+    validarMascara(telefone, container.querySelector('#error-message'), 15, 'Telefone para contato');
   };
+
   function erroformulario2 () {
-    let telefone2 = document.querySelector('#telefone2');
-    let error_tel2 =  document.querySelector('#error-message2');
-    let qtd = telefone2.value;
-    if(qtd.length >= 1 && qtd.length < 15){
-      telefone2.style.border = '1px solid #ff0000';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '#ff0000';
-      error_tel2.innerHTML = 'Numero invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      telefone2.style.border = '';
-      error_tel2.style.display = 'block' ; 
-      error_tel2.style.color = '';
-      error_tel2.innerHTML = 'Outro telefone de contato (opcional)';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
-    }
-
+    validarMascara(telefone2, container.querySelector('#error-message2'), 15, 'Outro telefone de contato (opcional)');
   };
+
   function errocnpj () {
-    let cnpj = document.querySelector('#cnpj');
-    let error_cnpj =  document.querySelector('#error-cnpj');
-    let qtd = cnpj.value;
-    if(qtd.length >= 1 && qtd.length < 12){
+    var error_cnpj = container.querySelector('#error-cnpj');
+    if (!cnpj || !error_cnpj) return;
+    var invalido = cnpj.value.length >= 1 && cnpj.value.length < 18;
+
+    if (invalido) {
       cnpj.style.border = '1px solid #ff0000';
-      error_cnpj.style.display = 'block' ; 
+      error_cnpj.style.display = 'block';
       error_cnpj.style.color = '#ff0000';
       error_cnpj.innerHTML = 'CNPJ invalido';
-      document.querySelector('button[type=submit]').setAttribute('type', 'button')
-    }else {
-      cpf.style.border = '';
-      error_cnpj.style.display = 'block' ; 
+      setSubmitEnabled(false);
+    } else {
+      cnpj.style.border = '';
+      error_cnpj.style.display = 'block';
       error_cnpj.style.color = '';
       error_cnpj.innerHTML = 'Informe o CNPJ (opcional)';
-      document.querySelector('#finalizar').setAttribute('type', 'submit')
-      
+      setSubmitEnabled(true);
     }
-
   };
-  
+
+  [
+    [telefone, erroformulario],
+    [telefone2, erroformulario2],
+    [cnpj, errocnpj]
+  ].forEach(function (entry) {
+    var input = entry[0];
+    var handler = entry[1];
+    if (!input) return;
+    input.addEventListener('change', handler);
+    input.addEventListener('mouseout', handler);
+    input.addEventListener('click', handler);
+  });
+})();
 </script>

@@ -1,25 +1,63 @@
+{% load despesa_formatters %}
 <tr id="despesaTr{{ object.pk }}" class="erp-row">
     <td>
         <strong>{{ object.data_cadastro|date:'d/m/Y' }}</strong>
         <span class="erp-muted-line">{{ object.data_cadastro|date:'H:i' }}</span>
     </td>
     <td>
-        <span class="erp-primary-text">{{ object.nome_despesa }}</span>
+        {% if object.tipo == 'prolabore' %}
+            <span class="erp-primary-text">Pró-labore</span>
+            {% if object.nome_despesa and object.nome_despesa != 'Pró-labore' %}
+                <span class="erp-muted-line">{{ object.nome_despesa }}</span>
+            {% endif %}
+        {% elif object.tipo == 'divida' %}
+            <span class="erp-primary-text">Dívida</span>
+            {% if object.nome_despesa %}
+                <span class="erp-muted-line">{{ object.nome_despesa }}</span>
+            {% endif %}
+        {% else %}
+            <span class="erp-primary-text">{{ object.nome_despesa }}</span>
+        {% endif %}
         {% if object.fornecedor %}
             <span class="erp-muted-line">{{ object.fornecedor }}</span>
+        {% endif %}
+        {% if object.despesa_fixa %}
+            <span class="erp-muted-line">Despesa fixa - vence dia {{ object.dia_vencimento_fixo }}</span>
+        {% endif %}
+        {% if object.forma_pagamento == 'Fiado a pagar' and object.qtd_parcela and object.qtd_parcela > 1 and object.dia_vencimento_parcela %}
+            <span class="erp-muted-line">Fiado parcelado - vence todo dia {{ object.dia_vencimento_parcela }}</span>
+        {% endif %}
+        {% if object.vencimento_status_label %}
+            <span class="erp-muted-line">{{ object.vencimento_status_label }}</span>
         {% endif %}
     </td>
     <td>
         <span class="erp-badge erp-badge-neutral">{{ object.categoria_despesa|default:'Sem categoria' }}</span>
     </td>
-    <td class="erp-primary-text">R$ {{ object.preco_despesa|floatformat:2 }}</td>
-    <td><span class="badge-status status-outro">{{ object.forma_pagamento }}</span></td>
+    <td class="erp-primary-text">{{ object.preco_despesa|brl }}</td>
+    <td>
+        <span class="badge-status status-outro">{{ object.forma_pagamento }}</span>
+        {% if object.fiado_status_label and not debt_table %}
+            <span class="erp-muted-line">{{ object.fiado_status_label }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if debt_table and object.tipo == 'divida' %}
+            <span class="erp-badge {% if object.fiado_pago %}erp-badge-neutral{% else %}erp-badge-divida{% endif %}">{{ object.fiado_status_label }}</span>
+        {% elif object.tipo == 'prolabore' %}
+            <span class="erp-badge erp-badge-prolabore">Pró-labore</span>
+        {% elif object.tipo == 'divida' %}
+            <span class="erp-badge erp-badge-divida">Dívida</span>
+        {% else %}
+            <span class="erp-badge erp-badge-neutral">Empresa</span>
+        {% endif %}
+    </td>
     <td class="acoes text-end">
         <span
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
             hx-get="{% url 'editar-despesa' object.pk %}"
-            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
+            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_tipo": "{{ expense_filters.tipo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
             hx-target="#adicionar-conteudo"
             hx-swap="innerHTML"
             title="Editar">
@@ -27,7 +65,7 @@
         </span>
         <span
             hx-get="{% url 'apagar-despesa' object.pk %}"
-            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
+            hx-vals='{"dashboard_periodo": "{{ expense_filters.periodo }}", "dashboard_tipo": "{{ expense_filters.tipo }}", "dashboard_inicio": "{{ expense_filters.inicio }}", "dashboard_fim": "{{ expense_filters.fim }}"}'
             hx-confirm="Deseja mesmo apagar {{ object.nome_despesa }}"
             hx-target="#bloco-dados"
             hx-swap="outerHTML"

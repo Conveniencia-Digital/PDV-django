@@ -6,7 +6,7 @@
 
     <td>
         <strong>{{ object.cliente.nome_cliente }}</strong><br>
-        <small class="text-muted">{{ object.cliente.telefone_contato }}</small>
+        <small class="text-muted">{{ object.cliente.telefone_contato|default:'Sem telefone' }}</small>
     </td>
 
     <td>

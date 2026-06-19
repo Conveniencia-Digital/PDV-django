@@ -2,6 +2,7 @@
 {% load relatorio_pecas %}
 {% load static %}
 {% block style %}
+<link href="{% static 'css/client-picker.css' %}" rel="stylesheet">
 <style>
     tr.htmx-swapping td {
         opacity: 0;
@@ -29,14 +30,34 @@
 
 {% block conteudo %}
 <div class="row" id="relatorio-peca">
-    <div class="card">
+    <div class="card me-3 mb-3">
         <div class="card-body">
-          <h5 class="card-title">Suas peças cadastradas {{ total }} <b></b></h5>     
-          <h2 class="card-text">Seu Lucro R$</h2>       
-          <h6 class="card-subtitle mb-2 text-muted">Preço de custo R$ {{ preco_custo }}</h6>
-          <h6 class="card-subtitle mb-2 text-muted">Preço de venda R$ {{ preco_venda }}</h6>
+          <h5 class="card-title">Peças cadastradas</h5>
+          <h2 class="card-text">{{ total }}</h2>
+          <h6 class="card-subtitle mb-2 text-muted">Custo total R$ {{ preco_custo|floatformat:2 }}</h6>
         </div>
-      </div>
+    </div>
+    <div class="card me-3 mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Despesa paga</h5>
+          <h2 class="card-text">R$ {{ despesa_paga_total|floatformat:2 }}</h2>
+          <h6 class="card-subtitle mb-2 text-muted">Base: preço de custo x quantidade</h6>
+        </div>
+    </div>
+    <div class="card me-3 mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Despesa a pagar</h5>
+          <h2 class="card-text">R$ {{ despesa_a_pagar_total|floatformat:2 }}</h2>
+          <h6 class="card-subtitle mb-2 text-muted">Saldo fiado pelo custo</h6>
+        </div>
+    </div>
+    <div class="card me-3 mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Lucro potencial</h5>
+          <h2 class="card-text">R$ {{ lucro|floatformat:2 }}</h2>
+          <h6 class="card-subtitle mb-2 text-muted">Venda R$ {{ preco_venda|floatformat:2 }}</h6>
+        </div>
+    </div>
 </div>
 
 <div style="margin-top: 30px;">
@@ -63,10 +84,12 @@
 {% include 'peca/modais-vazios/modal-alerta.html' %}
 {% include 'peca/modais-vazios/modal-alerta-editar.html' %}
 {% include 'peca/modais-vazios/modal-alerta-apagar.html' %}
+{% include 'fornecedor/componentes/modal-fornecedor-picker.html' %}
 {% include 'peca/offcanvas/off-canvas.html' %}
 {% endblock conteudo%}
 {% block scripts %}
 <script src="{% static 'js/pricing-margin.js' %}"></script>
+<script src="{% static 'js/client-picker.js' %}"></script>
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();

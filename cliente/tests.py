@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+from cliente.forms import ClienteForm
 from cliente.models import Cliente
 
 
@@ -53,6 +54,55 @@ class ClientePickerTests(TestCase):
         self.assertEqual(trigger['clienteCriado']['id'], cliente.pk)
         self.assertEqual(trigger['clienteCriado']['text'], cliente.nome_cliente)
         self.assertEqual(trigger['clienteCriado']['phone'], cliente.telefone_contato)
+
+    def test_cadastro_cliente_sem_telefone_funciona(self):
+        response = self.client.post(
+            reverse('cadastrar-cliente'),
+            {
+                'usuario': self.user.pk,
+                'nome_cliente': 'Cliente sem telefone',
+                'telefone_contato': '',
+                'telefone_contato_2': '',
+                'cpf': '',
+                'data_nascimento': '',
+                'rua': '',
+                'bairro': '',
+                'observacao': '',
+            },
+            HTTP_HX_REQUEST='true',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        cliente = Cliente.objects.get(nome_cliente='Cliente sem telefone')
+        self.assertIn(cliente.telefone_contato, (None, ''))
+
+    def test_formulario_telefone_so_valida_quando_preenchido_e_no_formato_correto(self):
+        vazio = ClienteForm(data={
+            'usuario': self.user.pk,
+            'nome_cliente': 'Cliente sem telefone',
+            'telefone_contato': '',
+        })
+        fixo = ClienteForm(data={
+            'usuario': self.user.pk,
+            'nome_cliente': 'Cliente fixo',
+            'telefone_contato': '(67) 3333-4444',
+        })
+        celular = ClienteForm(data={
+            'usuario': self.user.pk,
+            'nome_cliente': 'Cliente celular',
+            'telefone_contato': '(67) 99999-4444',
+        })
+        invalido = ClienteForm(data={
+            'usuario': self.user.pk,
+            'nome_cliente': 'Cliente inválido',
+            'telefone_contato': '67999994444',
+        })
+
+        self.assertTrue(vazio.is_valid(), vazio.errors)
+        self.assertTrue(fixo.is_valid(), fixo.errors)
+        self.assertTrue(celular.is_valid(), celular.errors)
+        self.assertFalse(invalido.is_valid())
+        self.assertIn('telefone_contato', invalido.errors)
 
     def test_cadastro_picker_invalido_mantem_formulario_no_modal(self):
         response = self.client.post(

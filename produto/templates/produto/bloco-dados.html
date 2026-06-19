@@ -34,6 +34,24 @@
       <div class="finance-kpi-meta">Capital investido nos produtos cadastrados.</div>
     </article>
 
+    <article class="finance-kpi success">
+      <div class="finance-kpi-title">
+        <span>Despesa paga</span>
+        <span data-feather="check-circle" aria-hidden="true"></span>
+      </div>
+      <div class="finance-kpi-value">R$ {{ produto_despesa_paga_total|floatformat:2 }}</div>
+      <div class="finance-kpi-meta">Calculada pelo preco de custo dos produtos.</div>
+    </article>
+
+    <article class="finance-kpi warning">
+      <div class="finance-kpi-title">
+        <span>Despesa a pagar</span>
+        <span data-feather="alert-circle" aria-hidden="true"></span>
+      </div>
+      <div class="finance-kpi-value">R$ {{ produto_despesa_a_pagar_total|floatformat:2 }}</div>
+      <div class="finance-kpi-meta">Saldo fiado pelo custo do estoque.</div>
+    </article>
+
     <article class="finance-kpi primary">
       <div class="finance-kpi-title">
         <span>Lucro potencial</span>
@@ -138,32 +156,109 @@
     </section>
   </div>
 
-  <div class="finance-panel table-responsive mt-4">
+  <div class="finance-panel produto-table-panel mt-4">
     <div class="produto-table-header">
       <h2>Produtos cadastrados</h2>
-      <span>{{ produto_total_produtos }} registros</span>
+      <span>
+        {{ produto_resultado_total }} de {{ produto_total_produtos }} registros
+      </span>
     </div>
-    <table class="table table-borderless table-hover erp-table mb-0">
-      <thead class="erp-header">
-        <tr>
-          <th>Qtd.</th>
-          <th>Produto</th>
-          <th>Categoria</th>
-          <th>Preco venda</th>
-          <th>Acoes</th>
-        </tr>
-      </thead>
-      <tbody id="produto-Tbody">
-        {% include "produto/tabela/tabela-produto.html" %}
-      </tbody>
-    </table>
+
+    <form class="produto-filter-form"
+          id="produtoFiltros"
+          method="get"
+          hx-get="{% url 'produtos' %}"
+          hx-target="#bloco-dados"
+          hx-swap="outerHTML"
+          hx-push-url="true"
+          hx-indicator=".htmx-indicator">
+      <div class="produto-filter-field">
+        <label for="produtoBusca">Buscar por nome</label>
+        <div class="produto-search-input">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="produtoBusca"
+                 type="search"
+                 name="q"
+                 value="{{ produto_filters.q }}"
+                 class="form-control"
+                 placeholder="Nome do produto"
+                 hx-get="{% url 'produtos' %}"
+                 hx-trigger="input changed delay:400ms, search"
+                 hx-target="#bloco-dados"
+                 hx-swap="outerHTML"
+                 hx-push-url="true"
+                 hx-include="#produtoCategoria">
+        </div>
+      </div>
+
+      <div class="produto-filter-field">
+        <label for="produtoCategoria">Categoria</label>
+        <select id="produtoCategoria"
+                name="categoria"
+                class="form-select"
+                hx-get="{% url 'produtos' %}"
+                hx-trigger="change"
+                hx-target="#bloco-dados"
+                hx-swap="outerHTML"
+                hx-push-url="true"
+                hx-include="#produtoBusca">
+          <option value="">Todas as categorias</option>
+          {% for categoria in produto_categorias_filtro %}
+            <option value="{{ categoria.pk }}" {% if produto_filters.categoria == categoria.pk|stringformat:'s' %}selected{% endif %}>
+              {{ categoria.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button class="btn btn-primary produto-filter-button" type="submit">
+        <i class="fa-solid fa-filter" aria-hidden="true"></i>
+        <span>Filtrar</span>
+      </button>
+
+      {% if produto_filtros_ativos %}
+        <a class="btn btn-outline-secondary produto-filter-button"
+           href="{% url 'produtos' %}"
+           hx-get="{% url 'produtos' %}"
+           hx-target="#bloco-dados"
+           hx-swap="outerHTML"
+           hx-push-url="true">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          <span>Limpar</span>
+        </a>
+      {% endif %}
+    </form>
+
+    <div class="produto-table-shell table-responsive">
+      <table class="table table-borderless table-hover erp-table produto-table mb-0">
+        <colgroup>
+          <col class="produto-col-qty">
+          <col class="produto-col-name">
+          <col class="produto-col-category">
+          <col class="produto-col-price">
+          <col class="produto-col-actions">
+        </colgroup>
+        <thead class="erp-header">
+          <tr>
+            <th class="text-center">Qtd.</th>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th class="text-end">Preco venda</th>
+            <th class="text-end">Acoes</th>
+          </tr>
+        </thead>
+        <tbody id="produto-Tbody">
+          {% include "produto/tabela/tabela-produto.html" %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
   {% include "produto/modais-vazios/modal-cadastrar-produto.html" %}
   {% include "produto/modais-vazios/modal-alerta.html" %}
-  {% include "produto/modais-vazios/modal-alerta-apagar.html" %}
   {% include "produto/modais-vazios/modal-alerta-editar.html" %}
   {% include "produto/modais-vazios/modal-detalhe-produtos.html" %}
   {% include "produto/componentes/modal-categoria-produto-picker.html" %}
+  {% include "fornecedor/componentes/modal-fornecedor-picker.html" %}
   {{ produto_charts|json_script:"produtoChartsData" }}
 </div>

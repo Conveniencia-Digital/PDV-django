@@ -428,6 +428,7 @@
   document.body.addEventListener('orcamentoPecaCriada', handleCreatedClient);
   document.body.addEventListener('produtoCategoriaCriada', handleCreatedClient);
   document.body.addEventListener('despesaCategoriaCriada', handleCreatedClient);
+  document.body.addEventListener('fornecedorCriado', handleCreatedClient);
   document.body.addEventListener('htmx:afterSwap', function (event) {
     initPickers(event.target);
   });

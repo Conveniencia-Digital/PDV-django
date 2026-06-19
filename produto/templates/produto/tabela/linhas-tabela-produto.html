@@ -1,11 +1,11 @@
 <tr id="trProduto{{ object.pk }}" class="erp-row {% if object.quantidade == 0 %}text-muted{% endif %}">
-    <td>
-        <span class="erp-primary-text {% if object.quantidade == 0 %}text-decoration-line-through{% endif %}">
+    <td class="text-center">
+        <span class="produto-quantity-badge {% if object.quantidade == 0 %}is-empty{% endif %}">
             {{ object.quantidade }}
         </span>
     </td>
     <td>
-        <span class="erp-primary-text {% if object.quantidade == 0 %}text-decoration-line-through{% endif %}">
+        <span class="produto-name {% if object.quantidade == 0 %}text-decoration-line-through{% endif %}">
             {{ object.nome_produto }}
         </span>
         {% if object.codigo_de_barras %}
@@ -21,21 +21,21 @@
             <span class="erp-muted-line">Sem categoria</span>
         {% endif %}
     </td>
-    <td>R$ {{ object.preco|default:'---' }}</td>
-    <td class="erp-actions">
+    <td class="produto-price text-end">R$ {{ object.preco|default:'---' }}</td>
+    <td class="erp-actions produto-row-actions text-end">
         <span data-bs-toggle="modal"
               data-bs-target="#staticBackdrop"
               hx-get="{% url 'editar-produtos' object.pk %}"
               hx-target="#adicionar-conteudo"
+              class="produto-action-button edit"
               title="Editar produto">
             <i class="fa-regular fa-pen-to-square" style="color: rgb(4, 131, 21);"></i>
         </span>
-        <span data-bs-toggle="modal"
-              data-bs-target="#success_tic_delete"
-              hx-get="{% url 'apagar-produtos' object.pk %}"
+        <span hx-get="{% url 'apagar-produtos' object.pk %}"
               hx-confirm="Deseja mesmo apagar {{ object.nome_produto }} ?"
               hx-target="closest tr"
               hx-swap="outerHTML swap:300ms"
+              class="produto-action-button delete"
               title="Apagar produto">
             <i class="fa-regular fa-trash-can" style="color: red;"></i>
         </span>
@@ -44,6 +44,7 @@
               hx-get="{% url 'detalhe-produto' object.pk %}"
               hx-target="#detalhes-produtos"
               hx-swap="innerHTML"
+              class="produto-action-button detail"
               title="Detalhes do produto">
             <i class="fa-regular fa-eye" style="color: rgb(40, 18, 237);"></i>
         </span>

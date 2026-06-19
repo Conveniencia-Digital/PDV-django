@@ -2,6 +2,7 @@ from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from django.db import models
 from fornecedor.models import Fornecedores
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 DEFAULT_CATEGORIAS_PRODUTOS = [
@@ -108,11 +109,43 @@ class Produto(models.Model):
     def vendatotal(self):
         return self.preco * self.quantidade
 
+    def despesa_total_custo(self):
+        return (self.preco_de_custo or Decimal('0.00')) * (self.quantidade or 0)
+
+    def despesa_paga(self):
+        total = self.despesa_total_custo()
+        if self.forma_pagamento == self.FIADO:
+            return min(self.valor_entrada or Decimal('0.00'), total)
+        return total
+
+    def despesa_a_pagar(self):
+        if self.forma_pagamento != self.FIADO:
+            return Decimal('0.00')
+        return max(self.despesa_total_custo() - (self.valor_entrada or Decimal('0.00')), Decimal('0.00'))
+
     def saldodespesa(self):
-        return (self.preco_de_custo * self.quantidade) - (self.valor_entrada or Decimal('0.00'))
+        return self.despesa_a_pagar()
     
     def qtdproduto(self):
         return(self.quantidade)
+
+    def tempo_em_estoque_dias(self):
+        if not self.data_criacao or self.quantidade <= 0:
+            return 0
+
+        data_cadastro = timezone.localtime(self.data_criacao).date()
+        return max((timezone.localdate() - data_cadastro).days, 0)
+
+    def tempo_em_estoque_label(self):
+        if self.quantidade <= 0:
+            return 'Fora de estoque'
+
+        dias = self.tempo_em_estoque_dias()
+        if dias == 0:
+            return 'Hoje'
+        if dias == 1:
+            return '1 dia'
+        return f'{dias} dias'
     
     def margem_lucro_total_percentual(self):
 

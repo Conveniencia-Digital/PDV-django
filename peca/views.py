@@ -3,10 +3,10 @@ import json
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.db.models.aggregates import Sum
 from django.http import HttpResponse, JsonResponse
 from peca.models import Pecas
 from peca.forms import PecasForms
+from peca.services import build_peca_dashboard
 from django.contrib.auth.decorators import login_required
 
 class Peca(ListView):
@@ -15,6 +15,11 @@ class Peca(ListView):
 
     def get_queryset(self):
         return Pecas.objects.filter(usuario=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(build_peca_dashboard(self.request.user))
+        return context
 
 
 def _peca_payload(peca):
@@ -104,20 +109,7 @@ def apagarpeca(request, pk):
 
 def relatoriopeca(request):
     template_name = 'peca/informacao-peca.html'
-    preco_venda = Pecas.objects.filter(usuario=request.user).aggregate(preco_pecas=Sum('preco_peca'))
-    preco_custo = Pecas.objects.filter(usuario=request.user).aggregate(preco_custo=Sum('preco_de_custo'))
-    total = Pecas.objects.filter(usuario=request.user).count
-
-    for i in preco_venda.values():
-        preco_venda = i
-    
-    for c in preco_custo.values():
-        preco_custo = c
-
-    lucro = preco_venda - preco_custo    
-
-    context = {'preco_venda': preco_venda, 'preco_custo': preco_custo, 'lucro': lucro, 'total': total}
-    return render(request, template_name, context)
+    return render(request, template_name, build_peca_dashboard(request.user))
 
 
 class DetalhePeca(DetailView):

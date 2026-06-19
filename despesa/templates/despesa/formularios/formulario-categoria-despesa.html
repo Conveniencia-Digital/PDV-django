@@ -8,7 +8,9 @@
 <form hx-post="{% url 'categoria-despesa' %}{% if category_picker_mode %}?picker=1{% endif %}"
       hx-indicator=".htmx-indicator"
       hx-swap="innerHTML"
-      {% if category_picker_mode %}hx-target="#despesaCategoriaPickerModalConteudo"{% endif %}>
+      hx-target="{% if category_picker_mode %}#despesaCategoriaPickerModalConteudo{% else %}#adicionar-conteudo{% endif %}"
+      data-despesa-category-form="true"
+      data-loading-text="Salvando...">
   <div class="modal-body">
     {% csrf_token %}
     {% if category_picker_mode %}

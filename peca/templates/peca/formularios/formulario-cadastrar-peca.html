@@ -86,10 +86,7 @@
           </div>
         </div>
         <div class="col-md">
-          <div class="form-floating">
-            {% render_field form.fornecedor %}
-            <label for="floatingSelectGrid">Informe o fornecedor(opcional)</label>
-          </div>
+          {% include 'fornecedor/componentes/seletor-fornecedor.html' with field=form.fornecedor label='Fornecedor (opcional)' %}
         </div>
         <div class="row g-2">
           <div class="col-md-6 mb-3 form-floating">

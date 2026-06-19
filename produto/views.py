@@ -1,14 +1,16 @@
 import json
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
+from django.db.models.deletion import ProtectedError
 from django.http import HttpResponse, JsonResponse
 
 from produto.forms import CategoriaProdutoForm, ProdutoForms
 from produto.models import CategoriaProduto, Produto, ensure_default_categories
 from produto.services import build_produto_dashboard
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class ListaProduto(ListView):
     model = Produto
@@ -19,13 +21,48 @@ class ListaProduto(ListView):
             return ['produto/bloco-dados.html']
         return [self.template_name]
 
+    def _categoria_filtrada(self):
+        categoria_id = self.request.GET.get('categoria', '').strip()
+        if not categoria_id:
+            return None
+
+        return CategoriaProduto.objects.filter(
+            usuario=self.request.user,
+            pk=categoria_id,
+        ).first()
+
     def get_queryset(self):
         ensure_default_categories(self.request.user)
-        return Produto.objects.filter(usuario=self.request.user).select_related('categoria').order_by('-data_criacao')
+        produtos = Produto.objects.filter(usuario=self.request.user).select_related('categoria')
+        termo = self.request.GET.get('q', '').strip()
+        categoria = self._categoria_filtrada()
+
+        if termo:
+            produtos = produtos.filter(nome_produto__icontains=termo)
+
+        if categoria:
+            produtos = produtos.filter(
+                Q(categoria=categoria) | Q(categoria_produtos__iexact=categoria.nome)
+            )
+
+        return produtos.order_by('-data_criacao')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        termo = self.request.GET.get('q', '').strip()
+        categoria_id = self.request.GET.get('categoria', '').strip()
         context.update(build_produto_dashboard(self.request.user))
+        context.update({
+            'produto_categorias_filtro': CategoriaProduto.objects.filter(
+                usuario=self.request.user,
+            ).order_by('nome'),
+            'produto_filters': {
+                'q': termo,
+                'categoria': categoria_id,
+            },
+            'produto_filtros_ativos': bool(termo or categoria_id),
+            'produto_resultado_total': context['object_list'].count(),
+        })
         return context
 
 
@@ -128,10 +165,8 @@ def criarprodutos(request):
 @login_required
 def editarprodutos(request, pk):
     template_name = 'produto/formularios/formulario-editar-produto.html'
-    instance = Produto.objects.get(pk=pk)
+    instance = get_object_or_404(Produto, pk=pk, usuario=request.user)
     form = ProdutoForms(request.POST or None, instance=instance, initial={'usuario':request.user}, user=request.user)
-    if instance.usuario != request.user:
-        raise PermissionError
 
     if request.method == 'POST':
         if form.is_valid():
@@ -150,17 +185,36 @@ def editarprodutos(request, pk):
 
 @login_required
 def apagarprodutos(request, pk):
-    template_name = 'produto/tabela/tabela-produto.html'
-    obj = Produto.objects.get(pk=pk)
-    if obj.usuario == request.user:
+    obj = get_object_or_404(Produto, pk=pk, usuario=request.user)
+    try:
         obj.delete()
-    else:
-        raise PermissionError
-    response = render(request, template_name)
-    response['HX-Trigger'] = 'produtoExcluido'
+    except ProtectedError:
+        if request.headers.get('HX-Request') != 'true':
+            return redirect('produtos')
+
+        response = render(request, 'produto/tabela/linhas-tabela-produto.html', {'object': obj})
+        response['HX-Trigger'] = json.dumps({
+            'produtoExclusaoBloqueada': {
+                'message': 'Produto possui vendas vinculadas e nao pode ser excluido.',
+            }
+        })
+        return response
+
+    if request.headers.get('HX-Request') != 'true':
+        return redirect('produtos')
+
+    response = HttpResponse('')
+    response['HX-Trigger'] = json.dumps({
+        'produtoExcluido': {
+            'message': 'Produto excluido com sucesso.',
+        }
+    })
     return response
 
 
-class DetalheProduto(DetailView):
+class DetalheProduto(LoginRequiredMixin, DetailView):
     model = Produto
     template_name = 'produto/detalhes/detalhe-produtos.html'
+
+    def get_queryset(self):
+        return Produto.objects.filter(usuario=self.request.user).select_related('categoria', 'fornecedor')

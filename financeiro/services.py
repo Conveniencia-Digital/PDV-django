@@ -287,7 +287,13 @@ def _expense_rows(user, period, include_cash_adjustments=True):
         despesas = despesas.exclude(categoria_despesa__nome_categoria_despesa=CASH_SHORTAGE_CATEGORY)
 
     for despesa in despesas:
-        amount = _cash_impact(despesa.preco_despesa, despesa.forma_pagamento, despesa.valor_entrada, FIADO_PAGAR)
+        amount = _expense_cash_impact(
+            despesa.preco_despesa,
+            despesa.forma_pagamento,
+            despesa.valor_entrada,
+            despesa.tipo,
+            despesa.fiado_pago,
+        )
         if amount > ZERO:
             rows.append({
                 "category": despesa.categoria_despesa.nome_categoria_despesa if despesa.categoria_despesa else "Outras",
@@ -357,6 +363,19 @@ def _cash_impact(total, payment_method, entry_value, credit_label):
     total = money(total)
     if payment_method == credit_label:
         return min(money(entry_value), total)
+    return total
+
+
+def _expense_cash_impact(total, payment_method, entry_value, expense_type, paid):
+    total = money(total)
+    entry = min(money(entry_value), total)
+
+    if expense_type == Despesa.TIPO_DIVIDA and not paid:
+        return ZERO
+    if expense_type == Despesa.TIPO_DIVIDA:
+        return total
+    if payment_method == FIADO_PAGAR:
+        return total if paid else entry
     return total
 
 
@@ -533,12 +552,20 @@ def _expense_time_rows(user, period, trunc_function):
         "period",
         "forma_pagamento",
         "valor_entrada",
+        "tipo",
+        "fiado_pago",
     ).annotate(total=Sum("preco_despesa"))
 
     for item in grouped_expenses:
         rows.append({
             "period": _as_date(item["period"]),
-            "amount": _cash_impact(item["total"], item["forma_pagamento"], item["valor_entrada"], FIADO_PAGAR),
+            "amount": _expense_cash_impact(
+                item["total"],
+                item["forma_pagamento"],
+                item["valor_entrada"],
+                item["tipo"],
+                item["fiado_pago"],
+            ),
         })
 
     rows.extend(_inventory_time_rows(

@@ -9,6 +9,7 @@
       hx-target="#adicionar-conteudo"
       hx-indicator=".htmx-indicator"
       hx-swap="innerHTML"
+      class="produto-modal-form"
       data-produto-form
       data-profit-margin-calculator>
   <div class="modal-body">
@@ -47,13 +48,7 @@
       </div>
 
       <div class="col-12 col-lg-6">
-        <div class="form-floating">
-          {% render_field form.fornecedor class="form-select" %}
-          <label for="{{ form.fornecedor.id_for_label }}">Fornecedor (opcional)</label>
-        </div>
-        {% for error in form.fornecedor.errors %}
-          <div class="invalid-feedback d-block">{{ error }}</div>
-        {% endfor %}
+        {% include 'fornecedor/componentes/seletor-fornecedor.html' with field=form.fornecedor label='Fornecedor (opcional)' %}
       </div>
 
       <div class="col-12 col-sm-6 col-lg-3">

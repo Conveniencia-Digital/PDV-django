@@ -6,10 +6,14 @@
 
     <td>
         <strong>{{ object.cliente.nome_cliente }}</strong><br>
-        <a href="tel:+55{{ object.cliente.telefone_contato }}"
-           class="text-muted text-decoration-none">
-            {{ object.cliente.telefone_contato }}
-        </a>
+        {% if object.cliente.telefone_contato %}
+            <a href="tel:+55{{ object.cliente.telefone_contato }}"
+               class="text-muted text-decoration-none">
+                {{ object.cliente.telefone_contato }}
+            </a>
+        {% else %}
+            <small class="text-muted">Sem telefone</small>
+        {% endif %}
     </td>
 
     <td>

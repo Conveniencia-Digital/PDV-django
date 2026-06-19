@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from cliente.models import Cliente
 from colaborador.models import Colaborador
-from despesa.models import Despesa
+from despesa.models import CategoriaDespesa, Despesa
 from financeiro.cash_closing import calculate_cash_closing_snapshot, create_cash_closing
 from financeiro.forms import CardMachineFeeTableForm
 from financeiro.models import (
@@ -115,6 +115,106 @@ class FinancialDashboardFilterTests(TestCase):
         self.assertEqual(dashboard["period"].start.isoformat(), "2026-01-10")
         self.assertEqual(dashboard["period"].end.isoformat(), "2026-06-10")
         self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("120.00"))
+
+    def test_prolabore_entra_como_despesa_no_dashboard_financeiro(self):
+        categoria = CategoriaDespesa.objects.create(
+            usuario=self.user,
+            nome_categoria_despesa="Alimentação",
+        )
+        prolabore = Despesa.objects.create(
+            usuario=self.user,
+            categoria_despesa=categoria,
+            nome_despesa="Pró-labore",
+            preco_despesa="50.00",
+            forma_pagamento=Despesa.PIX,
+            tipo=Despesa.TIPO_PROLABORE,
+        )
+        Despesa.objects.filter(pk=prolabore.pk).update(
+            data_cadastro=timezone.make_aware(datetime(2026, 6, 11, 9, 0, 0))
+        )
+
+        dashboard = build_financial_dashboard(self.user, {
+            "periodo": "custom",
+            "data_inicio": "2026-06-11",
+            "data_fim": "2026-06-11",
+        })
+
+        self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("50.00"))
+        self.assertEqual(dashboard["summary"]["balance"], Decimal("-50.00"))
+        self.assertEqual(dashboard["category_ranking"][0]["category"], "Alimentação")
+        self.assertEqual(dashboard["category_ranking"][0]["amount"], Decimal("50.00"))
+
+    def test_divida_so_entra_no_financeiro_quando_paga(self):
+        categoria = CategoriaDespesa.objects.create(
+            usuario=self.user,
+            nome_categoria_despesa="Cartão pessoal",
+        )
+        divida_pendente = Despesa.objects.create(
+            usuario=self.user,
+            categoria_despesa=categoria,
+            nome_despesa="Fatura pendente",
+            preco_despesa="90.00",
+            forma_pagamento=Despesa.PIX,
+            tipo=Despesa.TIPO_DIVIDA,
+            fiado_pago=False,
+        )
+        divida_paga = Despesa.objects.create(
+            usuario=self.user,
+            categoria_despesa=categoria,
+            nome_despesa="Fatura paga",
+            preco_despesa="40.00",
+            forma_pagamento=Despesa.FIADO,
+            valor_entrada="0.00",
+            tipo=Despesa.TIPO_DIVIDA,
+            fiado_pago=True,
+        )
+        Despesa.objects.filter(pk__in=[divida_pendente.pk, divida_paga.pk]).update(
+            data_cadastro=timezone.make_aware(datetime(2026, 6, 11, 9, 0, 0))
+        )
+
+        dashboard = build_financial_dashboard(self.user, {
+            "periodo": "custom",
+            "data_inicio": "2026-06-11",
+            "data_fim": "2026-06-11",
+        })
+
+        self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("40.00"))
+        self.assertEqual(dashboard["summary"]["balance"], Decimal("-40.00"))
+        self.assertEqual(dashboard["category_ranking"][0]["category"], "Cartão pessoal")
+        self.assertEqual(dashboard["category_ranking"][0]["amount"], Decimal("40.00"))
+        self.assertEqual(dashboard["charts"]["revenue_vs_expenses"]["expenses"], [40.0])
+
+    def test_fiado_a_pagar_nao_pago_considera_valor_de_entrada_no_fluxo(self):
+        categoria = CategoriaDespesa.objects.create(
+            usuario=self.user,
+            nome_categoria_despesa="Aluguel",
+        )
+        despesa = Despesa.objects.create(
+            usuario=self.user,
+            categoria_despesa=categoria,
+            nome_despesa="Aluguel loja",
+            preco_despesa=Decimal("600.00"),
+            forma_pagamento=Despesa.FIADO,
+            valor_entrada=Decimal("250.00"),
+            fiado_pago=False,
+            despesa_fixa=True,
+            dia_vencimento_fixo=11,
+        )
+        Despesa.objects.filter(pk=despesa.pk).update(
+            data_cadastro=timezone.make_aware(datetime(2026, 6, 11, 9, 0, 0))
+        )
+
+        dashboard = build_financial_dashboard(self.user, {
+            "periodo": "custom",
+            "data_inicio": "2026-06-11",
+            "data_fim": "2026-06-11",
+        })
+
+        self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("250.00"))
+        self.assertEqual(dashboard["summary"]["balance"], Decimal("-250.00"))
+        self.assertEqual(dashboard["category_ranking"][0]["category"], "Aluguel")
+        self.assertEqual(dashboard["category_ranking"][0]["amount"], Decimal("250.00"))
+        self.assertEqual(dashboard["charts"]["revenue_vs_expenses"]["expenses"], [250.0])
 
 
 class CardMachineFeeTableFormTests(TestCase):
@@ -225,6 +325,28 @@ class CashClosingTests(TestCase):
         self.assertEqual(snapshot.revenue, Decimal("100.00"))
         self.assertEqual(snapshot.expenses, Decimal("30.00"))
         self.assertEqual(snapshot.expected_balance, Decimal("120.00"))
+
+    def test_snapshot_conta_prolabore_como_saida_de_caixa(self):
+        categoria = CategoriaDespesa.objects.create(
+            usuario=self.user,
+            nome_categoria_despesa="Casa",
+        )
+        prolabore = Despesa.objects.create(
+            usuario=self.user,
+            categoria_despesa=categoria,
+            nome_despesa="Pró-labore",
+            preco_despesa="40.00",
+            forma_pagamento=Despesa.PIX,
+            tipo=Despesa.TIPO_PROLABORE,
+        )
+        Despesa.objects.filter(pk=prolabore.pk).update(
+            data_cadastro=timezone.make_aware(datetime(2026, 6, 11, 11, 0, 0))
+        )
+
+        snapshot = calculate_cash_closing_snapshot(self.user, self.closing_date)
+
+        self.assertEqual(snapshot.expenses, Decimal("40.00"))
+        self.assertEqual(snapshot.expected_balance, Decimal("-40.00"))
 
     def test_fechamento_balanceado_nao_cria_ajuste(self):
         self._sale_for_closing_date()

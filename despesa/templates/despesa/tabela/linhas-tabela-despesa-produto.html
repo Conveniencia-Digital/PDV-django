@@ -1,4 +1,5 @@
 
+{% load despesa_formatters %}
 <tr id="produtoTr{{ produto.pk }}" class="erp-row">   
     <td>
         <strong>{{ produto.data_criacao|date:'d/m/Y' }}</strong>
@@ -9,8 +10,9 @@
         <span class="erp-muted-line">Produto em aberto</span>
     </td>
     <td><span class="erp-badge erp-badge-warning">Estoque</span></td>
-    <td class="erp-primary-text">R$ {{ produto.saldodespesa|floatformat:2 }}</td>
+    <td class="erp-primary-text">{{ produto.saldodespesa|brl }}</td>
     <td><span class="badge-status status-outro">{{ produto.forma_pagamento }}</span></td>
+    <td><span class="erp-badge erp-badge-warning">Estoque</span></td>
     <td class="acoes text-end">
         <span data-toggle="modal" data-bs-target="#staticBackdrop" hx-target="#adicionar-conteudo" title="Editar">
             <i class="fa-solid fa-pen-to-square"></i>

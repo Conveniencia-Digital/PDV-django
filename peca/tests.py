@@ -66,10 +66,64 @@ class PecasPricingTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('margem_de_lucro', form.errors)
 
+    def test_formulario_fiado_valida_entrada_pelo_custo_total_da_peca(self):
+        form = PecasForms(
+            self._form_data(
+                quantidade='2',
+                preco_de_custo='10.00',
+                preco_peca='100.00',
+                forma_pagamento=Pecas.FIADO,
+                valor_entrada='50.00',
+                qtd_parcela='1',
+                pricing_last_edited='price',
+            ),
+            user=self.user,
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('valor_entrada', form.errors)
+
+    def test_pagina_pecas_indicadores_usam_preco_de_custo(self):
+        Pecas.objects.create(
+            usuario=self.user,
+            nome_peca='Tela paga',
+            preco_peca=Decimal('100.00'),
+            preco_de_custo=Decimal('15.00'),
+            margem_de_lucro=Decimal('85.00'),
+            quantidade=2,
+            forma_pagamento=Pecas.DINHEIRO,
+        )
+        Pecas.objects.create(
+            usuario=self.user,
+            nome_peca='Bateria fiada',
+            preco_peca=Decimal('100.00'),
+            preco_de_custo=Decimal('20.00'),
+            margem_de_lucro=Decimal('80.00'),
+            quantidade=4,
+            forma_pagamento=Pecas.FIADO,
+            valor_entrada=Decimal('30.00'),
+        )
+
+        response = self.client.get(reverse('pecas'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['preco_custo'], Decimal('110.00'))
+        self.assertEqual(response.context['preco_venda'], Decimal('600.00'))
+        self.assertEqual(response.context['despesa_paga_total'], Decimal('60.00'))
+        self.assertEqual(response.context['despesa_a_pagar_total'], Decimal('50.00'))
+        self.assertContains(response, 'Despesa paga')
+        self.assertContains(response, 'Despesa a pagar')
+        self.assertContains(response, 'css/client-picker.css')
+        self.assertContains(response, 'js/client-picker.js')
+        self.assertContains(response, 'fornecedorPickerModal')
+
     def test_formulario_de_peca_usa_calculadora_de_margem(self):
         response = self.client.get(reverse('cadastrar-peca'), HTTP_HX_REQUEST='true')
 
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'data-client-picker')
+        self.assertContains(response, 'Cadastrar fornecedor')
+        self.assertContains(response, reverse('buscar-fornecedores'))
         self.assertContains(response, 'data-profit-margin-calculator')
         self.assertContains(response, 'data-pricing-field="cost"')
         self.assertContains(response, 'data-pricing-field="margin"')

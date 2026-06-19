@@ -1,0 +1,30 @@
+{% load widget_tweaks %}
+
+{% with despesa_fixa_ativa=form.despesa_fixa.value|default:False %}
+<section class="erp-form-section" data-despesa-fixa-section>
+  <div class="form-check form-switch">
+    {% render_field form.despesa_fixa %}
+    <label class="form-check-label client-picker-label" for="{{ form.despesa_fixa.id_for_label }}">Despesa fixa</label>
+    {% if form.despesa_fixa.errors %}
+      <div class="invalid-feedback d-block">{{ form.despesa_fixa.errors|join:", " }}</div>
+    {% endif %}
+  </div>
+
+  <div class="row g-3 align-items-end mt-2"
+       data-despesa-fixa-row
+       {% if not despesa_fixa_ativa and not form.dia_vencimento_fixo.errors %}hidden{% endif %}
+       aria-hidden="{% if despesa_fixa_ativa or form.dia_vencimento_fixo.errors %}false{% else %}true{% endif %}">
+    <div class="col-12 col-md-4">
+      <label class="form-label client-picker-label" for="{{ form.dia_vencimento_fixo.id_for_label }}">Dia de vencimento</label>
+      {% if despesa_fixa_ativa or form.dia_vencimento_fixo.errors %}
+        {% render_field form.dia_vencimento_fixo class="form-control selector-standard-control" type="number" min="1" max="31" step="1" required="required" data-despesa-fixa-field="dia_vencimento_fixo" %}
+      {% else %}
+        {% render_field form.dia_vencimento_fixo class="form-control selector-standard-control" type="number" min="1" max="31" step="1" data-despesa-fixa-field="dia_vencimento_fixo" %}
+      {% endif %}
+      {% if form.dia_vencimento_fixo.errors %}
+        <div class="invalid-feedback d-block">{{ form.dia_vencimento_fixo.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endwith %}

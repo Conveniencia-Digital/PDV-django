@@ -1,0 +1,9 @@
+{% if debt_list %}
+    {% for object in debt_list %}
+        {% include 'despesa/tabela/linhas-tabela-despesa.html' with debt_table=True %}
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="7" class="text-center text-muted py-4">Nenhuma dívida encontrada.</td>
+    </tr>
+{% endif %}

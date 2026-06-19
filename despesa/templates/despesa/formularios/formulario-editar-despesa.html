@@ -1,12 +1,12 @@
 {% load widget_tweaks %}
 
 <div class="modal-header">
-  <h5 class="modal-title" id="staticBackdropLabel">Editar {{ object.nome_despesa }}</h5>
+  <h5 class="modal-title" id="staticBackdropLabel">{{ form_title|default:'Editar despesa' }}</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <form class="despesa-modal-form erp-modal-form"
-      hx-post="{% url 'editar-despesa' object.pk %}"
+      hx-post="{{ form_action_url|default:'' }}"
       hx-target="#bloco-dados"
       hx-indicator=".htmx-indicator"
       hx-swap="outerHTML"
@@ -19,7 +19,9 @@
     <input type="hidden" name="dashboard_fim" value="{{ dashboard_fim }}">
     <input type="hidden" name="dashboard_data_inicio" value="{{ dashboard_data_inicio }}">
     <input type="hidden" name="dashboard_data_fim" value="{{ dashboard_data_fim }}">
+    <input type="hidden" name="dashboard_tipo" value="{{ dashboard_tipo }}">
     {% render_field form.usuario %}
+    {% render_field form.tipo %}
 
     {% if form.errors %}
       <div class="alert alert-danger" role="alert">
@@ -30,25 +32,55 @@
       </div>
     {% endif %}
 
+    {% if is_prolabore_form %}
+      <div class="alert alert-info" role="status">
+        Use Pró-labore para registrar retiradas pessoais do caixa da empresa.
+      </div>
+    {% elif is_divida_form %}
+      <div class="alert alert-warning" role="status">
+        Use Dívida para controlar contas pessoais ou obrigações que só devem virar despesa quando forem pagas.
+      </div>
+    {% endif %}
+
     <section class="erp-form-section">
     <div class="row g-3 align-items-end">
-      <div class="col-12 col-lg-7">
-        <label class="form-label client-picker-label" for="{{ form.nome_despesa.id_for_label }}">Descricao da despesa</label>
-        {% render_field form.nome_despesa class="form-control selector-standard-control" placeholder="Informe a despesa" %}
-        {% for error in form.nome_despesa.errors %}
-          <div class="invalid-feedback d-block">{{ error }}</div>
-        {% endfor %}
-      </div>
+      {% if is_prolabore_form %}
+        <div class="col-12 col-lg-4">
+          <label class="form-label client-picker-label" for="{{ form.data_lancamento.id_for_label }}">Data</label>
+          {% render_field form.data_lancamento %}
+          {% for error in form.data_lancamento.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="col-12 col-lg-4">
+          <label class="form-label client-picker-label" for="{{ form.nome_despesa.id_for_label }}">Descricao do Pró-labore</label>
+          {% render_field form.nome_despesa class="form-control selector-standard-control" placeholder="Informe a retirada" %}
+          {% for error in form.nome_despesa.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="col-12 col-lg-4">
+          {% include 'despesa/componentes/seletor-categoria-despesa.html' with field=form.categoria_despesa label='Categoria pessoal' placeholder='Selecione a categoria pessoal' %}
+        </div>
+      {% else %}
+        <div class="col-12 col-lg-7">
+          <label class="form-label client-picker-label" for="{{ form.nome_despesa.id_for_label }}">{% if is_divida_form %}Descricao da dívida{% else %}Descricao da despesa{% endif %}</label>
+          {% render_field form.nome_despesa class="form-control selector-standard-control" placeholder="Informe a despesa" %}
+          {% for error in form.nome_despesa.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+          {% endfor %}
+        </div>
 
-      <div class="col-12 col-lg-5">
-        {% include 'despesa/componentes/seletor-categoria-despesa.html' with field=form.categoria_despesa label='Categoria' %}
-      </div>
+        <div class="col-12 col-lg-5">
+          {% include 'despesa/componentes/seletor-categoria-despesa.html' with field=form.categoria_despesa label='Categoria' %}
+        </div>
+      {% endif %}
     </div>
     </section>
 
     <section class="erp-form-section">
     <div class="row g-3 align-items-end">
-      <div class="col-12 col-md-4">
+      <div class="col-12 {% if is_prolabore_form %}col-md-6{% else %}col-md-4{% endif %}">
         <label class="form-label client-picker-label" for="{{ form.preco_despesa.id_for_label }}">Valor da despesa</label>
         {% render_field form.preco_despesa class="form-control selector-standard-control" step="0.01" placeholder="0,00" %}
         {% for error in form.preco_despesa.errors %}
@@ -56,7 +88,7 @@
         {% endfor %}
       </div>
 
-      <div class="col-12 col-md-4">
+      <div class="col-12 {% if is_prolabore_form %}col-md-6{% else %}col-md-4{% endif %}">
         <label class="form-label client-picker-label" for="{{ form.forma_pagamento.id_for_label }}">Forma de pagamento</label>
         {% render_field form.forma_pagamento class="form-select selector-standard-control" %}
         {% for error in form.forma_pagamento.errors %}
@@ -64,13 +96,13 @@
         {% endfor %}
       </div>
 
-      <div class="col-12 col-md-4">
-        <label class="form-label client-picker-label" for="{{ form.fornecedor.id_for_label }}">Fornecedor (opcional)</label>
-        {% render_field form.fornecedor class="form-select selector-standard-control" %}
-        {% for error in form.fornecedor.errors %}
-          <div class="invalid-feedback d-block">{{ error }}</div>
-        {% endfor %}
-      </div>
+      {% if is_prolabore_form %}
+        {% render_field form.fornecedor %}
+      {% else %}
+        <div class="col-12 col-md-4">
+          {% include 'fornecedor/componentes/seletor-fornecedor.html' with field=form.fornecedor label='Fornecedor (opcional)' %}
+        </div>
+      {% endif %}
 
       <div class="col-12">
         <label class="form-label client-picker-label" for="{{ form.observacao.id_for_label }}">Observacao (opcional)</label>
@@ -82,7 +114,14 @@
     </div>
     </section>
 
-    {% include 'despesa/formularios/campos-fiado-despesa.html' %}
+    {% if is_divida_form %}
+      {% include 'despesa/formularios/campos-status-divida.html' %}
+    {% endif %}
+
+    {% if not is_prolabore_form %}
+      {% include 'despesa/formularios/campos-fiado-despesa.html' %}
+      {% include 'despesa/formularios/campos-despesa-fixa.html' %}
+    {% endif %}
   </div>
 
   <div class="modal-footer">

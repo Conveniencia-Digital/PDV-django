@@ -167,7 +167,7 @@ class ItemsVenda(models.Model):
                                null=True,
                                )
     produto = models.ForeignKey(Produto,
-                                on_delete=models.CASCADE)
+                                on_delete=models.PROTECT)
     quantidade = models.IntegerField()
     preco = models.DecimalField(max_digits=9, decimal_places=2)
 
@@ -249,7 +249,6 @@ class ItemsVenda(models.Model):
 
 
     
-
 
 
 

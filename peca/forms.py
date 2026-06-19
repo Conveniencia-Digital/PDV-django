@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import forms
 from peca.models import Pecas
 from fornecedor.models import Fornecedores
@@ -63,6 +65,8 @@ class PecasForms(forms.ModelForm):
         if self.errors or preco_custo is None:
             return cleaned_data
 
+        self._clean_payment_fields(cleaned_data, preco_custo)
+
         try:
             if margem is not None and (last_edited in ('margin', 'cost') or not preco):
                 cleaned_data['preco_peca'] = calculate_sale_price_from_margin(preco_custo, margem)
@@ -88,3 +92,23 @@ class PecasForms(forms.ModelForm):
                 self.add_error('preco_peca', 'Preço de venda e margem de lucro não conferem.')
 
         return cleaned_data
+
+    def _clean_payment_fields(self, cleaned_data, preco_custo):
+        if cleaned_data.get('forma_pagamento') != Pecas.FIADO:
+            cleaned_data['valor_entrada'] = None
+            cleaned_data['qtd_parcela'] = None
+            cleaned_data['data_vencimento'] = None
+            return
+
+        quantidade = cleaned_data.get('quantidade')
+        if quantidade is None:
+            return
+
+        custo_total = preco_custo * quantidade
+        entrada = cleaned_data.get('valor_entrada') or Decimal('0.00')
+        cleaned_data['valor_entrada'] = entrada
+
+        if entrada < 0:
+            self.add_error('valor_entrada', 'O valor de entrada não pode ser negativo.')
+        elif entrada > custo_total:
+            self.add_error('valor_entrada', 'O valor de entrada não pode ser maior que o custo total do estoque.')

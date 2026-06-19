@@ -1,6 +1,11 @@
 <tr id="trCliente{{ object.pk }}">
     <td>{{ object.nome_cliente }}</td>
-    <td><a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a>
+    <td>
+        {% if object.telefone_contato %}
+            <a href="tel:+55{{ object.telefone_contato }}" style="text-decoration: none;">{{ object.telefone_contato }}</a>
+        {% else %}
+            <span class="text-muted">Sem telefone</span>
+        {% endif %}
     </td>
     <td><span data-bs-toggle="modal" data-bs-target="#staticBackdrop" hx-get="{% url 'editar-cliente' object.pk %}"
             hx-target="#adicionar-conteudo">
@@ -18,6 +23,3 @@
     </td>
 
 </tr>
-
-
- 
