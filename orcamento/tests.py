@@ -83,6 +83,62 @@ class OrcamentoClientPickerTemplateTests(TestCase):
         self.assertContains(response, 'Adicionar serviço')
         self.assertContains(response, 'orcamento-item-row')
 
+    def test_edicao_mostra_peca_sem_estoque_e_permite_trocar_fiado_para_pix(self):
+        orcamento, item = self._criar_orcamento_com_peca_sem_estoque()
+
+        response = self.client.get(reverse('editar-orcamento', args=[orcamento.pk]), HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.peca.nome_peca)
+        self.assertContains(response, 'data-field="peca"')
+
+        payload = {
+            'dashboard_periodo': 'hoje',
+            'dashboard_inicio': '',
+            'dashboard_fim': '',
+            'main-usuario': self.user.pk,
+            'main-cliente': self.cliente.pk,
+            'main-celular': 'Moto G editado',
+            'main-data_entrega': '',
+            'main-status': Orcamento.FINALIZADO_ENTREGUE,
+            'main-observacao': '',
+            'main-tecnico': self.tecnico.pk,
+            'main-desconto': '0.00',
+            'main-forma_pagamento': Orcamento.PIX,
+            'main-data_vencimento': '',
+            'main-qtd_parcela': '',
+            'main-valor_entrada': '',
+            'main-card_machine': '',
+            'main-card_installments': '',
+            'main-card_payment_type': '',
+            'main-card_fee_percentage': '',
+            'main-card_fee_amount': '',
+            'main-card_base_amount': '',
+            'main-card_final_amount': '',
+            'items-TOTAL_FORMS': '1',
+            'items-INITIAL_FORMS': '1',
+            'items-MIN_NUM_FORMS': '1',
+            'items-MAX_NUM_FORMS': '1000',
+            'items-0-orcamento': orcamento.pk,
+            'items-0-id': item.pk,
+            'items-0-peca': self.peca.pk,
+            'items-0-servico': '',
+            'items-0-quantidade': '1',
+            'items-0-preco_orcamento': '120.00',
+        }
+
+        response = self.client.post(reverse('editar-orcamento', args=[orcamento.pk]), payload, HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['HX-Retarget'], '#bloco-dados')
+        self.assertEqual(response['HX-Trigger-After-Swap'], 'orcamentoSalvo')
+        orcamento.refresh_from_db()
+        item.refresh_from_db()
+        self.peca.refresh_from_db()
+        self.assertEqual(orcamento.forma_pagamento, Orcamento.PIX)
+        self.assertEqual(item.peca, self.peca)
+        self.assertEqual(self.peca.quantidade, 0)
+
     def test_pagina_orcamento_inclui_assets_e_modal_cliente(self):
         response = self.client.get(reverse('orcamento'))
 
@@ -100,6 +156,8 @@ class OrcamentoClientPickerTemplateTests(TestCase):
         self.assertContains(response, 'id="orcamentoChartsData"')
         self.assertContains(response, 'id="orcamentoRevenueChart"')
         self.assertContains(response, 'id="orcamentoItemsChart"')
+        self.assertNotContains(response, 'success_tic')
+        self.assertNotContains(response, 'relatorioorcaamento')
 
     def test_busca_servicos_orcamento_filtra_por_usuario_e_termo(self):
         other_user = User.objects.create_user(username='outro-orcamento', password='senha-teste')
@@ -184,6 +242,31 @@ class OrcamentoClientPickerTemplateTests(TestCase):
             preco_orcamento=Decimal('50.00'),
         )
         return orcamento
+
+    def _criar_orcamento_com_peca_sem_estoque(self):
+        self.peca.quantidade = 1
+        self.peca.save(update_fields=['quantidade'])
+        orcamento = Orcamento.objects.create(
+            usuario=self.user,
+            cliente=self.cliente,
+            celular='Moto G',
+            status=Orcamento.FINALIZADO_ENTREGUE,
+            tecnico=self.tecnico,
+            desconto=Decimal('0.00'),
+            forma_pagamento=Orcamento.FIADO,
+            qtd_parcela=2,
+            valor_entrada=Decimal('20.00'),
+            data_vencimento=date(2026, 6, 30),
+        )
+        item = ItemsOrcamento.objects.create(
+            orcamento=orcamento,
+            peca=self.peca,
+            quantidade=1,
+            preco_orcamento=Decimal('120.00'),
+        )
+        self.peca.refresh_from_db()
+        self.assertEqual(self.peca.quantidade, 0)
+        return orcamento, item
 
     def _orcamento_edit_payload(self, orcamento):
         item = orcamento.orcamento_items.first()
@@ -370,7 +453,7 @@ class OrcamentoClientPickerTemplateTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['HX-Retarget'], '#bloco-dados')
         self.assertEqual(response['HX-Reswap'], 'outerHTML')
-        self.assertEqual(response['HX-Trigger'], 'orcamentoSalvo')
+        self.assertEqual(response['HX-Trigger-After-Swap'], 'orcamentoSalvo')
         self.assertContains(response, 'id="bloco-dados"')
         self.assertContains(response, 'id="orcamento-Tbody"')
         self.assertContains(response, 'id="orcamentoChartsData"')
@@ -385,7 +468,7 @@ class OrcamentoClientPickerTemplateTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['HX-Retarget'], '#bloco-dados')
         self.assertEqual(response['HX-Reswap'], 'outerHTML')
-        self.assertEqual(response['HX-Trigger'], 'orcamentoSalvo')
+        self.assertEqual(response['HX-Trigger-After-Swap'], 'orcamentoSalvo')
         self.assertEqual(Orcamento.objects.count(), 1)
         orcamento.refresh_from_db()
         self.assertEqual(orcamento.celular, 'Moto G editado')
@@ -406,7 +489,7 @@ class OrcamentoClientPickerTemplateTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['HX-Retarget'], '#bloco-dados')
         self.assertEqual(response['HX-Reswap'], 'outerHTML')
-        self.assertEqual(response['HX-Trigger'], 'orcamentoExcluido')
+        self.assertEqual(response['HX-Trigger-After-Swap'], 'orcamentoExcluido')
         self.assertFalse(Orcamento.objects.filter(pk=orcamento.pk).exists())
         self.assertNotContains(response, f'id="detalhes-orcamento-{orcamento.pk}"')
         self.assertContains(response, 'Nenhum orçamento encontrado.')

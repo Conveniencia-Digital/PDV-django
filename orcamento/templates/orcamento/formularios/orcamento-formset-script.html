@@ -280,16 +280,20 @@
     return window.bootstrap.Modal.getInstance(element) || new window.bootstrap.Modal(element);
   }
 
+  function cleanupBootstrapModalState() {
+    if (document.querySelector('.modal.show')) return;
+    document.querySelectorAll('.modal-backdrop').forEach(function (backdrop) {
+      backdrop.remove();
+    });
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('overflow');
+  }
+
   document.body.addEventListener('orcamentoSalvo', function () {
     const modal = getBootstrapModal('staticBackdrop');
     if (modal) modal.hide();
-
-    const successModal = getBootstrapModal('success_tic');
-    if (successModal) {
-      window.setTimeout(function () {
-        successModal.show();
-      }, 250);
-    }
+    window.setTimeout(cleanupBootstrapModalState, 250);
   });
 })();
 </script>

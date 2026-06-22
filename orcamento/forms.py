@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
+from django.db.models import Q
 
 from orcamento.models import ItemsOrcamento, Orcamento, Servico
 from peca.models import Pecas
@@ -86,7 +87,9 @@ class ItemsOrcamentoForms(forms.ModelForm):
         self.fields['orcamento'].widget = forms.HiddenInput()
 
         self.fields['id'].label = ''
-        self.fields['peca'].queryset = Pecas.objects.filter(quantidade__gt=0, usuario=user)
+        self.fields['peca'].queryset = Pecas.objects.filter(usuario=user).filter(
+            Q(quantidade__gt=0) | Q(pk=self.instance.peca_id)
+        )
         self.fields['servico'].queryset = Servico.objects.filter(usuario=user)
         self.fields['peca'].widget.attrs['class'] = 'form-select'
         self.fields['servico'].widget.attrs['class'] = 'form-select'

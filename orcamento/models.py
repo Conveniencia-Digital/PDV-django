@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from django.db import transaction
+from django.db.models import F
 from django.db import models
 from peca.models import Pecas
 from cliente.models import Cliente
@@ -177,8 +179,42 @@ class ItemsOrcamento(models.Model):
         return self.preco_orcamento * (self.quantidade or 0)
     
     def save(self, *args, **kwargs):
-        if self.peca_id and self.peca:
-            self.peca.quantidade -= self.quantidade
-            self.peca.save()
-        super(ItemsOrcamento, self).save(*args, **kwargs)
+        quantidade_atual = self.quantidade or 0
+        peca_atual_id = self.peca_id
+        item_anterior = None
 
+        if self.pk:
+            item_anterior = (
+                ItemsOrcamento.objects
+                .filter(pk=self.pk)
+                .values('peca_id', 'quantidade')
+                .first()
+            )
+
+        with transaction.atomic():
+            super(ItemsOrcamento, self).save(*args, **kwargs)
+
+            if item_anterior:
+                peca_anterior_id = item_anterior['peca_id']
+                quantidade_anterior = item_anterior['quantidade'] or 0
+
+                if peca_anterior_id == peca_atual_id:
+                    diferenca = quantidade_atual - quantidade_anterior
+                    if peca_atual_id and diferenca:
+                        Pecas.objects.filter(pk=peca_atual_id).update(quantidade=F('quantidade') - diferenca)
+                else:
+                    if peca_anterior_id and quantidade_anterior:
+                        Pecas.objects.filter(pk=peca_anterior_id).update(quantidade=F('quantidade') + quantidade_anterior)
+                    if peca_atual_id and quantidade_atual:
+                        Pecas.objects.filter(pk=peca_atual_id).update(quantidade=F('quantidade') - quantidade_atual)
+            elif peca_atual_id and quantidade_atual:
+                Pecas.objects.filter(pk=peca_atual_id).update(quantidade=F('quantidade') - quantidade_atual)
+
+    def delete(self, *args, **kwargs):
+        peca_id = self.peca_id
+        quantidade = self.quantidade or 0
+        with transaction.atomic():
+            result = super().delete(*args, **kwargs)
+            if peca_id and quantidade:
+                Pecas.objects.filter(pk=peca_id).update(quantidade=F('quantidade') + quantidade)
+            return result

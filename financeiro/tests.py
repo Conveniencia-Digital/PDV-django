@@ -216,6 +216,109 @@ class FinancialDashboardFilterTests(TestCase):
         self.assertEqual(dashboard["category_ranking"][0]["amount"], Decimal("250.00"))
         self.assertEqual(dashboard["charts"]["revenue_vs_expenses"]["expenses"], [250.0])
 
+    def test_venda_sem_margem_mantem_custo_do_estoque_no_fluxo(self):
+        cliente = Cliente.objects.create(
+            usuario=self.user,
+            nome_cliente="Cliente chip",
+            telefone_contato="67999990000",
+        )
+        vendedor = Colaborador.objects.create(
+            usuario=self.user,
+            nome_colaborador="Vendedor chip",
+            telefone_contato="67999990001",
+        )
+        produto = Produto.objects.create(
+            usuario=self.user,
+            nome_produto="Chip zero margem",
+            quantidade=1,
+            preco_de_custo=Decimal("35.00"),
+            margem_de_lucro=Decimal("0.00"),
+            preco=Decimal("35.00"),
+            forma_pagamento=Produto.PIX,
+        )
+        Produto.objects.filter(pk=produto.pk).update(
+            data_criacao=timezone.make_aware(datetime(2026, 6, 11, 9, 0, 0))
+        )
+        venda = Vendas.objects.create(
+            usuario=self.user,
+            cliente=cliente,
+            vendedor=vendedor,
+            desconto=Decimal("0.00"),
+            forma_pagamento=Vendas.PIX,
+            status=Vendas.ENTREGUE,
+        )
+        ItemsVenda.objects.create(vendas=venda, produto=produto, quantidade=1, preco=Decimal("35.00"))
+        Vendas.objects.filter(pk=venda.pk).update(
+            data_criacao=timezone.make_aware(datetime(2026, 6, 11, 10, 0, 0))
+        )
+
+        produto.refresh_from_db()
+        dashboard = build_financial_dashboard(self.user, {
+            "periodo": "custom",
+            "data_inicio": "2026-06-11",
+            "data_fim": "2026-06-11",
+        })
+        snapshot = calculate_cash_closing_snapshot(self.user, date(2026, 6, 11))
+
+        self.assertEqual(produto.quantidade, 0)
+        self.assertEqual(dashboard["summary"]["selected"]["revenue"], Decimal("35.00"))
+        self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("35.00"))
+        self.assertEqual(dashboard["summary"]["balance"], Decimal("0.00"))
+        self.assertEqual(dashboard["category_ranking"][0]["category"], "Estoque")
+        self.assertEqual(dashboard["category_ranking"][0]["amount"], Decimal("35.00"))
+        self.assertEqual(dashboard["charts"]["revenue_vs_expenses"]["revenue"], [35.0])
+        self.assertEqual(dashboard["charts"]["revenue_vs_expenses"]["expenses"], [35.0])
+        self.assertEqual(snapshot.revenue, Decimal("35.00"))
+        self.assertEqual(snapshot.expenses, Decimal("35.00"))
+        self.assertEqual(snapshot.expected_balance, Decimal("0.00"))
+
+    def test_venda_com_margem_nao_reclassifica_custo_consumido_como_despesa(self):
+        cliente = Cliente.objects.create(
+            usuario=self.user,
+            nome_cliente="Cliente capa",
+            telefone_contato="67999990002",
+        )
+        vendedor = Colaborador.objects.create(
+            usuario=self.user,
+            nome_colaborador="Vendedor capa",
+            telefone_contato="67999990003",
+        )
+        produto = Produto.objects.create(
+            usuario=self.user,
+            nome_produto="Capa com margem",
+            quantidade=1,
+            preco_de_custo=Decimal("20.00"),
+            margem_de_lucro=Decimal("150.00"),
+            preco=Decimal("50.00"),
+            forma_pagamento=Produto.PIX,
+        )
+        Produto.objects.filter(pk=produto.pk).update(
+            data_criacao=timezone.make_aware(datetime(2026, 6, 12, 9, 0, 0))
+        )
+        venda = Vendas.objects.create(
+            usuario=self.user,
+            cliente=cliente,
+            vendedor=vendedor,
+            desconto=Decimal("0.00"),
+            forma_pagamento=Vendas.PIX,
+            status=Vendas.ENTREGUE,
+        )
+        ItemsVenda.objects.create(vendas=venda, produto=produto, quantidade=1, preco=Decimal("50.00"))
+        Vendas.objects.filter(pk=venda.pk).update(
+            data_criacao=timezone.make_aware(datetime(2026, 6, 12, 10, 0, 0))
+        )
+
+        dashboard = build_financial_dashboard(self.user, {
+            "periodo": "custom",
+            "data_inicio": "2026-06-12",
+            "data_fim": "2026-06-12",
+        })
+
+        self.assertEqual(dashboard["summary"]["selected"]["revenue"], Decimal("50.00"))
+        self.assertEqual(dashboard["summary"]["selected"]["expenses"], Decimal("0.00"))
+        self.assertEqual(dashboard["summary"]["balance"], Decimal("50.00"))
+        self.assertEqual(dashboard["category_ranking"], [])
+
 
 class CardMachineFeeTableFormTests(TestCase):
     def test_save_creates_machine_with_debit_and_credit_installment_fees(self):

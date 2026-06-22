@@ -11,6 +11,8 @@ from despesa.services import fixed_occurrence_count, is_expense_paid
 from financeiro.models import LancamentoFinanceiro
 from lanhouse.models import LanhouseModel
 from orcamento.models import Orcamento
+from peca.models import Pecas
+from produto.models import Produto
 from venda.models import Vendas
 
 
@@ -112,6 +114,7 @@ def build_profitability_report(user, params):
     transaction_count = sum(row["count"] for row in source_rows)
     average_ticket = money(revenue / transaction_count) if transaction_count else ZERO
     projection_rows = _projection_rows(revenue, period)
+    accounts = _accounts_summary(user, period)
 
     return {
         "period": period,
@@ -141,6 +144,7 @@ def build_profitability_report(user, params):
         },
         "source_rows": source_rows,
         "projection_rows": projection_rows,
+        "accounts": accounts,
         "charts": {
             "projection": {
                 "labels": [row["label"] for row in projection_rows],
@@ -149,6 +153,14 @@ def build_profitability_report(user, params):
             "sources": {
                 "labels": [row["source"] for row in source_rows],
                 "values": [decimal_to_float(row["revenue"]) for row in source_rows],
+            },
+            "accounts_payable": {
+                "labels": [row["category"] for row in accounts["payable_rows"]],
+                "values": [decimal_to_float(row["amount"]) for row in accounts["payable_rows"]],
+            },
+            "accounts_receivable": {
+                "labels": [row["category"] for row in accounts["receivable_rows"]],
+                "values": [decimal_to_float(row["amount"]) for row in accounts["receivable_rows"]],
             },
         },
     }
@@ -259,6 +271,185 @@ def _lanhouse_queryset(user, period):
     )
 
 
+def _accounts_summary(user, period):
+    payable_rows = [
+        _account_row("Peças", *_payable_stock_summary(
+            Pecas.objects.filter(usuario=user, forma_pagamento=Pecas.FIADO),
+            period,
+        )),
+        _account_row("Produtos", *_payable_stock_summary(
+            Produto.objects.filter(usuario=user, forma_pagamento=Produto.FIADO),
+            period,
+        )),
+        _account_row("Despesas", *_payable_expense_summary(user, period)),
+    ]
+    receivable_rows = [
+        _account_row("Assistência técnica", *_receivable_summary(
+            Orcamento.objects.filter(
+                usuario=user,
+                status__in=FINALIZED_ORCAMENTO_STATUSES,
+                forma_pagamento=Orcamento.FIADO,
+            ),
+            period,
+        )),
+        _account_row("Vendas", *_receivable_summary(
+            Vendas.objects.filter(
+                usuario=user,
+                status=Vendas.ENTREGUE,
+                forma_pagamento=Vendas.FIADO,
+            ),
+            period,
+        )),
+        _account_row("Lanhouse", *_receivable_summary(
+            LanhouseModel.objects.filter(
+                usuario=user,
+                forma_pagamento=LanhouseModel.FIADO,
+            ),
+            period,
+        )),
+    ]
+
+    payable_total = money(sum((row["amount"] for row in payable_rows), ZERO))
+    receivable_total = money(sum((row["amount"] for row in receivable_rows), ZERO))
+    difference = money(receivable_total - payable_total)
+
+    _with_percentages(payable_rows, payable_total)
+    _with_percentages(receivable_rows, receivable_total)
+
+    if difference > ZERO:
+        difference_label = "A receber acima do a pagar"
+        difference_tone = "success"
+    elif difference < ZERO:
+        difference_label = "A pagar acima do a receber"
+        difference_tone = "danger"
+    else:
+        difference_label = "A pagar e a receber equilibrados"
+        difference_tone = "info"
+
+    return {
+        "payable_total": payable_total,
+        "receivable_total": receivable_total,
+        "difference": difference,
+        "difference_abs": money(abs(difference)),
+        "difference_label": difference_label,
+        "difference_tone": difference_tone,
+        "payable_count": sum(row["count"] for row in payable_rows),
+        "receivable_count": sum(row["count"] for row in receivable_rows),
+        "payable_rows": payable_rows,
+        "receivable_rows": receivable_rows,
+    }
+
+
+def _payable_stock_summary(queryset, period):
+    total = ZERO
+    count = 0
+
+    for item in _created_in_period(queryset, period).only(
+        "preco_de_custo",
+        "quantidade",
+        "valor_entrada",
+    ):
+        balance = _positive_balance(
+            money(item.preco_de_custo) * (item.quantidade or 0),
+            item.valor_entrada,
+        )
+        if balance > ZERO:
+            total += balance
+            count += 1
+
+    return money(total), count
+
+
+def _payable_expense_summary(user, period):
+    total = ZERO
+    count = 0
+
+    expenses = (
+        Despesa.objects
+        .filter(
+            usuario=user,
+            tipo=Despesa.TIPO_EMPRESA,
+            despesa_fixa=False,
+            forma_pagamento=Despesa.FIADO,
+            fiado_pago=False,
+            data_cadastro__date__range=(period.start, period.end),
+        )
+        .only("preco_despesa", "valor_entrada")
+    )
+    for expense in expenses:
+        balance = _positive_balance(expense.preco_despesa, expense.valor_entrada)
+        if balance > ZERO:
+            total += balance
+            count += 1
+
+    fixed_expenses = (
+        Despesa.objects
+        .filter(
+            usuario=user,
+            tipo=Despesa.TIPO_EMPRESA,
+            despesa_fixa=True,
+            forma_pagamento=Despesa.FIADO,
+            fiado_pago=False,
+        )
+        .only(
+            "preco_despesa",
+            "valor_entrada",
+            "despesa_fixa",
+            "dia_vencimento_fixo",
+            "data_cadastro",
+        )
+    )
+    for expense in fixed_expenses:
+        occurrences = fixed_occurrence_count(expense, period)
+        if not occurrences:
+            continue
+        balance = _positive_balance(expense.preco_despesa, expense.valor_entrada)
+        if balance > ZERO:
+            total += balance * occurrences
+            count += occurrences
+
+    return money(total), count
+
+
+def _receivable_summary(queryset, period):
+    total = ZERO
+    count = 0
+
+    for item in _created_in_period(queryset, period):
+        balance = _positive_balance(item.total(), item.valor_entrada)
+        if balance > ZERO:
+            total += balance
+            count += 1
+
+    return money(total), count
+
+
+def _created_in_period(queryset, period):
+    return queryset.filter(data_criacao__date__range=(period.start, period.end))
+
+
+def _positive_balance(total, entry_value):
+    balance = money(total) - money(entry_value)
+    if balance < ZERO:
+        return ZERO
+    return money(balance)
+
+
+def _account_row(category, amount, count):
+    return {
+        "category": category,
+        "amount": money(amount),
+        "count": count,
+        "percentage": ZERO,
+    }
+
+
+def _with_percentages(rows, total):
+    for row in rows:
+        row["percentage"] = _percent(row["amount"], total)
+    return rows
+
+
 def _fixed_expenses_total(user, period):
     total = ZERO
     occurrences_total = 0
@@ -325,6 +516,8 @@ def _normalize_all_data_period(user, period):
         _date_bounds(LanhouseModel.objects.filter(usuario=user), "data_criacao"),
         _date_bounds(Despesa.objects.filter(usuario=user), "data_cadastro"),
         _date_bounds(LancamentoFinanceiro.objects.filter(usuario=user), "data_lancamento"),
+        _date_bounds(Pecas.objects.filter(usuario=user), "data_criacao"),
+        _date_bounds(Produto.objects.filter(usuario=user), "data_criacao"),
     ):
         if start:
             dates.append(_as_date(start))

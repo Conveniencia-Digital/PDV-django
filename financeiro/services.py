@@ -308,10 +308,12 @@ def _expense_rows(user, period, include_cash_adjustments=True):
         include_cash_adjustments=include_cash_adjustments,
     ))
 
+    produtos = Produto.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end))
     rows.extend(_inventory_expense_rows(
-        Produto.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end)),
+        produtos,
         price_field="preco_de_custo",
     ))
+    rows.extend(_zero_margin_product_expense_rows(produtos))
     rows.extend(_inventory_expense_rows(
         Pecas.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end)),
         price_field="preco_de_custo",
@@ -354,6 +356,36 @@ def _inventory_expense_rows(queryset, price_field):
     rows = []
     for item in grouped:
         amount = _cash_impact(item["gross"], item["forma_pagamento"], item["valor_entrada"], FIADO_PAGAR)
+        if amount > ZERO:
+            rows.append({"category": "Estoque", "amount": amount, "count": 1})
+    return rows
+
+
+def _zero_margin_product_expense_rows(queryset):
+    sold_out_products = list(
+        queryset
+        .filter(quantidade__lte=0, preco_de_custo=F("preco"), preco_de_custo__gt=ZERO)
+        .values("id", "preco_de_custo", "forma_pagamento", "valor_entrada")
+    )
+    if not sold_out_products:
+        return []
+
+    product_ids = [item["id"] for item in sold_out_products]
+    sold_quantities = {
+        item["produto_id"]: item["total"] or 0
+        for item in (
+            ItemsVenda.objects
+            .filter(produto_id__in=product_ids, vendas__status=Vendas.ENTREGUE)
+            .values("produto_id")
+            .annotate(total=Sum("quantidade"))
+        )
+    }
+
+    rows = []
+    for item in sold_out_products:
+        quantity = sold_quantities.get(item["id"], 0)
+        gross = money(item["preco_de_custo"]) * Decimal(max(quantity, 0))
+        amount = _cash_impact(gross, item["forma_pagamento"], item["valor_entrada"], FIADO_PAGAR)
         if amount > ZERO:
             rows.append({"category": "Estoque", "amount": amount, "count": 1})
     return rows
@@ -568,11 +600,13 @@ def _expense_time_rows(user, period, trunc_function):
             ),
         })
 
+    produtos = Produto.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end))
     rows.extend(_inventory_time_rows(
-        Produto.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end)),
+        produtos,
         price_field="preco_de_custo",
         trunc_function=trunc_function,
     ))
+    rows.extend(_zero_margin_product_time_rows(produtos, trunc_function))
     rows.extend(_inventory_time_rows(
         Pecas.objects.filter(usuario=user, data_criacao__date__range=(period.start, period.end)),
         price_field="preco_de_custo",
@@ -623,6 +657,40 @@ def _inventory_time_rows(queryset, price_field, trunc_function):
         }
         for item in grouped
     ]
+
+
+def _zero_margin_product_time_rows(queryset, trunc_function):
+    sold_out_products = list(
+        queryset
+        .filter(quantidade__lte=0, preco_de_custo=F("preco"), preco_de_custo__gt=ZERO)
+        .annotate(period=trunc_function("data_criacao"))
+        .values("id", "period", "preco_de_custo", "forma_pagamento", "valor_entrada")
+    )
+    if not sold_out_products:
+        return []
+
+    product_ids = [item["id"] for item in sold_out_products]
+    sold_quantities = {
+        item["produto_id"]: item["total"] or 0
+        for item in (
+            ItemsVenda.objects
+            .filter(produto_id__in=product_ids, vendas__status=Vendas.ENTREGUE)
+            .values("produto_id")
+            .annotate(total=Sum("quantidade"))
+        )
+    }
+
+    rows = []
+    for item in sold_out_products:
+        quantity = sold_quantities.get(item["id"], 0)
+        gross = money(item["preco_de_custo"]) * Decimal(max(quantity, 0))
+        amount = _cash_impact(gross, item["forma_pagamento"], item["valor_entrada"], FIADO_PAGAR)
+        if amount > ZERO:
+            rows.append({
+                "period": _as_date(item["period"]),
+                "amount": amount,
+            })
+    return rows
 
 
 def _daily_totals(rows):

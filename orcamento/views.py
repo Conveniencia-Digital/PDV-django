@@ -288,7 +288,7 @@ def _render_dashboard_update(request, trigger=None):
     response['HX-Retarget'] = '#bloco-dados'
     response['HX-Reswap'] = 'outerHTML'
     if trigger:
-        response['HX-Trigger'] = trigger
+        response['HX-Trigger-After-Swap'] = trigger
     return response
 
 
@@ -530,17 +530,6 @@ class RelatorioLucroOrcamento(DetailView):
         context = super().get_context_data(**kwargs)
         context.update(_orcamento_custos_lucros_context(self.object))
         return context
-
-
-
-def total_orcamento(request):
-    template_name = 'orcamento/relatorios/relatorio-orcamento.html'
-    total = sum(tot.total() for tot in Orcamento.objects.filter(usuario=request.user, status='Finalizado e entregue'))
-    qtd_orcamento = Orcamento.objects.filter(usuario=request.user).count()
-    context = {'total_orcamento': total, 'qtd_orcamento': qtd_orcamento}
-    return render(request, template_name, context)
-
-
 
 @login_required
 def cadastrarservico(request):
